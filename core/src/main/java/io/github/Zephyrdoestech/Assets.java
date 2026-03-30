@@ -62,7 +62,7 @@ public class Assets implements Disposable {
 
         // Static textures
         titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Dungeon.png");
+        townTex        = new Texture("Background/Map/Town_Of_Echoes.png");
         townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         sonaraTex   = new Texture("sonara.png");
         lyronTex    = new Texture("lyron.png");
