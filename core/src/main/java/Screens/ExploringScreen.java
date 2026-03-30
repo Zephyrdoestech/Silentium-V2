@@ -15,6 +15,8 @@ import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -57,25 +59,42 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.mapEnemies = new ArrayList<>();
         game.ctx.rooms      = new ArrayList<>();
 
-        game.ctx.rooms.add(new Room(96f,   64f,   320f, 256f));
-        game.ctx.rooms.add(new Room(96f,   544f,  320f, 256f));
-        game.ctx.rooms.add(new Room(1088f, 96f,   448f, 384f));
-        game.ctx.rooms.add(new Room(1216f, 1024f, 384f, 448f));
-        game.ctx.rooms.add(new Room(768f,  512f,  384f, 384f));
+        // 1st row
+        game.ctx.rooms.add(new Room(40f,   1745f, 246f, 246f));
+        game.ctx.rooms.add(new Room(612f,  1745f, 246f, 246f));
+        game.ctx.rooms.add(new Room(1190f, 1745f, 246f, 246f));
+        game.ctx.rooms.add(new Room(1762f, 1745f, 246f, 246f));
+        // 2nd row
+        game.ctx.rooms.add(new Room(40f,   1170f, 246f, 246f));
+        game.ctx.rooms.add(new Room(612f,  1170f, 246f, 246f));
+        game.ctx.rooms.add(new Room(1190f, 1170f, 246f, 246f));
+        game.ctx.rooms.add(new Room(1762f, 1170f, 246f, 246f));
+        // 3rd row
+        game.ctx.rooms.add(new Room(40f,   598f,  246f, 246f));
+        game.ctx.rooms.add(new Room(612f,  598f,  246f, 246f));
+        game.ctx.rooms.add(new Room(1190f, 598f,  246f, 246f));
+        game.ctx.rooms.add(new Room(1762f, 598f,  246f, 246f));
+        // 4th row
+        game.ctx.rooms.add(new Room(40f,   20f,   246f, 246f));
+        game.ctx.rooms.add(new Room(612f,  20f,   246f, 246f));
+        game.ctx.rooms.add(new Room(1190f, 20f,   246f, 246f));
+        game.ctx.rooms.add(new Room(1762f, 20f,   246f, 246f));
 
-        for (Room room : game.ctx.rooms) {
-            if (RNG.nextInt(100) < 70) {
-                int count = 1 + RNG.nextInt(3);
-                for (int i = 0; i < count; i++) {
-                    float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
-                    float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
-                    Enemy e = RNG.nextBoolean()
-                        ? Enemy.fleshFeeder(x, y)
-                        : Enemy.andrewellers(x, y);
-                    room.addEnemy(e);
-                    game.ctx.mapEnemies.add(e);
-                }
-            }
+        int totalEnemies = 5 + RNG.nextInt(4); // 5, 6, 7, or 8
+
+        // Pick exactly `totalEnemies` distinct rooms to receive one enemy each
+        List<Room> shuffled = new ArrayList<>(game.ctx.rooms);
+        Collections.shuffle(shuffled, RNG);
+
+        for (int i = 0; i < totalEnemies; i++) {
+            Room room = shuffled.get(i);
+            float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
+            float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
+            Enemy e = RNG.nextBoolean()
+                ? Enemy.fleshFeeder(x, y)
+                : Enemy.andrewellers(x, y);
+            room.addEnemy(e);
+            game.ctx.mapEnemies.add(e);
         }
     }
 
