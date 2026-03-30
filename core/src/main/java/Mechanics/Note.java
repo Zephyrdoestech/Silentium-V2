@@ -1,4 +1,6 @@
-package io.github.Zephyrdoestech;
+package Mechanics;
+
+import Entities.Character;
 
 import java.util.Random;
 

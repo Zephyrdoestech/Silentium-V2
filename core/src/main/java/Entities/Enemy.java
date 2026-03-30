@@ -1,4 +1,4 @@
-package io.github.Zephyrdoestech;
+package Entities;
 
 import java.util.Random;
 

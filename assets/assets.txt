@@ -1,4 +1,7 @@
 .gitkeep
+Audio/banjo.wav
+Audio/flute.wav
+Audio/harp.wav
 Aurelius/idle1.png
 Aurelius/idle2.png
 Aurelius/idle3.png
@@ -40,3 +43,4 @@ cave.png
 lyron.png
 screen.png
 sonara.png
+town-of-echoes.png

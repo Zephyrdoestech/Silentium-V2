@@ -1,4 +1,4 @@
-package io.github.Zephyrdoestech;
+package Entities;
 
 public class MapCharacter {
     private float x;

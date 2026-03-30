@@ -1,5 +1,6 @@
-package io.github.Zephyrdoestech;
+package Mechanics;
 
+import Entities.Enemy;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
