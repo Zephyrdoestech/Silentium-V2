@@ -55,6 +55,7 @@ public class Main extends Game {
 
     @Override
     public void resize(int width, int height) {
+        if (width == 0 || height == 0) return;
         gameViewport.update(width, height, true);
         uiViewport.update(width, height, true);
         super.resize(width, height); // forwards to the active screen

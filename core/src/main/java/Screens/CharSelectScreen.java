@@ -132,6 +132,7 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void confirmSelection() {
+        game.assets.titleBGM.stop();
         game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {

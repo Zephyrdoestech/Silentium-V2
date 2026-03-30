@@ -48,6 +48,7 @@ public class Assets implements Disposable {
     public final Music sonaraTheme;    // Audio/banjo.wav
     public final Music aureliusTheme;  // Audio/flute.wav
     public final Music lyronTheme;     // Audio/harp.wav
+    public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures
     private final List<Texture> animationTextures = new ArrayList<>();
@@ -94,9 +95,12 @@ public class Assets implements Disposable {
         sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
         aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
         lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
+        titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/title_music.wav"));
+
         sonaraTheme.setLooping(true);
         aureliusTheme.setLooping(true);
         lyronTheme.setLooping(true);
+        titleBGM.setLooping(true);
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -203,6 +207,6 @@ public class Assets implements Disposable {
         darknessOverlay.dispose();
         for (Texture t : noteTextures) t.dispose();
         for (Texture t : animationTextures) t.dispose();
-        sonaraTheme.dispose(); aureliusTheme.dispose(); lyronTheme.dispose();
+        sonaraTheme.dispose(); aureliusTheme.dispose(); lyronTheme.dispose(); titleBGM.dispose();
     }
 }
