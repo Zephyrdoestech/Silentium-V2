@@ -50,9 +50,6 @@ public class GameContext {
     public static final float SPEED     = 150f;
 
     // ── Combat state ──────────────────────────────────────────────────────────
-    ioahdsiuashadijkdhnajksdna
-    test
-        etest
 
     public Enemy       currentEnemy;
     public CombatState combatState;
