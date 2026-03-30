@@ -48,9 +48,14 @@ public class CharSelectScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+
         bounceTime += delta;
         updateFade(delta);
         handleInput();
+
+        if (game.getScreen() != this) return;
 
         // Audio — plays only when selection changes
         game.ctx.playTheme(index, game.assets);
@@ -143,7 +148,15 @@ public class CharSelectScreen extends BaseScreen {
         game.setScreen(new ExploringScreen(game));
     }
 
-    @Override public void resize(int w, int h) {}
-    @Override public void hide()    { clearNotes(); }
+    @Override public void resize(int w, int h) {
+        game.uiViewport.update(w, h, true);
+    }
+    @Override public void hide()    {
+        clearNotes();
+        if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
+            game.assets.titleBGM.stop();
+        }
+        game.ctx.stopTheme();
+    }
     @Override public void dispose() {}
 }
