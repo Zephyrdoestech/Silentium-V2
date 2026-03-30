@@ -1,0 +1,95 @@
+package io.github.Zephyrdoestech;
+
+import Entities.Character;
+import Entities.Enemy;
+import Entities.MapCharacter;
+import Mechanics.Room;
+import com.badlogic.gdx.audio.Music;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Holds all mutable game state that must survive screen transitions.
+ * Screens read and write via game.ctx.*  — no logic lives here, only data.
+ */
+public class GameContext {
+
+    // ── Enums ──────────────────────────────────────────────────────────────────
+
+    public enum CharacterType { SONARA, AURELIUS, LYRON }
+
+    public enum PlayerState { IDLE, WALK_UP, WALK_DOWN, WALK_LEFT, WALK_RIGHT }
+
+    public enum Facing { LEFT, RIGHT }
+
+    public enum CombatState {
+        BATTLE_SCREEN, ENEMY_INTRODUCTION, TUTORIAL, CHARACTER_PRECOMBAT_LINE,
+        TURN_MENU, ATTACK, USE_SKILL, OPEN_INVENTORY, USE_ITEM,
+        DISPLAY_STATS, DISPLAY_ATTACK_GUIDE, DISPLAY_CHORDS,
+        DISPLAY_PLAYER_DAMAGE, ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
+        VICTORY, DEFEAT, CHARACTER_POSTCOMBAT_LINE
+    }
+
+    // ── Character / player state ───────────────────────────────────────────────
+
+    public CharacterType  selectedCharacter;
+    public Character activeCharacterStats;  // HP, shield, level, buffs
+    public MapCharacter player;                // world-space position
+    public PlayerState    playerState  = PlayerState.IDLE;
+    public Facing         facing       = Facing.RIGHT;
+    public float          stateTime    = 0f;     // drives animation clock
+
+    // ── Map state ─────────────────────────────────────────────────────────────
+
+    public List<Enemy> mapEnemies = new ArrayList<>();
+    public List<Room>  rooms      = new ArrayList<>();
+
+    // Map dimensions — match your Dungeon.png pixel size
+    public static final float MAP_SIZE  = 2048f;
+    public static final float CHAR_SIZE = 64f;
+    public static final float SPEED     = 150f;
+
+    // ── Combat state ──────────────────────────────────────────────────────────
+
+    public Enemy       currentEnemy;
+    public CombatState combatState;
+
+    public final char[] noteBuffer  = new char[3];
+    public       int    noteCount   = 0;
+    public final int[]  noteDamages = new int[3];
+
+    public float  resultTimer       = 0f;
+    public int    playerDamageDealt = 0;
+    public int    enemyDamageDealt  = 0;
+    public String combatLog         = "";
+
+    // ── Character-select audio ─────────────────────────────────────────────────
+
+    public Music currentTheme = null;
+    public int   lastThemeIndex = -1;  // 0=Sonara 1=Aurelius 2=Lyron  -1=none
+
+    /**
+     * Switches character-select theme safely.
+     * Passing -1 stops everything without starting a new track.
+     */
+    public void playTheme(int index, Assets assets) {
+        if (index == lastThemeIndex) return;
+        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
+        lastThemeIndex = index;
+        if (index < 0) return;
+        switch (index) {
+            case 0: currentTheme = assets.sonaraTheme;   break;
+            case 1: currentTheme = assets.aureliusTheme; break;
+            case 2: currentTheme = assets.lyronTheme;    break;
+            default: return;
+        }
+        currentTheme.setVolume(0.75f);
+        currentTheme.play();
+    }
+
+    /** Stops all character-select music immediately. */
+    public void stopTheme() {
+        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
+        lastThemeIndex = -1;
+    }
+}

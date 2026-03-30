@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c292802d-93b8-483f-9d19-cbab198cad26" name="Changes" comment="Cleaned Code" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/lwjgl3">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="Silentium" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Zephyrdoestech&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Zephyrdoestech/Silentium-V2.git&quot;,
+    &quot;accountId&quot;: &quot;13911e7b-9132-4404-809c-422fb83358e7&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="3AKK69HCzl9dBxTj4N2R4Wv18am" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Desktop Launcher.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build Silentium.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Silentium:lwjgl3 [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Silentium:lwjgl3 [run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/Darryll/Documents/Silentium/core/src/main/java/io/github/Zephyrdoestech&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Darryll/Documents/Silentium&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets" />
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets\Aurelius" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets\Audio" />
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets\Aurelius" />
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets\Temp" />
+      <recent name="C:\Users\Darryll\Documents\Silentium\assets" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.Silentium:lwjgl3 [run]">
+    <configuration name="Desktop Launcher" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher" />
+      <module name="Silentium.lwjgl3.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Silentium:lwjgl3 [run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lwjgl3" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Desktop Launcher" />
+      <item itemvalue="Gradle.Silentium:lwjgl3 [run]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.Silentium:lwjgl3 [run]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c292802d-93b8-483f-9d19-cbab198cad26" name="Changes" comment="" />
+      <created>1772335644537</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772335644537</updated>
+      <workItem from="1772335646099" duration="3527000" />
+      <workItem from="1772369796805" duration="88000" />
+      <workItem from="1772510069695" duration="2019000" />
+      <workItem from="1772543123355" duration="626000" />
+      <workItem from="1772621878262" duration="3795000" />
+      <workItem from="1772782238677" duration="662000" />
+      <workItem from="1772948450660" duration="5989000" />
+      <workItem from="1772981036396" duration="1499000" />
+      <workItem from="1772983083420" duration="198000" />
+      <workItem from="1772983452778" duration="637000" />
+      <workItem from="1772984127106" duration="52000" />
+      <workItem from="1773065379084" duration="2501000" />
+      <workItem from="1773111671882" duration="6273000" />
+      <workItem from="1773141275992" duration="2685000" />
+      <workItem from="1773159624127" duration="1973000" />
+      <workItem from="1773209302688" duration="2337000" />
+      <workItem from="1773211680354" duration="9502000" />
+      <workItem from="1773239560547" duration="2444000" />
+      <workItem from="1773466231347" duration="192000" />
+      <workItem from="1773503967165" duration="2812000" />
+      <workItem from="1773853484656" duration="2000" />
+      <workItem from="1774182756386" duration="633000" />
+      <workItem from="1774763546000" duration="1726000" />
+      <workItem from="1774765891196" duration="42000" />
+      <workItem from="1774768893312" duration="4563000" />
+      <workItem from="1774869996769" duration="57000" />
+      <workItem from="1774870085650" duration="693000" />
+      <workItem from="1774871079608" duration="5040000" />
+    </task>
+    <task id="LOCAL-00001" summary="Cleaned Code">
+      <option name="closed" value="true" />
+      <created>1774875535873</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774875535873</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Cleaned Code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaned Code" />
+  </component>
+</project>

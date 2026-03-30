@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.tommyettinger:anim8-gdx:0.6.1" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.github.tommyettinger" artifactId="anim8-gdx" version="0.6.1" baseVersion="0.6.1" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tommyettinger/anim8-gdx/0.6.1/b22c6240ed5cc6cdb882fe248c857eef94922315/anim8-gdx-0.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
