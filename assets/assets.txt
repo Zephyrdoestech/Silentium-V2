@@ -16,6 +16,10 @@ Aurelius/right3.png
 Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Dungeon.png
 Background/Map/Town_Of_Echoes.png
+Background/Story/story_panel_1.png
+Background/Story/story_panel_2.png
+Background/Story/story_panel_3.png
+Background/Story/story_panel_4.png
 Background/Title_Screen/Title_Screen_Placeholder.png
 Sprites/Characters/Aurelius/Idle/Idle1.png
 Sprites/Characters/Aurelius/Idle/Idle2.png
