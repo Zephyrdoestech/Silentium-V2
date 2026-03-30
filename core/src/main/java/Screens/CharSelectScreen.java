@@ -84,19 +84,6 @@ public class CharSelectScreen extends BaseScreen {
             float   scale   = sel ? 100f : 80f;
             float   xOff    = sel ? -10f : 0f;
 
-            // Pulsing glow behind selected portrait
-            if (sel) {
-                game.batch.end();
-                game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-                game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                float glow = (MathUtils.sin(bounceTime * 4f) + 1f) / 2f;
-                game.shapeRenderer.setColor(0.6f, 0.4f + glow * 0.3f, 0.9f, 0.35f);
-                game.shapeRenderer.ellipse(PX[i] + xOff - 15f, 205f + bounceY, scale + 30f, scale + 30f);
-                game.shapeRenderer.end();
-                game.batch.setProjectionMatrix(game.uiCamera.combined);
-                game.batch.begin();
-            }
-
             game.batch.draw(texs[i], PX[i] + xOff, 220f + bounceY, scale, scale);
 
             game.assets.font.setColor(sel ? Color.YELLOW : Color.WHITE);
