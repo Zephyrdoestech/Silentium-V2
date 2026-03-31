@@ -12,13 +12,13 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Owns and manages the lifetime of every shared asset in the game.
- * Create once in Main.create(), dispose in Main.dispose().
- *
- * Screens read assets via game.assets.* — they never load or dispose shared assets themselves.
- */
 public class Assets implements Disposable {
+    //Buttons
+    public final Texture startBtnTex;
+    public final Texture tutorialBtnTex;
+    public final Texture storyBtnTex;
+    public final Texture creditsBtnTex;
+    public final Texture exitBtnTex;
 
     // ── Fonts ──────────────────────────────────────────────────────────────────
     public final BitmapFont font;       // body text (scale 1.5)
@@ -68,11 +68,17 @@ public class Assets implements Disposable {
 
         // Static textures
         titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Town_Of_Echoes.png");
+        townTex        = new Texture("Background/Map/Dungeon.png");
         townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         sonaraTex   = new Texture("sonara.png");
         lyronTex    = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
+
+        startBtnTex = new Texture("UI/start_btn.png");
+        tutorialBtnTex = new Texture("UI/tutorial_btn.png");
+        storyBtnTex = new Texture("UI/story_btn.png");
+        creditsBtnTex = new Texture("UI/credits_btn.png");
+        exitBtnTex = new Texture("UI/exit_btn.png");
 
         story1Tex = new Texture("Background/Story/story_panel_1.png");
         story2Tex = new Texture("Background/Story/story_panel_2.png");
@@ -215,6 +221,11 @@ public class Assets implements Disposable {
         titleScreenTex.dispose(); townTex.dispose();
         sonaraTex.dispose(); lyronTex.dispose(); aureliusTex.dispose();
         darknessOverlay.dispose();
+        startBtnTex.dispose();
+        tutorialBtnTex.dispose();
+        storyBtnTex.dispose();
+        creditsBtnTex.dispose();
+        exitBtnTex.dispose();
         story1Tex.dispose();
         story2Tex.dispose();
         story3Tex.dispose();

@@ -55,7 +55,7 @@ public class GameContext {
     public CombatState combatState;
 
     public final char[] noteBuffer  = new char[3];
-    public       int    noteCount   = 0;
+    public int noteCount = 0;
     public final int[]  noteDamages = new int[3];
 
     public float  resultTimer       = 0f;
