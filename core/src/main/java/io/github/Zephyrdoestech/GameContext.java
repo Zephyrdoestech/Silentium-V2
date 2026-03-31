@@ -3,7 +3,10 @@ package io.github.Zephyrdoestech;
 import Entities.Character;
 import Entities.Enemy;
 import Entities.MapCharacter;
-import Mechanics.Room;
+import Mechanics.CombatSystem.Note;
+import Mechanics.CombatSystem.Chord;
+import Mechanics.CombatSystem.Metronome;
+import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.audio.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +33,15 @@ public class GameContext {
         VICTORY, DEFEAT, CHARACTER_POSTCOMBAT_LINE
     }
 
+    public enum ChordStates{
+        CMAJOR, DMINOR, EMINOR, FMAJOR, GMAJOR, AMINOR, BDIM, NONE
+    }
+
     // ── Character / player state ───────────────────────────────────────────────
 
     public CharacterType  selectedCharacter;
-    public Character activeCharacterStats;  // HP, shield, level, buffs
-    public MapCharacter player;                // world-space position
+    public Character      activeCharacterStats;  // HP, shield, level, buffs
+    public MapCharacter   player;                // world-space position
     public PlayerState    playerState  = PlayerState.IDLE;
     public Facing         facing       = Facing.RIGHT;
     public float          stateTime    = 0f;     // drives animation clock
@@ -54,9 +61,9 @@ public class GameContext {
     public Enemy       currentEnemy;
     public CombatState combatState;
 
-    public final char[] noteBuffer  = new char[3];
-    public       int    noteCount   = 0;
-    public final int[]  noteDamages = new int[3];
+    public final Note noteHandler = new Note();
+    public final Chord chordSystem = new Chord();
+    public final Metronome metronome = new Metronome();
 
     public float  resultTimer       = 0f;
     public int    playerDamageDealt = 0;

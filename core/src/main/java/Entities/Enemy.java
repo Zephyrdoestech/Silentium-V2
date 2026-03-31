@@ -28,7 +28,7 @@ public class Enemy {
     // ── Fields ────────────────────────────────────────────────────────────────
 
     private final String   name;
-    private final int      maxHp;
+    private int      maxHp;
     private       int      currentHp;
     private final Attack[] attacks;
 
@@ -51,6 +51,12 @@ public class Enemy {
         this.attacks  = attacks;
     }
 
+    // ── Setters ───────────────────────────────────────────────────────────────
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+        currentHp = maxHp;
+    }
     // ── Getters ───────────────────────────────────────────────────────────────
 
     public String   getName()      { return name; }

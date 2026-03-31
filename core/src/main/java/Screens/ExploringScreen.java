@@ -1,6 +1,6 @@
 package Screens;
 
-import Mechanics.Room;
+import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -92,7 +92,6 @@ public class ExploringScreen extends BaseScreen {
 
         // Map
         game.batch.draw(game.assets.townTex, 0, 0, GameContext.MAP_SIZE, GameContext.MAP_SIZE);
-
         game.batch.end();
 
         // Debug room outlines + enemy rects (ShapeRenderer)
@@ -179,7 +178,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
                 game.ctx.currentEnemy = e;
-                game.ctx.noteCount    = 0;
+                game.ctx.noteHandler.noteCount    = 0;
                 game.ctx.combatLog    = "A " + e.getName() + " appears! Enter 3 notes to attack.";
                 game.ctx.combatState  = GameContext.CombatState.ATTACK;
                 game.setScreen(new CombatScreen(game));
