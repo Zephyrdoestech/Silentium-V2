@@ -33,6 +33,7 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        game.gameViewport.apply();
         cursorTime += delta;
         updateFade(delta);
 
@@ -80,7 +81,10 @@ public class MainMenuScreen extends BaseScreen {
 
     private void handleSelection() {
         switch (selection) {
-            case 0: game.setScreen(new CharSelectScreen(game));  break;
+            case 0:
+                game.assets.titleBGM.stop();
+                game.setScreen(new IntroScreen(game));
+                break;
             case 1: game.setScreen(new HowToPlayScreen(game));   break;
             case 2: game.setScreen(new StoryScreen(game));       break;
             case 3: game.setScreen(new CreditsScreen(game));     break;

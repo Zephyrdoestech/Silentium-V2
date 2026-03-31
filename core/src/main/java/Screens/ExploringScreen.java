@@ -15,6 +15,8 @@ import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -33,6 +35,7 @@ import java.util.Random;
 public class ExploringScreen extends BaseScreen {
 
     private static final Random RNG = new Random();
+    private List<Rectangle> walkableZones = new ArrayList<>();
 
     public ExploringScreen(Main game) { super(game); }
 
@@ -46,43 +49,100 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void initMap() {
-        float half = GameContext.MAP_SIZE / 2f - GameContext.CHAR_SIZE / 2f;
-        game.ctx.player      = new MapCharacter(half, half);
         game.ctx.playerState = GameContext.PlayerState.IDLE;
         game.ctx.facing      = GameContext.Facing.RIGHT;
         spawnEnemies();
+        initWalkable();
+
+        List<Room> emptyRooms = new ArrayList<>();
+        for (Room r : game.ctx.rooms)
+            if (r.getEnemies().isEmpty())
+                emptyRooms.add(r);
+
+        Room spawnRoom = emptyRooms.get(RNG.nextInt(emptyRooms.size()));
+        float x = spawnRoom.getBounds().x + (spawnRoom.getBounds().width  - GameContext.CHAR_SIZE) / 2f;
+        float y = spawnRoom.getBounds().y + (spawnRoom.getBounds().height - GameContext.CHAR_SIZE) / 2f;
+
+        game.ctx.player = new MapCharacter(x, y);
     }
 
     private void spawnEnemies() {
         game.ctx.mapEnemies = new ArrayList<>();
         game.ctx.rooms      = new ArrayList<>();
 
-        game.ctx.rooms.add(new Room(96f,   64f,   320f, 256f));
-        game.ctx.rooms.add(new Room(96f,   544f,  320f, 256f));
-        game.ctx.rooms.add(new Room(1088f, 96f,   448f, 384f));
-        game.ctx.rooms.add(new Room(1216f, 1024f, 384f, 448f));
-        game.ctx.rooms.add(new Room(768f,  512f,  384f, 384f));
+        // 1st row
+        game.ctx.rooms.add(new Room(65f,   1770f, 200f, 200f));
+        game.ctx.rooms.add(new Room(637f,  1770f, 200f, 200f));
+        game.ctx.rooms.add(new Room(1215f, 1770f, 200f, 200f));
+        game.ctx.rooms.add(new Room(1787f, 1770f, 200f, 200f));
+        // 2nd row
+        game.ctx.rooms.add(new Room(65f,   1195f, 200f, 200f));
+        game.ctx.rooms.add(new Room(637f,  1195f, 200f, 200f));
+        game.ctx.rooms.add(new Room(1215f, 1195f, 200f, 200f));
+        game.ctx.rooms.add(new Room(1787f, 1195f, 200f, 200f));
+        // 3rd row
+        game.ctx.rooms.add(new Room(65f,   623f,  200f, 200f));
+        game.ctx.rooms.add(new Room(637f,  623f,  200f, 200f));
+        game.ctx.rooms.add(new Room(1215f, 623f,  200f, 200f));
+        game.ctx.rooms.add(new Room(1787f, 623f,  200f, 200f));
+        // 4th row
+        game.ctx.rooms.add(new Room(65f,   45f,   200f, 200f));
+        game.ctx.rooms.add(new Room(637f,  45f,   200f, 200f));
+        game.ctx.rooms.add(new Room(1215f, 45f,   200f, 200f));
+        game.ctx.rooms.add(new Room(1787f, 45f,   200f, 200f));
 
-        for (Room room : game.ctx.rooms) {
-            if (RNG.nextInt(100) < 70) {
-                int count = 1 + RNG.nextInt(3);
-                for (int i = 0; i < count; i++) {
-                    float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
-                    float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
-                    Enemy e = RNG.nextBoolean()
-                        ? Enemy.fleshFeeder(x, y)
-                        : Enemy.andrewellers(x, y);
-                    room.addEnemy(e);
-                    game.ctx.mapEnemies.add(e);
-                }
-            }
+        int totalEnemies = 5 + RNG.nextInt(4); // 5, 6, 7, or 8
+
+        List<Room> shuffled = new ArrayList<>(game.ctx.rooms);
+        Collections.shuffle(shuffled, RNG);
+
+        for (int i = 0; i < totalEnemies; i++) {
+            Room room = shuffled.get(i);
+            float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
+            float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
+            Enemy e = RNG.nextBoolean()
+                ? Enemy.fleshFeeder(x, y)
+                : Enemy.andrewellers(x, y);
+            room.addEnemy(e);
+            game.ctx.mapEnemies.add(e);
         }
     }
+
+    private void initWalkable() {
+        walkableZones.clear();
+
+        for (Room r : game.ctx.rooms)
+            walkableZones.add(r.getBounds());
+
+        //horizontal
+        walkableZones.add(new Rectangle(65f,  140f, 1900f, 30f));
+        walkableZones.add(new Rectangle(65f,  710f, 1900f, 30f));
+        walkableZones.add(new Rectangle(65f,  1290f, 1900f, 30f));
+        walkableZones.add(new Rectangle(65f,  1870f, 1900f, 30f));
+        //vertical
+        walkableZones.add(new Rectangle(150f,  65f, 20f, 1900f));
+        walkableZones.add(new Rectangle(725f,  65f, 20f, 1900f));
+        walkableZones.add(new Rectangle(1300f,  65f, 20f, 1900f));
+        walkableZones.add(new Rectangle(1872f,  65f, 20f, 1900f));
+
+    }
+
+    private boolean isInWalkableZone(float x, float y) {
+        Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
+        for (Rectangle zone : walkableZones)
+            if (zone.overlaps(playerRect))
+                return true;
+        return false;
+    }
+
 
     // ── Render ────────────────────────────────────────────────────────────────
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+
         game.ctx.stateTime += delta;
         handleMovement(delta);
         updateCamera();
@@ -94,13 +154,16 @@ public class ExploringScreen extends BaseScreen {
         game.batch.draw(game.assets.townTex, 0, 0, GameContext.MAP_SIZE, GameContext.MAP_SIZE);
         game.batch.end();
 
-        // Debug room outlines + enemy rects (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-        game.shapeRenderer.end();
+        // Debug room outlines + enemy rects (ShapeRenderer)
+//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        game.shapeRenderer.setColor(Color.GREEN);
+//        for (Room r : game.ctx.rooms)
+//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+//        game.shapeRenderer.setColor(Color.YELLOW);
+//        for (Rectangle h : walkableZones)
+//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+//        game.shapeRenderer.end();
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
@@ -162,6 +225,11 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.player.right(move);
             game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
             game.ctx.facing = GameContext.Facing.RIGHT;
+        }
+
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
+            game.ctx.player.setX(prevX);
+            game.ctx.player.setY(prevY);
         }
 
         float S = GameContext.MAP_SIZE, C = GameContext.CHAR_SIZE;
@@ -294,7 +362,10 @@ public class ExploringScreen extends BaseScreen {
         game.batch.end();
     }
 
-    @Override public void resize(int w, int h) {}
+    @Override public void resize(int w, int h) {
+        game.gameViewport.update(w, h, true);
+        game.uiViewport.update(w, h, true);
+    }
     @Override public void hide()    {}
     @Override public void dispose() {}
 }

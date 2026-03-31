@@ -2,6 +2,7 @@
 Audio/banjo.wav
 Audio/flute.wav
 Audio/harp.wav
+Audio/title_music.wav
 Aurelius/idle1.png
 Aurelius/idle2.png
 Aurelius/idle3.png
@@ -12,7 +13,9 @@ Aurelius/left3.png
 Aurelius/rIght1.png
 Aurelius/right2.png
 Aurelius/right3.png
+Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Dungeon.png
+Background/Map/Town_Of_Echoes.png
 Background/Title_Screen/Title_Screen_Placeholder.png
 Sprites/Characters/Aurelius/Idle/Idle1.png
 Sprites/Characters/Aurelius/Idle/Idle2.png

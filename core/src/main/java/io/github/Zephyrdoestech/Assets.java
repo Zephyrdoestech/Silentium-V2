@@ -34,6 +34,11 @@ public class Assets implements Disposable {
     public final Texture darknessOverlay; // radial light gradient
     public final Texture[] noteTextures;  // 4 pixmap-drawn note shapes
 
+    public final Texture story1Tex;
+    public final Texture story2Tex;
+    public final Texture story3Tex;
+    public final Texture story4Tex;
+
     // ── Character animations ───────────────────────────────────────────────────
     public final Animation<TextureRegion> aureliusIdleRight, aureliusIdleLeft;
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
@@ -48,6 +53,7 @@ public class Assets implements Disposable {
     public final Music sonaraTheme;    // Audio/banjo.wav
     public final Music aureliusTheme;  // Audio/flute.wav
     public final Music lyronTheme;     // Audio/harp.wav
+    public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures
     private final List<Texture> animationTextures = new ArrayList<>();
@@ -62,11 +68,16 @@ public class Assets implements Disposable {
 
         // Static textures
         titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Dungeon.png");
+        townTex        = new Texture("Background/Map/Town_Of_Echoes.png");
         townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         sonaraTex   = new Texture("sonara.png");
         lyronTex    = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
+
+        story1Tex = new Texture("Background/Story/story_panel_1.png");
+        story2Tex = new Texture("Background/Story/story_panel_2.png");
+        story3Tex = new Texture("Background/Story/story_panel_3.png");
+        story4Tex = new Texture("Background/Story/story_panel_4.png");
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -94,9 +105,12 @@ public class Assets implements Disposable {
         sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
         aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
         lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
+        titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/title_music.wav"));
+
         sonaraTheme.setLooping(true);
         aureliusTheme.setLooping(true);
         lyronTheme.setLooping(true);
+        titleBGM.setLooping(true);
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -201,8 +215,12 @@ public class Assets implements Disposable {
         titleScreenTex.dispose(); townTex.dispose();
         sonaraTex.dispose(); lyronTex.dispose(); aureliusTex.dispose();
         darknessOverlay.dispose();
+        story1Tex.dispose();
+        story2Tex.dispose();
+        story3Tex.dispose();
+        story4Tex.dispose();
         for (Texture t : noteTextures) t.dispose();
         for (Texture t : animationTextures) t.dispose();
-        sonaraTheme.dispose(); aureliusTheme.dispose(); lyronTheme.dispose();
+        sonaraTheme.dispose(); aureliusTheme.dispose(); lyronTheme.dispose(); titleBGM.dispose();
     }
 }

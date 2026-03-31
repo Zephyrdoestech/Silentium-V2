@@ -48,9 +48,14 @@ public class CharSelectScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+
         bounceTime += delta;
         updateFade(delta);
         handleInput();
+
+        if (game.getScreen() != this) return;
 
         // Audio — plays only when selection changes
         game.ctx.playTheme(index, game.assets);
@@ -78,19 +83,6 @@ public class CharSelectScreen extends BaseScreen {
             float   bounceY = sel ? MathUtils.sin(bounceTime * 5f) * 8f : 0f;
             float   scale   = sel ? 100f : 80f;
             float   xOff    = sel ? -10f : 0f;
-
-            // Pulsing glow behind selected portrait
-            if (sel) {
-                game.batch.end();
-                game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-                game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                float glow = (MathUtils.sin(bounceTime * 4f) + 1f) / 2f;
-                game.shapeRenderer.setColor(0.6f, 0.4f + glow * 0.3f, 0.9f, 0.35f);
-                game.shapeRenderer.ellipse(PX[i] + xOff - 15f, 205f + bounceY, scale + 30f, scale + 30f);
-                game.shapeRenderer.end();
-                game.batch.setProjectionMatrix(game.uiCamera.combined);
-                game.batch.begin();
-            }
 
             game.batch.draw(texs[i], PX[i] + xOff, 220f + bounceY, scale, scale);
 
@@ -132,6 +124,7 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void confirmSelection() {
+        game.assets.titleBGM.stop();
         game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {
@@ -142,7 +135,15 @@ public class CharSelectScreen extends BaseScreen {
         game.setScreen(new ExploringScreen(game));
     }
 
-    @Override public void resize(int w, int h) {}
-    @Override public void hide()    { clearNotes(); }
+    @Override public void resize(int w, int h) {
+        game.uiViewport.update(w, h, true);
+    }
+    @Override public void hide()    {
+        clearNotes();
+        if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
+            game.assets.titleBGM.stop();
+        }
+        game.ctx.stopTheme();
+    }
     @Override public void dispose() {}
 }
