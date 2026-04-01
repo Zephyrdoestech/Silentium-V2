@@ -40,9 +40,9 @@ public class TitleScreen extends BaseScreen {
 
         drawFloatingNotes(delta);
 
-        // Prompt
         game.assets.font.setColor(new Color(0.85f, 0.85f, 0.85f, 0.9f));
-        game.assets.font.draw(game.batch, "Press SPACE to continue",290, 60);
+        game.assets.font.draw(game.batch, "Press SPACE to continue",
+            290, 60);
         game.assets.font.setColor(Color.WHITE);
 
         game.batch.end();

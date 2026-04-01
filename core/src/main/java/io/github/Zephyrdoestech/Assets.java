@@ -39,6 +39,10 @@ public class Assets implements Disposable {
     public final Texture story3Tex;
     public final Texture story4Tex;
 
+    //Character Selectin Animation
+    public final Animation<TextureRegion> sonaraSelectAnim;
+    public final Animation<TextureRegion> aureliusSelectAnim;
+
     // ── Character animations ───────────────────────────────────────────────────
     public final Animation<TextureRegion> aureliusIdleRight, aureliusIdleLeft;
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
@@ -87,6 +91,10 @@ public class Assets implements Disposable {
         story2Tex = new Texture("Background/Story/story_panel_2.png");
         story3Tex = new Texture("Background/Story/story_panel_3.png");
         story4Tex = new Texture("Background/Story/story_panel_4.png");
+
+        // Load the 11-frame selection animations!
+        sonaraSelectAnim   = loadAnim("Sonara/Select",   "sonaraSelect",   11, 0.1f);
+        aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
 
         darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
