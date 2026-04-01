@@ -135,4 +135,13 @@ public class Enemy {
             new Attack("Ebon Symphony of Consuming Night",40, 125)
         );
     }
+
+    public static Enemy darryllion(float x, float y) {
+        // Lowered HP to 400 for a normal mob
+        return new Enemy("Darryllion", 400, x, y,
+            new Attack("Crimson Horn Pierce", 15,  30),
+            new Attack("Emerald Flare",       20,  40),
+            new Attack("Savage Bite",         25,  50)
+        );
+    }
 }

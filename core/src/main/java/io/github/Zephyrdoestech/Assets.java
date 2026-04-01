@@ -58,6 +58,9 @@ public class Assets implements Disposable {
     // Internal list so dispose() can clean up animation textures
     private final List<Texture> animationTextures = new ArrayList<>();
 
+    // --- Enemy Animations ---
+    public final Animation<TextureRegion> darryllionIdle;
+
     // ── Constructor ────────────────────────────────────────────────────────────
 
     public Assets() {
@@ -84,6 +87,8 @@ public class Assets implements Disposable {
         story2Tex = new Texture("Background/Story/story_panel_2.png");
         story3Tex = new Texture("Background/Story/story_panel_3.png");
         story4Tex = new Texture("Background/Story/story_panel_4.png");
+
+        darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);

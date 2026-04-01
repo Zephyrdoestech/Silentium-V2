@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.badlogicgames.box2dlights:box2dlights:1.5" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.badlogicgames.box2dlights" artifactId="box2dlights" version="1.5" baseVersion="1.5" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.box2dlights/box2dlights/1.5/6902dbcd250c95a27973aa24a147a95b3828d348/box2dlights-1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

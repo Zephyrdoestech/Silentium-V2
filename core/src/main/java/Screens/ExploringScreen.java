@@ -69,9 +69,17 @@ public class ExploringScreen extends BaseScreen {
                 for (int i = 0; i < count; i++) {
                     float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
                     float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
-                    Enemy e = RNG.nextBoolean()
-                        ? Enemy.fleshFeeder(x, y)
-                        : Enemy.andrewellers(x, y);
+                    Enemy e;
+                    int mobType = RNG.nextInt(3); // Randomly picks 0, 1, or 2
+
+                    if (mobType == 0) {
+                        e = Enemy.fleshFeeder(x, y);
+                    } else if (mobType == 1) {
+                        e = Enemy.andrewellers(x, y);
+                    } else {
+                        e = Enemy.darryllion(x, y); // Darryllion enters the fray!
+                    }
+
                     room.addEnemy(e);
                     game.ctx.mapEnemies.add(e);
                 }
@@ -98,31 +106,49 @@ public class ExploringScreen extends BaseScreen {
 
         game.batch.end();
 
-        // Debug room outlines + enemy rects (ShapeRenderer)
+        // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        game.shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
         for (Room r : game.ctx.rooms)
             game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
         game.shapeRenderer.end();
 
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
-        for (Enemy e : game.ctx.mapEnemies)
-            if (!e.isDefeated())
-                game.shapeRenderer.rect(e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        game.shapeRenderer.end();
+        // --- DELETED THE RED BOX SHAPERENDERER HERE ---
 
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
 
-        // Enemy name labels
-        game.assets.font.setColor(Color.RED);
-        for (Enemy e : game.ctx.mapEnemies)
-            if (!e.isDefeated())
+        // --- DRAW ENEMIES (SPRITES + NAMES) ---
+        for (Enemy e : game.ctx.mapEnemies) {
+            if (!e.isDefeated()) {
+
+                // 1. Pick the right animation frame based on the enemy's name
+                com.badlogic.gdx.graphics.g2d.TextureRegion currentFrame = null;
+
+                if (e.getName().equals("Darryllion")) {
+                    currentFrame = game.assets.darryllionIdle.getKeyFrame(game.ctx.stateTime, true);
+                }
+                else if (e.getName().equals("Flesh Feeder")) {
+                    // TODO: Replace with Flesh Feeder animation when you make it!
+                    // Example: currentFrame = game.assets.fleshFeederIdle.getKeyFrame(game.ctx.stateTime, true);
+                }
+                else if (e.getName().equals("Andrewellers")) {
+                    // TODO: Replace with Andrewellers animation
+                }
+
+                // 2. Draw the sprite! (We check != null just in case you haven't drawn the other monsters yet)
+                if (currentFrame != null) {
+                    game.batch.draw(currentFrame, e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
+                }
+
+                // 3. Draw Enemy name labels right above their head
+                game.assets.font.setColor(Color.RED);
                 game.assets.font.draw(game.batch, e.getName(),
                     e.getX() - 10, e.getY() + GameContext.CHAR_SIZE + 18);
-        game.assets.font.setColor(Color.WHITE);
+            }
+        }
+        game.assets.font.setColor(Color.WHITE); // Reset font color
 
         // Player sprite
         drawPlayerSprite();
