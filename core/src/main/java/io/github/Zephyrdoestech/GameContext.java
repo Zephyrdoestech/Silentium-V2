@@ -3,7 +3,10 @@ package io.github.Zephyrdoestech;
 import Entities.Character;
 import Entities.Enemy;
 import Entities.MapCharacter;
-import Mechanics.Room;
+import Mechanics.CombatSystem.Note;
+import Mechanics.CombatSystem.Chord;
+import Mechanics.CombatSystem.Metronome;
+import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.audio.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +26,28 @@ public class GameContext {
     public enum Facing { LEFT, RIGHT }
 
     public enum CombatState {
-        BATTLE_SCREEN, ENEMY_INTRODUCTION, TUTORIAL, CHARACTER_PRECOMBAT_LINE,
-        TURN_MENU, ATTACK, USE_SKILL, OPEN_INVENTORY, USE_ITEM,
-        DISPLAY_STATS, DISPLAY_ATTACK_GUIDE, DISPLAY_CHORDS,
-        DISPLAY_PLAYER_DAMAGE, ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
-        VICTORY, DEFEAT, CHARACTER_POSTCOMBAT_LINE
+        BATTLE_SCREEN, TUTORIAL,
+        ENEMY_INTRODUCTION,
+        TURN_MENU, ATTACK, ATTACK_FEEDBACK,
+        USE_SKILL, OPEN_INVENTORY, USE_ITEM,
+        DISPLAY_CHORD_EFFECT, DISPLAY_PLAYER_DAMAGE, ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
+        CHARACTER_POSTCOMBAT_LINE,
+        VICTORY, DEFEAT, EXIT
+    }
+
+    public enum MapName{
+        TOWN_OF_ECHOES, SILENT_CAVERNS, ABYSS_OF_DISSONANCE
+    }
+
+    public enum ChordStates{
+        CMAJOR, DMINOR, EMINOR, FMAJOR, GMAJOR, AMINOR, BDIM, NONE
     }
 
     // ── Character / player state ───────────────────────────────────────────────
 
     public CharacterType  selectedCharacter;
-    public Character activeCharacterStats;  // HP, shield, level, buffs
-    public MapCharacter player;                // world-space position
+    public Character      activeCharacterStats;  // HP, shield, level, buffs
+    public MapCharacter   player;                // world-space position
     public PlayerState    playerState  = PlayerState.IDLE;
     public Facing         facing       = Facing.RIGHT;
     public float          stateTime    = 0f;     // drives animation clock
@@ -46,17 +59,18 @@ public class GameContext {
 
     // Map dimensions — match your Dungeon.png pixel size
     public static final float MAP_SIZE  = 2048f;
-    public static final float CHAR_SIZE = 64f;
+    public static final float CHAR_SIZE = 32f;
     public static final float SPEED     = 150f;
 
     // ── Combat state ──────────────────────────────────────────────────────────
 
     public Enemy       currentEnemy;
     public CombatState combatState;
+    public MapName mapName = MapName.TOWN_OF_ECHOES; // Set default map name
 
-    public final char[] noteBuffer  = new char[3];
-    public int noteCount = 0;
-    public final int[]  noteDamages = new int[3];
+    public final Note noteHandler = new Note();
+    public final Chord chordSystem = new Chord();
+    public final Metronome metronome = new Metronome();
 
     public float  resultTimer       = 0f;
     public int    playerDamageDealt = 0;

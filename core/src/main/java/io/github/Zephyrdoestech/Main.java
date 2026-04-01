@@ -2,6 +2,7 @@ package io.github.Zephyrdoestech;
 
 import Screens.TitleScreen;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -33,6 +34,10 @@ public class Main extends Game {
     public Assets      assets;
     public GameContext ctx;
 
+    public GlyphLayout glyphLayout;
+
+
+
     @Override
     public void create() {
         batch         = new SpriteBatch();
@@ -50,6 +55,7 @@ public class Main extends Game {
         assets = new Assets();
         ctx    = new GameContext();
 
+        glyphLayout = new GlyphLayout();
         setScreen(new TitleScreen(this));
     }
 

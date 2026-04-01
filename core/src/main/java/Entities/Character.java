@@ -207,6 +207,22 @@ public class Character {
 
     // ─── Active Skill ─────────────────────────────────────────────────────────
 
+    public int activeSkillEffect(int damage) {
+        switch (name) {
+            case "Sonara":
+                return damage + 1; // Adds 1 point to initial damage
+            default:
+                return damage;
+        }
+    }
 
+    public boolean activeSkillReRoll() {
+        switch (name) {
+            case "Lyron":
+                return true; // Re-roll notes
+            default:
+                return false;
+        }
+    }
 
 }

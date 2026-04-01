@@ -19,6 +19,10 @@ import io.github.Zephyrdoestech.Main;
  */
 public class MainMenuScreen extends BaseScreen {
 
+    private static final String[] OPTIONS = {
+        "START GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
+    };
+
     private int   selection  = 0;
     private float cursorTime = 0f;
 
@@ -157,8 +161,8 @@ public class MainMenuScreen extends BaseScreen {
         switch (selection) {
             case 0: game.setScreen(new IntroScreen(game));       break;
             case 1: game.setScreen(new HowToPlayScreen(game));   break;
-            case 2: game.setScreen(new StoryScreen(game));       break;
-            case 3: game.setScreen(new CreditsScreen(game));     break;
+            case 2: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Story
+            case 3: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Credits
             case 4: Gdx.app.exit();                              break;
         }
     }
