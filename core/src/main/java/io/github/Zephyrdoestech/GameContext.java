@@ -26,11 +26,17 @@ public class GameContext {
     public enum Facing { LEFT, RIGHT }
 
     public enum CombatState {
-        BATTLE_SCREEN, ENEMY_INTRODUCTION, TUTORIAL, CHARACTER_PRECOMBAT_LINE,
-        TURN_MENU, ATTACK, USE_SKILL, OPEN_INVENTORY, USE_ITEM,
-        DISPLAY_STATS, DISPLAY_ATTACK_GUIDE, DISPLAY_CHORDS,
-        DISPLAY_PLAYER_DAMAGE, ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
-        VICTORY, DEFEAT, CHARACTER_POSTCOMBAT_LINE
+        BATTLE_SCREEN, TUTORIAL,
+        ENEMY_INTRODUCTION,
+        TURN_MENU, ATTACK, ATTACK_FEEDBACK,
+        USE_SKILL, OPEN_INVENTORY, USE_ITEM,
+        DISPLAY_CHORD_EFFECT, DISPLAY_PLAYER_DAMAGE, ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
+        CHARACTER_POSTCOMBAT_LINE,
+        VICTORY, DEFEAT, EXIT
+    }
+
+    public enum MapName{
+        TOWN_OF_ECHOES, SILENT_CAVERNS, ABYSS_OF_DISSONANCE
     }
 
     public enum ChordStates{
@@ -60,6 +66,7 @@ public class GameContext {
 
     public Enemy       currentEnemy;
     public CombatState combatState;
+    public MapName mapName = MapName.TOWN_OF_ECHOES; // Set default map name
 
     public final Note noteHandler = new Note();
     public final Chord chordSystem = new Chord();

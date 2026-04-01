@@ -102,8 +102,8 @@ public class Enemy {
         );
     }
 
-    public static Enemy andrewellers(float x, float y) {
-        return new Enemy("Andrewellers", 350, x, y,
+    public static Enemy darrylion(float x, float y) {
+        return new Enemy("Darrylion", 350, x, y,
             new Attack("Luminous Gaze",     10, 20),
             new Attack("Deafening Screech", 15, 25),
             new Attack("Shatter Cry",       20, 35)
@@ -111,7 +111,7 @@ public class Enemy {
     }
 
     public static Enemy aryzachnid(float x, float y) {
-        return new Enemy("Aryzachnid", 500, x, y,
+        return new Enemy("Gobninil", 500, x, y,
             new Attack("Binding Webs",     20, 40),
             new Attack("Paralyzing Fangs", 25, 50),
             new Attack("Wrapup",           50, 75)
@@ -126,8 +126,8 @@ public class Enemy {
         );
     }
 
-    public static Enemy abarquez(float x, float y) {
-        return new Enemy("Abarquez the Abyss Guardian", 1000, x, y,
+    public static Enemy labagoliath(float x, float y) {
+        return new Enemy("Labagoliath the Void Shaker", 1000, x, y,
             new Attack("Defensive Stance", 10, 20),
             new Attack("Hammer Swipe",     25, 55),
             new Attack("Hammer Strikes",   30, 65)

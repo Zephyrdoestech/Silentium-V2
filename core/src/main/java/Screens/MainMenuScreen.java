@@ -83,11 +83,11 @@ public class MainMenuScreen extends BaseScreen {
         switch (selection) {
             case 0:
                 game.assets.titleBGM.stop();
-                game.setScreen(new IntroScreen(game));
+                game.setScreen(new CharSelectScreen(game));
                 break;
             case 1: game.setScreen(new HowToPlayScreen(game));   break;
-            case 2: game.setScreen(new StoryScreen(game));       break;
-            case 3: game.setScreen(new CreditsScreen(game));     break;
+            case 2: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Story
+            case 3: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Credits
             case 4: Gdx.app.exit();                              break;
         }
     }

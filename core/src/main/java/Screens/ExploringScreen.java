@@ -102,7 +102,7 @@ public class ExploringScreen extends BaseScreen {
             float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
             Enemy e = RNG.nextBoolean()
                 ? Enemy.fleshFeeder(x, y)
-                : Enemy.andrewellers(x, y);
+                : Enemy.darrylion(x, y);
             room.addEnemy(e);
             game.ctx.mapEnemies.add(e);
         }
@@ -248,7 +248,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.currentEnemy = e;
                 game.ctx.noteHandler.noteCount    = 0;
                 game.ctx.combatLog    = "A " + e.getName() + " appears! Enter 3 notes to attack.";
-                game.ctx.combatState  = GameContext.CombatState.ATTACK;
+                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
             }

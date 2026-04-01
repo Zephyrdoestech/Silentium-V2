@@ -120,4 +120,26 @@ public class Chord {
                 return false;
         }
     }
+
+
+    public String chordDescription(String chord) {
+        switch (chord) {
+            case "CMAJOR":
+                return "C Major: Heals 20% of max HP.";
+            case "DMINOR":
+                return "D Minor: Increases damage by 20%.";
+            case "EMINOR":
+                return "E Minor: Heals 10% of max HP and increases damage by 10%.";
+            case "FMAJOR":
+                return "F Major: Gains 25 shield.";
+            case "GMAJOR":
+                return "G Major: Heals 15% of max HP and gains 15 shield.";
+            case "AMINOR":
+                return "A Minor: Gains 35 shield.";
+            case "BDIM":
+                return "B Diminished: Increases damage by 30% but loses 10% of max HP.";
+            default:
+                return "Unknown chord.";
+        }
+    }
 }
