@@ -44,6 +44,8 @@ public class ExploringScreen extends BaseScreen {
         // Only initialise the map once; re-entering from combat keeps the existing state
         if (game.ctx.player == null) {
             initMap();
+        }else {
+            initWalkable(); // ← rebuild zones on the new instance
         }
         game.ctx.stateTime = 0f;
     }
