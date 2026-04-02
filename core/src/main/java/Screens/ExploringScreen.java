@@ -1,6 +1,5 @@
 package Screens;
 
-import Mechanics.Room;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import Mechanics.MapTraversalSystem.Room;
 
 /**
  * The overworld map screen.
@@ -51,7 +51,10 @@ public class ExploringScreen extends BaseScreen {
     private void initMap() {
         game.ctx.playerState = GameContext.PlayerState.IDLE;
         game.ctx.facing      = GameContext.Facing.RIGHT;
+
+        // --- ADD THIS ONE LINE TO BUILD THE ROOMS AND MONSTERS! ---
         spawnEnemies();
+
         initWalkable();
 
         List<Room> emptyRooms = new ArrayList<>();
@@ -129,33 +132,13 @@ public class ExploringScreen extends BaseScreen {
 
     private boolean isInWalkableZone(float x, float y) {
         Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        for (Rectangle zone : walkableZones)
-            if (zone.overlaps(playerRect))
+        for (Rectangle zone : walkableZones) {
+            if (zone.overlaps(playerRect)) {
                 return true;
-        return false;
-        for (Room room : game.ctx.rooms) {
-            if (RNG.nextInt(100) < 70) {
-                int count = 1 + RNG.nextInt(3);
-                for (int i = 0; i < count; i++) {
-                    float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
-                    float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
-                    Enemy e;
-                    int mobType = RNG.nextInt(3); // Randomly picks 0, 1, or 2
-
-                    if (mobType == 0) {
-                        e = Enemy.fleshFeeder(x, y);
-                    } else if (mobType == 1) {
-                        e = Enemy.andrewellers(x, y);
-                    } else {
-                        e = Enemy.darryllion(x, y); // Darryllion enters the fray!
-                    }
-
-                    room.addEnemy(e);
-                    game.ctx.mapEnemies.add(e);
-                }
             }
         }
-    }
+        return false;
+    } // <--- This bracket closes the zone method!
 
     // ── Render ────────────────────────────────────────────────────────────────
 

@@ -110,6 +110,14 @@ public class Enemy {
         );
     }
 
+    public static Enemy andrewellers(float x, float y) {
+        return new Enemy("Andrewellers", 350, x, y,
+            new Attack("Luminous Gaze",     10, 20),
+            new Attack("Deafening Screech", 15, 25),
+            new Attack("Shatter Cry",       20, 35)
+        );
+    }
+
     public static Enemy aryzachnid(float x, float y) {
         return new Enemy("Gobninil", 500, x, y,
             new Attack("Binding Webs",     20, 40),
@@ -139,15 +147,6 @@ public class Enemy {
             new Attack("Abyssal Echo Dirge",              20,  75),
             new Attack("Dirge of the Shattered Moon",     30, 100),
             new Attack("Ebon Symphony of Consuming Night",40, 125)
-        );
-    }
-
-    public static Enemy darryllion(float x, float y) {
-        // Lowered HP to 400 for a normal mob
-        return new Enemy("Darryllion", 400, x, y,
-            new Attack("Crimson Horn Pierce", 15,  30),
-            new Attack("Emerald Flare",       20,  40),
-            new Attack("Savage Bite",         25,  50)
         );
     }
 }

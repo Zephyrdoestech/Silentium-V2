@@ -43,12 +43,6 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> sonaraSelectAnim;
     public final Animation<TextureRegion> aureliusSelectAnim;
 
-    // ── Character animations ───────────────────────────────────────────────────
-    public final Texture story1Tex;
-    public final Texture story2Tex;
-    public final Texture story3Tex;
-    public final Texture story4Tex;
-
     // ── Character Exploration animations ───────────────────────────────────────────────────
     public final Animation<TextureRegion> aureliusIdleRight, aureliusIdleLeft;
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
@@ -58,7 +52,6 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> lyronIdleRight, lyronIdleLeft;
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
-
 
     // ── Combat Textures ───────────────────────────────────────────────────
     public final Texture townCombatBackground;
@@ -94,9 +87,6 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> syozanCombatAttack;
 
     // ── Music ──────────────────────────────────────────────────────────────────
-    public final Music sonaraTheme;    // Audio/banjo.wav
-    public final Music aureliusTheme;  // Audio/flute.wav
-    public final Music lyronTheme;     // Audio/harp.wav
     public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures
@@ -137,11 +127,6 @@ public class Assets implements Disposable {
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
 
         darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
-
-        story1Tex = new Texture("Background/Story/story_panel_1.png");
-        story2Tex = new Texture("Background/Story/story_panel_2.png");
-        story3Tex = new Texture("Background/Story/story_panel_3.png");
-        story4Tex = new Texture("Background/Story/story_panel_4.png");
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -205,15 +190,7 @@ public class Assets implements Disposable {
 
     // ── Audio ────────────────────────────────────────────────────────────────
 
-        // Music (looping character themes)
-        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
         titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
-
-        sonaraTheme.setLooping(true);
-        aureliusTheme.setLooping(true);
-        lyronTheme.setLooping(true);
         titleBGM.setLooping(true);
     }
 
@@ -330,6 +307,6 @@ public class Assets implements Disposable {
         story4Tex.dispose();
         for (Texture t : noteTextures) t.dispose();
         for (Texture t : animationTextures) t.dispose();
-        sonaraTheme.dispose(); aureliusTheme.dispose(); lyronTheme.dispose(); titleBGM.dispose();
+        titleBGM.dispose();
     }
 }
