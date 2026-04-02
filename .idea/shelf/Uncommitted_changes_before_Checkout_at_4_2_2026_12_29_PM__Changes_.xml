@@ -1,0 +1,76 @@
+<changelist name="Uncommitted_changes_before_Checkout_at_4_2_2026_12_29_PM_[Changes]" date="1775104178351" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_2_2026_12_29_PM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 4/2/2026 12:29 PM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/BaseScreen.class.uniqueId0" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$CombatState.class.uniqueId8" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/Chord.class.uniqueId5" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/CombatScreen.class.uniqueId12" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/TitleScreen.class.uniqueId14" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/CharSelectScreen.class.uniqueId3" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/StoryScreen.class.uniqueId10" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/CreditsScreen.class.uniqueId13" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$CharacterType.class.uniqueId19" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$ChordStates.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/ExploringScreen.class.uniqueId18" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$ChordStates.class.uniqueId6" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/HowToPlayScreen.class.uniqueId16" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/MainMenuScreen.class.uniqueId7" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Mechanics/CombatSystem/Chord.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Mechanics/CombatSystem/Metronome.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$MapName.class.uniqueId2" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/Main.class.uniqueId4" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Mechanics/CombatSystem/Note.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$PlayerState.class.uniqueId15" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$MapName.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/CombatScreen$1.class.uniqueId11" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext.class.uniqueId17" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/compileTransaction/stash-dir/GameContext$Facing.class.uniqueId9" />
+  </binary>
+</changelist>
