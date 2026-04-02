@@ -58,10 +58,21 @@ public class Assets implements Disposable {
     public final Texture HealthBar;
     public final Texture ShieldBar;
 
+    public final Texture StaticHUDBackground;
+    public final Texture TimerBackground;
+    public final Texture DynamicHUDBackground;
+    public final Texture NoteContainer;
+    public final Texture TurnMenuHUD;
+    public final Texture AttackHUD;
+    public final Texture SkillHUD;
+    public final Texture InventoryHUD;
+
+
     // ── Combat Animations ───────────────────────────────────────────────────
     public final Animation<TextureRegion> battleIntroAnim;
     public final Animation<TextureRegion> victoryAnim;
     public final Animation<TextureRegion> defeatAnim;
+    public final Animation<TextureRegion> timerAnim;
 
     public final Animation<TextureRegion> sonaraCombatIdle;
     public final Animation<TextureRegion> sonaraCombatAttack;
@@ -143,12 +154,25 @@ public class Assets implements Disposable {
         HealthBar = new Texture("Sprites/Combat/Interface/HealthBar.png");
         ShieldBar = new Texture("Sprites/Combat/Interface/ShieldBar.png");
 
+        // Combat Textures
+        StaticHUDBackground = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
+        TimerBackground = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
+        DynamicHUDBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
+        NoteContainer = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png");
+        TurnMenuHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png");
+
+        AttackHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
+        SkillHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
+        InventoryHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
+
         // Battle Intro
         battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro", "Battle", 8, 0.2f);
         // Victory
         victoryAnim = loadAnim("Sprites/Combat/SplashScreen/Victory", "Victory", 8, 0.15f);
         // Defeat
         defeatAnim = loadAnim("Sprites/Combat/SplashScreen/Defeat", "Defeat", 8, 0.15f);
+
+        timerAnim = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
 
         // Character Animations
         sonaraCombatIdle = loadAnim("Sprites/Combat/Character/Sonara/Idle", "Idle", 4, 0.2f);
