@@ -39,10 +39,6 @@ public class Assets implements Disposable {
     public final Texture story3Tex;
     public final Texture story4Tex;
 
-    //Character Selectin Animation
-    public final Animation<TextureRegion> sonaraSelectAnim;
-    public final Animation<TextureRegion> aureliusSelectAnim;
-
     // ── Character Exploration animations ───────────────────────────────────────────────────
     public final Animation<TextureRegion> aureliusIdleRight, aureliusIdleLeft;
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
@@ -52,6 +48,7 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> lyronIdleRight, lyronIdleLeft;
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
+
 
     // ── Combat Textures ───────────────────────────────────────────────────
     public final Texture townCombatBackground;
@@ -186,6 +183,15 @@ public class Assets implements Disposable {
         labagoliathCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Attack", "Attack", 6, 0.2f));
         syozanCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle", "Idle", 4, 0.2f));
         syozanCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack", "Attack", 6, 0.2f));
+
+
+    // ── Audio ────────────────────────────────────────────────────────────────
+
+        // Music (looping character themes)
+        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
+        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
+        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
+        titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
 
 
     // ── Audio ────────────────────────────────────────────────────────────────

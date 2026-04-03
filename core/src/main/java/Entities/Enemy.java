@@ -110,14 +110,6 @@ public class Enemy {
         );
     }
 
-    public static Enemy andrewellers(float x, float y) {
-        return new Enemy("Andrewellers", 350, x, y,
-            new Attack("Luminous Gaze",     10, 20),
-            new Attack("Deafening Screech", 15, 25),
-            new Attack("Shatter Cry",       20, 35)
-        );
-    }
-
     public static Enemy aryzachnid(float x, float y) {
         return new Enemy("Gobninil", 500, x, y,
             new Attack("Binding Webs",     20, 40),

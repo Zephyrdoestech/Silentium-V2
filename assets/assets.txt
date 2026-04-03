@@ -87,11 +87,6 @@ Sprites/Characters/Sonara/Idle/Idle1.png
 Sprites/Characters/Sonara/Idle/Idle2.png
 Sprites/Characters/Sonara/Idle/Idle3.png
 Sprites/Characters/Sonara/Idle/Idle4.png
-UI/credits_btn.png
-UI/exit_btn.png
-UI/start_btn.png
-UI/story_btn.png
-UI/tutorial_btn.png
 Sprites/Characters/Sonara/Walk/Movement1.png
 Sprites/Characters/Sonara/Walk/Movement2.png
 Sprites/Characters/Sonara/Walk/Movement3.png
