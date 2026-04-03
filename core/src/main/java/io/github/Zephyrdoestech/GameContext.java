@@ -4,6 +4,7 @@ import Entities.Character;
 import Entities.Enemy;
 import Entities.MapCharacter;
 import Mechanics.Room;
+import Screens.ExploringScreen;
 import com.badlogic.gdx.audio.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,15 @@ public class GameContext {
 
     public List<Enemy> mapEnemies = new ArrayList<>();
     public List<Room>  rooms      = new ArrayList<>();
+    public int lives = 3;
+    public int enemiesDefeatedInCurrentMap = 0;
 
     // Map dimensions — match your Dungeon.png pixel size
-    public static final float MAP_SIZE  = 2048f;
+    public float MAP_SIZE  = 2048f;
     public static final float CHAR_SIZE = 32f;
     public static final float SPEED     = 150f;
+
+    public ExploringScreen lastMapScreen;
 
     // ── Combat state ──────────────────────────────────────────────────────────
 

@@ -180,10 +180,11 @@ public class CombatScreen extends BaseScreen {
                 game.assets.bigFont.setColor(Color.RED);
                 game.assets.bigFont.draw(game.batch, "DEFEATED", 255, 260);
                 game.assets.font.setColor(Color.WHITE);
-                game.assets.font.draw(game.batch,
-                    "Press ENTER to return to the main menu.", 215, 200);
-                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
-                    game.setScreen(new MainMenuScreen(game));
+                game.assets.font.draw(game.batch, "Press ENTER to restart.", 255, 200);
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+//                    game.ctx.player = null; // triggers full reset in ExploringScreen.show()
+                    game.setScreen(game.ctx.lastMapScreen);
+                }
                 break;
 
             default: break;
@@ -249,7 +250,8 @@ public class CombatScreen extends BaseScreen {
 
     private void doEnemyAttack() {
         if (game.ctx.currentEnemy.isDefeated()) {
-            game.ctx.combatState = GameContext.CombatState.VICTORY; return;
+            game.ctx.combatState = GameContext.CombatState.VICTORY;
+            return;
         }
         int dmg = game.ctx.currentEnemy.performAttack();
         game.ctx.activeCharacterStats.takeDamage(dmg);
@@ -269,11 +271,17 @@ public class CombatScreen extends BaseScreen {
 
     private void endCombat() {
         Enemy defeated = game.ctx.currentEnemy;
-        game.ctx.mapEnemies.remove(defeated);
+
+        if (defeated != null && defeated.isDefeated()) {
+            game.ctx.enemiesDefeatedInCurrentMap++;
+        }
+
         if (game.ctx.rooms != null) {
             for (Room r : game.ctx.rooms) {
                 if (r.getEnemies().remove(defeated)) {
-                    if (r.getEnemies().isEmpty()) r.setCleared(true);
+                    if (r.getEnemies().isEmpty()) {
+                        r.setCleared(true);
+                    }
                     break;
                 }
             }
@@ -281,7 +289,7 @@ public class CombatScreen extends BaseScreen {
         game.ctx.currentEnemy = null;
         game.ctx.noteCount    = 0;
         game.ctx.combatLog    = "";
-        game.setScreen(new ExploringScreen(game));
+        game.setScreen(game.ctx.lastMapScreen);
     }
 
     // ── Chord detection ───────────────────────────────────────────────────────
