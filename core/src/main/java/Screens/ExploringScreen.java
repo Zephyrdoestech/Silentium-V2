@@ -248,7 +248,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY()) || showingExitPrompt) {
             game.ctx.player.setX(prevX);
             game.ctx.player.setY(prevY);
         }
