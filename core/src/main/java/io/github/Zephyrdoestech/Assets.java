@@ -252,6 +252,14 @@ public class Assets implements Disposable {
 
     // ── Private Helpers ───────────────────────────────────────────────────────
 
+    private Texture safeLoadTexture(String path) {
+        if (Gdx.files.internal(path).exists()) {
+            return new Texture(path);
+        }
+        System.out.println("Missing Art: " + path);
+        return null;
+    }
+
     private Animation<TextureRegion> loadAnim(String folder, String base, int count, float duration) {
         TextureRegion[] frames = new TextureRegion[count];
         for (int i = 0; i < count; i++) {
