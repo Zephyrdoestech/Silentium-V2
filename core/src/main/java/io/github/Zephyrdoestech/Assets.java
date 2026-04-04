@@ -71,6 +71,33 @@ public class Assets implements Disposable {
     public final Texture attackHud;
     public final Texture skillHud;
     public final Texture inventoryHud;
+    public final Texture musicStaff;
+    public final Texture musicNote;
+
+    public final Texture cMajor;
+    public final Texture dMinor;
+    public final Texture eMinor;
+    public final Texture fMajor;
+    public final Texture gMajor;
+    public final Texture aMinor;
+    public final Texture bDim;
+
+    public final Texture cMajorUsed;
+    public final Texture dMinorUsed;
+    public final Texture eMinorUsed;
+    public final Texture fMajorUsed;
+    public final Texture gMajorUsed;
+    public final Texture aMinorUsed;
+    public final Texture bDimUsed;
+
+    public final Texture inventoryBackground;
+    public final Texture crimsonChorusSlotItem;
+    public final Texture majorsBlessingSlotItem;
+    public final Texture minorsGraceSlotItem;
+    public final Texture silentBarrierSlotItem;
+    public final Texture resolvedDissonanceSlotItem;
+    public  final Texture timeOrbSlotItem;
+
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -171,6 +198,32 @@ public class Assets implements Disposable {
         attackHud            = new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
         skillHud             = new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
         inventoryHud         = new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
+        musicStaff           = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png");
+        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png");
+
+        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png");
+        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png");
+        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png");
+        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png");
+        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png");
+        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png");
+        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png");
+
+        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png");
+        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png");
+        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png");
+        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png");
+        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png");
+        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
+        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
+
+        inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
+        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png");
+        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MajorsBlessing.png");
+        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MinorsGrace.png");
+        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SilentBarrier.png");
+        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/ResolvedDissonance.png");
+        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/TimeOrb.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 

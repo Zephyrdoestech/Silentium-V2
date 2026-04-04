@@ -6,14 +6,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import Entities.Character;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
-import org.w3c.dom.Text;
 
 /**
  * Turn-based combat screen.
@@ -39,6 +37,9 @@ public class CombatScreen extends BaseScreen {
     private static final float DISPLAY_TIME = 1.6f;
     private static final float NOTE_DISPLAY_TIME = 1.5f;
 
+    private static final float NOTE_COMPLETE_PAUSE  = 0.6f;
+    private static final float NOTE_REVEAL_INTERVAL = 0.35f;
+
     // ── Turn State ────────────────────────────────────────────────────────────
 
     private boolean notesRolledThisTurn    = false;
@@ -59,6 +60,9 @@ public class CombatScreen extends BaseScreen {
     private float maxTurnTime = 0f;
 
     private float noteDisplayTimer = 0f;
+
+    private int revealedNoteCount = 0;
+    private float noteRevealTimer = 0f;
 
     // ── Damage Values ─────────────────────────────────────────────────────────
 
@@ -93,7 +97,7 @@ public class CombatScreen extends BaseScreen {
     private float enemySpriteX  = 0;
     private float enemySpriteY  = 0;
 
-    // ── HUD Panel Regions ─────────────────────────────────────────────────────
+    // ── Chord & HUD Panel Regions ─────────────────────────────────────────────────────
 
     private final float notesPanelLeft   = 0;
     private final float notesPanelBottom = 0;
@@ -112,6 +116,11 @@ public class CombatScreen extends BaseScreen {
     private final float actionPanelWidth  = Main.WORLD_WIDTH * 0.55f;
     private final float actionPanelHeight = Main.WORLD_HEIGHT * 0.40f;
     private final float actionPanelTop    = actionPanelBottom + actionPanelHeight;
+
+    float chordContainerWidth  = px(7.0f);
+    float chordContainerHeight = px(1.0f);
+    float chordContainerX      = screenRight - chordContainerWidth - px(1.0f);
+    float chordContainerY      = actionPanelTop + px(0f);
 
     // ── Gap / Scale Helper ────────────────────────────────────────────────────
 
@@ -246,6 +255,7 @@ public class CombatScreen extends BaseScreen {
         renderNameHeader();
         renderNotesPanel(delta);
         renderTimerPanel(delta);
+        renderChords();
         renderActionPanel(delta);
     }
 
@@ -543,6 +553,9 @@ public class CombatScreen extends BaseScreen {
                 turnTime += delta;
                 displayTime = (int) Math.ceil(maxTurnTime - turnTime);
                 if (turnTime >= maxTurnTime) {
+                    if(game.ctx.selectedCharacter == GameContext.CharacterType.SONARA){
+                        activeSkillUsedThisTurn = false;
+                        activeSkillUsed = false;}
                     turnTime = 0f;
                     game.ctx.resultTimer = 0f;
                     game.ctx.combatState = GameContext.CombatState.MISSED_TURN;
@@ -555,25 +568,56 @@ public class CombatScreen extends BaseScreen {
         }
 
         // Countdown number
-        float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
-        float numY = timerPanelBottom + px(2.0f);
-
         beginUiBatch();
-        game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(displayTime <= 3 ? Color.RED : Color.GREEN);
+        game.assets.font.getData().setScale(2.0f);
+        game.assets.font.setColor(displayTime <= 3 ? Color.RED : Color.WHITE);
+        float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
+        float numY = timerPanelBottom + px(2.4f);
+
         game.assets.font.draw(game.batch, displayTime + "", numX, numY);
         game.assets.font.getData().setScale(1.0f);
         game.assets.font.setColor(Color.WHITE);
 
         // Timer animation sprite
         TextureRegion timerFrame = game.assets.timerAnim.getKeyFrame(animTimer, true);
-        float spriteW = px(1.0f);
-        float spriteH = px(1.6f);
+        float spriteW = px(1.6f);
+        float spriteH = px(2.0f);
         float spriteX = timerPanelLeft + ((timerPanelWidth - spriteW) / 2f);
         float spriteY = timerPanelTop  - px(1.0f) - spriteH;
         game.batch.draw(timerFrame, spriteX, spriteY, spriteW, spriteH);
 
         game.batch.end();
+    }
+
+    // =========================================================================
+    // Chord Display (Above Action Panel)
+    // =========================================================================
+
+    private void renderChords() {
+        if(player.getLevel() < 3) return;
+
+        beginUiBatch();
+        int numberOfChords = 7;
+        for(int i = 0; i < numberOfChords; i++) {
+            Texture chord = game.assets.cMajor;
+
+            switch(i){
+                case 0: chord = (game.ctx.chordSystem.isChordUsed('C') ? game.assets.cMajorUsed : game.assets.cMajor); break;
+                case 1: chord = (game.ctx.chordSystem.isChordUsed('D') ? game.assets.dMinorUsed : game.assets.dMinor); break;
+                case 2: chord = (game.ctx.chordSystem.isChordUsed('E') ? game.assets.eMinorUsed : game.assets.eMinor); break;
+                case 3: chord = (game.ctx.chordSystem.isChordUsed('F') ? game.assets.fMajorUsed : game.assets.fMajor); break;
+                case 4: chord = (game.ctx.chordSystem.isChordUsed('G') ? game.assets.gMajorUsed : game.assets.gMajor); break;
+                case 5: chord = (game.ctx.chordSystem.isChordUsed('A') ? game.assets.aMinorUsed : game.assets.aMinor); break;
+                case 6: chord = (game.ctx.chordSystem.isChordUsed('B') ? game.assets.bDimUsed : game.assets.bDim); break;
+            }
+
+            float gap = i * px(1.0f);
+            game.batch.draw(chord,
+                chordContainerX + gap, chordContainerY,
+                chordContainerWidth / 7, chordContainerHeight);
+        }
+        game.batch.end();
+
     }
 
     // =========================================================================
@@ -598,7 +642,7 @@ public class CombatScreen extends BaseScreen {
                 renderAttack(delta);
                 break;
             case ATTACK_FEEDBACK:
-                renderAttackFeedback();
+                renderAttackFeedback(delta);
                 break;
             case USE_SKILL:
                 renderSkillMenu();
@@ -607,6 +651,7 @@ public class CombatScreen extends BaseScreen {
                 renderInventoryMenu();
                 break;
             case USE_ITEM:
+                renderUseItem();
                 break;
             case SKILL_USED:
             case SKILL_CONFIRMED:
@@ -668,6 +713,10 @@ public class CombatScreen extends BaseScreen {
         String  message    = resolveBattleLogMessage();
         Color   color      = resolveBattleLogColor();
 
+        if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT
+            && message.equalsIgnoreCase("null")){
+            advanceBattleLogState();}
+
         drawCenteredText(message, actionPanelLeft, actionPanelBottom  + px(0.8f), actionPanelWidth,
             actionPanelHeight, color, 1.6f);
 
@@ -690,7 +739,7 @@ public class CombatScreen extends BaseScreen {
                 return chordUsedThisTurn != null
                     ? "[" + game.ctx.chordSystem.getChordName(chordUsedThisTurn) + "] "
                     + game.ctx.chordSystem.getChordMessage(chordUsedThisTurn, player)
-                    : "";
+                    : "null";
             case DISPLAY_PLAYER_DAMAGE:
                 return (metronomeActivated ? "Initial" : "Total")
                     + " Damage Dealt: "
@@ -918,8 +967,62 @@ public class CombatScreen extends BaseScreen {
         }
     }
 
-    private void renderAttackFeedback() {
-        // To be implemented
+    private void renderAttackFeedback(float delta) {
+        beginUiBatch();
+        game.batch.draw(game.assets.musicStaff,
+            actionPanelLeft, actionPanelBottom, actionPanelWidth, actionPanelHeight);
+        game.batch.end();
+
+        // Compute Y positions for each note based on their letter (A-G)
+        float[] notesY = new float[3];
+        float gapY = px(0.35f);
+        float baseY = actionPanelBottom + px(2.0f);
+        for (int i = 0; i < 3; i++) {
+            String letter = String.valueOf(
+                java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[i]));
+            switch (letter) {
+                case "A": notesY[i] = baseY + (gapY * 2); break;
+                case "B": notesY[i] = baseY + (gapY * 3); break;
+                case "C": notesY[i] = baseY + (gapY * 4); break;
+                case "D": notesY[i] = baseY + (gapY * 5); break;
+                case "E": notesY[i] = baseY + (gapY * 6); break;
+                case "F": notesY[i] = baseY ; break;
+                case "G": notesY[i] = baseY + (gapY * 1); break;
+                default:  notesY[i] = baseY; break;
+            }
+        }
+
+        float noteWidth  = game.assets.musicNote.getWidth();
+        float noteHeight = game.assets.musicNote.getHeight();
+        float gapX       = px(2.4f);
+        float startX     = actionPanelLeft + px(4.8f);
+
+        // Draw only the notes that have been revealed so far
+        beginUiBatch();
+        for (int i = 0; i < revealedNoteCount; i++) {
+            game.batch.draw(game.assets.musicNote,
+                startX + (i * gapX), notesY[i],
+                noteWidth, noteHeight);
+        }
+        game.batch.end();
+
+        noteRevealTimer += delta;
+
+        if (revealedNoteCount < 3) {
+            // Still revealing notes — advance one note per interval
+            if (noteRevealTimer >= NOTE_REVEAL_INTERVAL) {
+                noteRevealTimer = 0f;
+                revealedNoteCount++;
+            }
+        } else {
+            // All three notes shown — wait for the complete pause then move on
+            if (noteRevealTimer >= NOTE_COMPLETE_PAUSE) {
+                noteRevealTimer   = 0f;
+                revealedNoteCount = 0;
+                game.ctx.resultTimer = 0f;
+                game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+            }
+        }
     }
 
     // =========================================================================
@@ -1043,6 +1146,32 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderInventoryMenu() {
+        beginUiBatch();
+        game.batch.draw(game.assets.inventoryBackground,
+            actionPanelLeft, actionPanelBottom, actionPanelWidth, actionPanelHeight);
+        game.batch.end();
+
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+            return;
+        }
+
+        float itemSlotWidth = px(1f);
+        float itemSlotHeight = px(1f);
+        float itemSlotsWidth = itemSlotWidth * 5;
+        float itemSlotsHeight = itemSlotHeight * 2;
+
+        for(int i = 0; i < 10; i++){
+
+        }
+    }
+
+    // =========================================================================
+    // Inventory Menu
+    // =========================================================================
+
+    private void renderUseItem() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
             || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
             confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
@@ -1168,7 +1297,9 @@ public class CombatScreen extends BaseScreen {
         enemy.takeDamage(finalDamage);
         player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside Character
 
-        game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+        revealedNoteCount    = 0;
+        noteRevealTimer      = 0f;
+        game.ctx.combatState = GameContext.CombatState.ATTACK_FEEDBACK;
         game.ctx.resultTimer = 0f;
     }
 
@@ -1195,6 +1326,8 @@ public class CombatScreen extends BaseScreen {
         activeSkillUsedThisTurn        = false;
         chordUsedThisTurn              = null;
         metronomeActivated             = false;
+        revealedNoteCount              = 0;
+        noteRevealTimer                = 0f;
         initialDamage                  = 0;
         finalDamage                    = 0;
         noteDisplayTimer               = 0f;
