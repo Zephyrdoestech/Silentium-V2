@@ -93,6 +93,7 @@ Sprites/Combat/Interface/DynamicHUD/Attack.png
 Sprites/Combat/Interface/DynamicHUD/HUDBackground.png
 Sprites/Combat/Interface/DynamicHUD/Inventory.png
 Sprites/Combat/Interface/DynamicHUD/NoteContainer.png
+Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png
 Sprites/Combat/Interface/DynamicHUD/Skill.png
 Sprites/Combat/Interface/DynamicHUD/TurnMenu.png
 Sprites/Combat/Interface/HealthBar.png

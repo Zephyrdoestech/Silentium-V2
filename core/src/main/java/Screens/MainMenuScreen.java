@@ -82,7 +82,7 @@ public class MainMenuScreen extends BaseScreen {
     private void handleSelection() {
         switch (selection) {
             case 0:
-                game.assets.titleBGM.stop();
+                game.assets.titleBgm.stop();
                 game.setScreen(new CharSelectScreen(game));
                 break;
             case 1: game.setScreen(new HowToPlayScreen(game));   break;

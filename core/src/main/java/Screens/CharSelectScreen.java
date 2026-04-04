@@ -124,7 +124,7 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void confirmSelection() {
-        game.assets.titleBGM.stop();
+        game.assets.titleBgm.stop();
         game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {
@@ -140,8 +140,8 @@ public class CharSelectScreen extends BaseScreen {
     }
     @Override public void hide()    {
         clearNotes();
-        if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.stop();
+        if (game.assets.titleBgm != null && game.assets.titleBgm.isPlaying()) {
+            game.assets.titleBgm.stop();
         }
         game.ctx.stopTheme();
     }
