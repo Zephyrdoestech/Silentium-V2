@@ -131,6 +131,9 @@ public class ExploringScreen extends BaseScreen {
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
 
+        // Ensure batch color is white before drawing textures
+        game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+
         // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
