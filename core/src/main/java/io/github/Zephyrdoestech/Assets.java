@@ -134,23 +134,35 @@ public class Assets implements Disposable {
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
 
         // Static textures
-        titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        Texture townMapFull = new Texture("Background/Map/Town_Of_Echoes.png");
-        townMapFull.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        townTex = new TextureRegion(townMapFull);
-        townExitTex = new TextureRegion(new Texture("Background/Map/Town_Exit.png"));
+        titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
 
-        Texture silentTex = new Texture("Background/Map/Dungeon.png"); //silent caverns
-        silentTex.setFilter(TextureFilter.Linear, Texture.TextureFilter.Linear);
-        silentCavernsTex = new TextureRegion(silentTex);
+        Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
+        if (townFile != null) {
+            townFile.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            townTex = new TextureRegion(townFile);
+        } else townTex = null;
 
-        Texture abyssTex = new Texture("Background/Map/Abyss_Of_Dissonance.png");
-        abyssTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        abyssOfDissonanceTex = new TextureRegion(abyssTex);
+        Texture townExitFile = safeLoadTexture("Background/Map/Town_Exit.png");
+        if (townExitFile != null) townExitTex = new TextureRegion(townExitFile);
+        else townExitTex = null;
 
-        Texture townDecorFull = new Texture("Background/Map/Town_Decorations.png");
-        townDecorFull.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        townDecorationsTex = new TextureRegion(townDecorFull);
+        Texture silentCavernsFile = safeLoadTexture("Background/Map/Dungeon.png"); //silent caverns
+        if (silentCavernsFile != null) {
+            silentCavernsFile.setFilter(TextureFilter.Linear, Texture.TextureFilter.Linear);
+            silentCavernsTex = new TextureRegion(silentCavernsFile);
+        } else silentCavernsTex = null;
+
+        Texture abyssFile = safeLoadTexture("Background/Map/Abyss_Of_Dissonance.png");
+        if (abyssFile != null) {
+            abyssFile.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            abyssOfDissonanceTex = new TextureRegion(abyssFile);
+        } else abyssOfDissonanceTex = null;
+
+        Texture townDecorFull = safeLoadTexture("Background/Map/Town_Decorations.png");
+        if (townDecorFull != null) {
+            townDecorFull.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            townDecorationsTex = new TextureRegion(townDecorFull);
+        } else townDecorationsTex = null;
 
 //        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
 //        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
