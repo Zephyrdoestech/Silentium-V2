@@ -332,16 +332,16 @@ public class CombatScreen extends BaseScreen {
         switch (game.ctx.selectedCharacter) {
             case SONARA:
                 return isAttacking
-                    ? game.assets.sonaraCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.sonaraCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.sonaraCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.sonaraCombatIdle, animTimer);
             case AURELIUS:
                 return isAttacking
-                    ? game.assets.aureliusCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.aureliusCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.aureliusCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.aureliusCombatIdle, animTimer);
             case LYRON:
                 return isAttacking
-                    ? game.assets.lyronCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.lyronCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.lyronCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.lyronCombatIdle, animTimer);
             default:
                 return null;
         }
@@ -356,30 +356,30 @@ public class CombatScreen extends BaseScreen {
         switch (enemy.getName()) {
             case "Flesh Feeder":
                 return isAttacking
-                    ? game.assets.fleshfeederCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.fleshfeederCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.fleshfeederCombatIdle, animTimer);
             case "Darrylion":
                 return isAttacking
-                    ? game.assets.darrylionCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.darrylionCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.darrylionCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.darrylionCombatIdle, animTimer);
             case "Aryzachnid":
                 return isAttacking
-                    ? game.assets.gobninilCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.gobninilCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.gobninilCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.gobninilCombatIdle, animTimer);
             case "Chimericks":
                 return isAttacking
-                    ? game.assets.chimericksCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.chimericksCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.chimericksCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.chimericksCombatIdle, animTimer);
             case "Labagoliath":
                 return isAttacking
-                    ? game.assets.labagoliathCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.labagoliathCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.labagoliathCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.labagoliathCombatIdle, animTimer);
             case "Maestro Syozan":
                 return isAttacking
-                    ? game.assets.syozanCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.syozanCombatIdle.getKeyFrame(animTimer, true);
+                    ? getSafeFrame(game.assets.syozanCombatAttack, animTimer)
+                    : getSafeFrame(game.assets.syozanCombatIdle, animTimer);
             default:
-                return game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
+                return getSafeFrame(game.assets.fleshfeederCombatIdle, animTimer);
         }
     }
 
@@ -1317,6 +1317,11 @@ public class CombatScreen extends BaseScreen {
         }
 
         return description;
+    }
+
+    /** Returns a frame from an animation, or null if the animation itself is null. */
+    private TextureRegion getSafeFrame(Animation<TextureRegion> anim, float timer) {
+        return anim != null ? anim.getKeyFrame(timer, true) : null;
     }
 
     // =========================================================================
