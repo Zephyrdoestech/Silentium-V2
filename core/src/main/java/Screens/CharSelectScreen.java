@@ -145,7 +145,7 @@ public class CharSelectScreen extends BaseScreen {
             case 1: game.ctx.activeCharacterStats = new Character("Aurelius", "Flute", 150, 40); break;
             case 2: game.ctx.activeCharacterStats = new Character("Lyron",    "Harp",  250, 40); break;
         }
-        game.setScreen(new ExploringScreen(game));
+        game.setScreen(new TownOfEchoesScreen(game));
     }
 
     @Override public void resize(int w, int h) {

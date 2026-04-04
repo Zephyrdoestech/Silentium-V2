@@ -57,11 +57,15 @@ public class GameContext {
 
     public List<Enemy> mapEnemies = new ArrayList<>();
     public List<Room>  rooms      = new ArrayList<>();
+    public int lives = 3;
+    public int enemiesDefeatedInCurrentMap = 0;
 
     // Map dimensions — match your Dungeon.png pixel size
-    public static final float MAP_SIZE  = 2048f;
+    public float MAP_SIZE  = 2048f;
     public static final float CHAR_SIZE = 32f;
     public static final float SPEED     = 150f;
+
+    public com.badlogic.gdx.Screen lastMapScreen;
 
     // ── Combat state ──────────────────────────────────────────────────────────
 

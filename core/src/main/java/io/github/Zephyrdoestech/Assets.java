@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,6 +21,11 @@ public class Assets implements Disposable {
     public final Texture creditsBtnTex;
     public final Texture exitBtnTex;
 
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraWalkRight;
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraWalkLeft;
+
     // ── Fonts ──────────────────────────────────────────────────────────────────
     public final BitmapFont font;       // body text (scale 1.5)
     public final BitmapFont titleFont;  // large headings (scale 2.2)
@@ -27,7 +33,14 @@ public class Assets implements Disposable {
 
     // ── UI / Map textures ──────────────────────────────────────────────────────
     public final Texture titleScreenTex;
-    public final Texture townTex;         // Dungeon map
+    public final TextureRegion townTex;         // Dungeon map
+    public final TextureRegion townExitTex;
+    public final TextureRegion silentCavernsTex;
+    public final TextureRegion abyssOfDissonanceTex;
+    public final TextureRegion townDecorationsTex;
+//    public final Texture silentCavernsDecorationsTex;
+//    public final Texture abyssDecorationsTex;
+
     public final Texture sonaraTex;
     public final Texture lyronTex;
     public final Texture aureliusTex;
@@ -44,55 +57,57 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
 
     public final Animation<TextureRegion> sonaraIdleRight, sonaraIdleLeft;
-    public final Animation<TextureRegion> sonaraWalkRight, sonaraWalkLeft;
+    // sonaraWalk animations can be uncommented when assets are ready
+//    public final Animation<TextureRegion> sonaraWalkRight;
+//    public final Animation<TextureRegion> sonaraWalkLeft;
 
     public final Animation<TextureRegion> lyronIdleRight, lyronIdleLeft;
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
 
 
     // ── Combat Textures ───────────────────────────────────────────────────
-    public final Texture townCombatBackground;
-    public final Texture cavernsCombatBackground;
-    public final Texture abyssCombatBackground;
+    // ── Combat Textures ───────────────────────────────────────────────────
+    public Texture townCombatBackground;
+    public Texture cavernsCombatBackground;
+    public Texture abyssCombatBackground;
 
-    public final Texture HealthBar;
-    public final Texture ShieldBar;
+    public Texture HealthBar;
+    public Texture ShieldBar;
 
-    public final Texture StaticHUDBackground;
-    public final Texture TimerBackground;
-    public final Texture DynamicHUDBackground;
-    public final Texture NoteContainer;
-    public final Texture TurnMenuHUD;
-    public final Texture AttackHUD;
-    public final Texture SkillHUD;
-    public final Texture InventoryHUD;
-
+    public Texture StaticHUDBackground;
+    public Texture TimerBackground;
+    public Texture DynamicHUDBackground;
+    public Texture NoteContainer;
+    public Texture TurnMenuHUD;
+    public Texture AttackHUD;
+    public Texture SkillHUD;
+    public Texture InventoryHUD;
 
     // ── Combat Animations ───────────────────────────────────────────────────
-    public final Animation<TextureRegion> battleIntroAnim;
-    public final Animation<TextureRegion> victoryAnim;
-    public final Animation<TextureRegion> defeatAnim;
-    public final Animation<TextureRegion> timerAnim;
+    public Animation<TextureRegion> battleIntroAnim;
+    public Animation<TextureRegion> victoryAnim;
+    public Animation<TextureRegion> defeatAnim;
+    public Animation<TextureRegion> timerAnim;
 
-    public final Animation<TextureRegion> sonaraCombatIdle;
-    public final Animation<TextureRegion> sonaraCombatAttack;
-    public final Animation<TextureRegion> aureliusCombatIdle;
-    public final Animation<TextureRegion> aureliusCombatAttack;
-    public final Animation<TextureRegion> lyronCombatIdle;
-    public final Animation<TextureRegion> lyronCombatAttack;
+    public Animation<TextureRegion> sonaraCombatIdle;
+    public Animation<TextureRegion> sonaraCombatAttack;
+    public Animation<TextureRegion> aureliusCombatIdle;
+    public Animation<TextureRegion> aureliusCombatAttack;
+    public Animation<TextureRegion> lyronCombatIdle;
+    public Animation<TextureRegion> lyronCombatAttack;
 
-    public final Animation<TextureRegion> fleshfeederCombatIdle;
-    public final Animation<TextureRegion> fleshfeederCombatAttack;
-    public final Animation<TextureRegion> darrylionCombatIdle;
-    public final Animation<TextureRegion> darrylionCombatAttack;
-    public final Animation<TextureRegion> gobninilCombatIdle;
-    public final Animation<TextureRegion> gobninilCombatAttack;
-    public final Animation<TextureRegion> chimericksCombatIdle;
-    public final Animation<TextureRegion> chimericksCombatAttack;
-    public final Animation<TextureRegion> labagoliathCombatIdle;
-    public final Animation<TextureRegion> labagoliathCombatAttack;
-    public final Animation<TextureRegion> syozanCombatIdle;
-    public final Animation<TextureRegion> syozanCombatAttack;
+    public Animation<TextureRegion> fleshfeederCombatIdle;
+    public Animation<TextureRegion> fleshfeederCombatAttack;
+    public Animation<TextureRegion> darrylionCombatIdle;
+    public Animation<TextureRegion> darrylionCombatAttack;
+    public Animation<TextureRegion> gobninilCombatIdle;
+    public Animation<TextureRegion> gobninilCombatAttack;
+    public Animation<TextureRegion> chimericksCombatIdle;
+    public Animation<TextureRegion> chimericksCombatAttack;
+    public Animation<TextureRegion> labagoliathCombatIdle;
+    public Animation<TextureRegion> labagoliathCombatAttack;
+    public Animation<TextureRegion> syozanCombatIdle;
+    public Animation<TextureRegion> syozanCombatAttack;
 
     // ── Music ──────────────────────────────────────────────────────────────────
     public final Music titleBGM;
@@ -107,23 +122,45 @@ public class Assets implements Disposable {
 
     public Assets() {
         // Fonts
-        font = new BitmapFont();        font.getData().setScale(1.5f);
-        titleFont = new BitmapFont();   titleFont.getData().setScale(2.2f);
-        bigFont = new BitmapFont();     bigFont.getData().setScale(3.0f);
+        font = new BitmapFont();
+        font.getData().setScale(1.5f);
+        titleFont = new BitmapFont();
+        titleFont.getData().setScale(2.2f);
+        bigFont = new BitmapFont();
+        bigFont.getData().setScale(3.0f);
 
         // Static textures
         titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Dungeon.png");
-        townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        sonaraTex   = new Texture("sonara.png");
-        lyronTex    = new Texture("lyron.png");
+        Texture townMapFull = new Texture("Background/Map/Town_Of_Echoes.png");
+        townMapFull.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        townTex = new TextureRegion(townMapFull);
+        townExitTex = new TextureRegion(new Texture("Background/Map/Town_Exit.png"));
+
+        Texture silentTex = new Texture("Background/Map/Dungeon.png"); //silent caverns
+        silentTex.setFilter(TextureFilter.Linear, Texture.TextureFilter.Linear);
+        silentCavernsTex = new TextureRegion(silentTex);
+
+        Texture abyssTex = new Texture("Background/Map/Abyss_Of_Dissonance.png");
+        abyssTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        abyssOfDissonanceTex = new TextureRegion(abyssTex);
+
+        Texture townDecorFull = new Texture("Background/Map/Town_Decorations.png");
+        townDecorFull.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        townDecorationsTex = new TextureRegion(townDecorFull);
+
+//        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
+//        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
+
+        sonaraTex = new Texture("sonara.png");
+        lyronTex = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
 
-        startBtnTex = new Texture("UI/start_btn.png");
-        tutorialBtnTex = new Texture("UI/tutorial_btn.png");
-        storyBtnTex = new Texture("UI/story_btn.png");
-        creditsBtnTex = new Texture("UI/credits_btn.png");
-        exitBtnTex = new Texture("UI/exit_btn.png");
+        this.startBtnTex = new Texture("UI/start_btn.png");
+        this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
+        this.storyBtnTex = new Texture("UI/story_btn.png");
+        this.creditsBtnTex = new Texture("UI/credits_btn.png");
+        this.exitBtnTex = new Texture("UI/exit_btn.png");
+        battleIntroAnim = loadAnim("UI/Combat/Intro", "frame", 10, 0.1f);
 
         story1Tex = new Texture("Background/Story/story_panel_1.png");
         story2Tex = new Texture("Background/Story/story_panel_2.png");
@@ -131,99 +168,42 @@ public class Assets implements Disposable {
         story4Tex = new Texture("Background/Story/story_panel_4.png");
 
         // Load the 11-frame selection animations!
-        sonaraSelectAnim   = loadAnim("Sonara/Select",   "sonaraSelect",   11, 0.1f);
+        sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
 
         darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
-        noteTextures    = buildNoteTextures();
-
-        // Aurelius
-        aureliusIdleRight = loadAnim("Sprites/Characters/Aurelius/Idle", "Idle", 4, 0.2f);
-        aureliusIdleLeft  = flipped(aureliusIdleRight);
-        aureliusWalkRight = loadAnim("Sprites/Characters/Aurelius/Walk", "Movement", 6, 0.1f);
-        aureliusWalkLeft  = flipped(aureliusWalkRight);
-
-        // Sonara
-        sonaraIdleRight = loadAnim("Sprites/Characters/Sonara/Idle", "Idle", 4, 0.1f);
-        sonaraIdleLeft  = flipped(sonaraIdleRight);
-        sonaraWalkRight = loadAnim("Sprites/Characters/Sonara/Walk", "Movement", 6, 0.1f);
-        sonaraWalkLeft  = flipped(sonaraWalkRight);
-
-        // Lyron
-        lyronIdleRight = loadAnim("Sprites/Characters/Lyron/Idle", "Idle", 4, 0.1f);
-        lyronIdleLeft  = flipped(lyronIdleRight);
-        lyronWalkRight = loadAnim("Sprites/Characters/Lyron/Walk", "Movement", 6, 0.1f);
-        lyronWalkLeft  = flipped(lyronWalkRight);
-
-    // ── Combat Assets ────────────────────────────────────────────────────────────────
-        townCombatBackground = new Texture("Background/Combat/Town.jpg");
-        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg");
-        abyssCombatBackground = new Texture("Background/Combat/Abyss.jpg");
+        noteTextures = buildNoteTextures();
 
         HealthBar = new Texture("Sprites/Combat/Interface/HealthBar.png");
         ShieldBar = new Texture("Sprites/Combat/Interface/ShieldBar.png");
 
-        // Combat Textures
-        StaticHUDBackground = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
-        TimerBackground = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
-        DynamicHUDBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
-        NoteContainer = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png");
-        TurnMenuHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png");
+        // Aurelius
+        aureliusIdleRight = loadAnim("Sprites/Characters/Aurelius/Idle", "Idle", 4, 0.2f);
+        aureliusIdleLeft = flipped(aureliusIdleRight);
+        this.aureliusWalkRight = this.loadAnim("Sprites/Characters/Aurelius/Walk", "Movement", 6, 0.1F);
+        aureliusWalkLeft = flipped(aureliusWalkRight);
 
-        AttackHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
-        SkillHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
-        InventoryHUD = new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
+        // Sonara
+        sonaraIdleRight = loadAnim("Sprites/Characters/Sonara/Idle", "Idle", 4, 0.1f);
+        sonaraIdleLeft = flipped(sonaraIdleRight);
+        sonaraWalkRight = loadAnim("Sprites/Characters/Sonara/Walk", "Movement", 6, 0.1f);
+        sonaraWalkLeft = flipped(sonaraWalkRight);
 
-        // Battle Intro
-        battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro", "Battle", 8, 0.2f);
-        // Victory
-        victoryAnim = loadAnim("Sprites/Combat/SplashScreen/Victory", "Victory", 8, 0.15f);
-        // Defeat
-        defeatAnim = loadAnim("Sprites/Combat/SplashScreen/Defeat", "Defeat", 8, 0.15f);
-
-        timerAnim = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
-
-        // Character Animations
-        sonaraCombatIdle = loadAnim("Sprites/Combat/Character/Sonara/Idle", "Idle", 4, 0.2f);
-        sonaraCombatAttack = loadAnim("Sprites/Combat/Character/Sonara/Attack", "Attack", 6, 0.1f);
-        aureliusCombatIdle = loadAnim("Sprites/Combat/Character/Aurelius/Idle", "Idle", 4, 0.2f);
-        aureliusCombatAttack = loadAnim("Sprites/Combat/Character/Aurelius/Attack", "Attack", 6, 0.1f);
-        lyronCombatIdle = loadAnim("Sprites/Combat/Character/Lyron/Idle", "Idle", 4, 0.2f);
-        lyronCombatAttack = loadAnim("Sprites/Combat/Character/Lyron/Attack", "Attack", 6, 0.1f);
-
-        // Monster Animations
-        fleshfeederCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle", "Idle", 4, 0.2f));
-        fleshfeederCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack", "Attack", 6, 0.2f));
-        darrylionCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Darrylion/Idle", "Idle", 4, 0.2f));
-        darrylionCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Darrylion/Attack", "Attack", 6, 0.2f));
-        gobninilCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle", "Idle", 4, 0.2f));
-        gobninilCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack", "Attack", 6, 0.2f));
-        chimericksCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle", "Idle", 4, 0.2f));
-        chimericksCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack", "Attack", 6, 0.2f));
-        labagoliathCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle", "Idle", 4, 0.2f));
-        labagoliathCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Attack", "Attack", 6, 0.2f));
-        syozanCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle", "Idle", 4, 0.2f));
-        syozanCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack", "Attack", 6, 0.2f));
-
-
-    // ── Audio ────────────────────────────────────────────────────────────────
+        // Lyron
+        lyronIdleRight = loadAnim("Sprites/Characters/Lyron/Idle", "Idle", 4, 0.1f);
+        lyronIdleLeft = flipped(lyronIdleRight);
+        this.lyronWalkRight = this.loadAnim("Sprites/Characters/Lyron/Walk", "Movement", 6, 0.1F);
+        lyronWalkLeft = flipped(lyronWalkRight);
 
         // Music (looping character themes)
-        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
         titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
 
-
-    // ── Audio ────────────────────────────────────────────────────────────────
-
-        titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
         titleBGM.setLooping(true);
+// (Or wherever your combat background image is saved)
     }
-
     // ── Helpers ────────────────────────────────────────────────────────────────
 
     private Animation<TextureRegion> loadAnim(String folder, String base,
@@ -323,7 +303,16 @@ public class Assets implements Disposable {
     @Override
     public void dispose() {
         font.dispose(); titleFont.dispose(); bigFont.dispose();
-        titleScreenTex.dispose(); townTex.dispose();
+        titleScreenTex.dispose();
+
+        townTex.getTexture().dispose();
+        townExitTex.getTexture().dispose();
+        townDecorationsTex.getTexture().dispose();
+
+        silentCavernsTex.getTexture().dispose();
+        abyssOfDissonanceTex.getTexture().dispose();
+//        if (silentCavernsDecorationsTex != null) silentCavernsDecorationsTex.dispose();
+//        if (abyssDecorationsTex         != null) abyssDecorationsTex.dispose();
         sonaraTex.dispose(); lyronTex.dispose(); aureliusTex.dispose();
         darknessOverlay.dispose();
         startBtnTex.dispose();

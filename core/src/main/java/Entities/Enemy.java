@@ -51,12 +51,11 @@ public class Enemy {
         this.attacks  = attacks;
     }
 
-    // ── Setters ───────────────────────────────────────────────────────────────
-
     public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
-        currentHp = maxHp;
+        this.currentHp = maxHp;
     }
+
     // ── Getters ───────────────────────────────────────────────────────────────
 
     public String   getName()      { return name; }

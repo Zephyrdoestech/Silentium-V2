@@ -1,0 +1,65 @@
+package Screens;
+
+import Entities.Enemy;
+import io.github.Zephyrdoestech.Main;
+import Mechanics.MapTraversalSystem.Room;
+import com.badlogic.gdx.math.Rectangle;
+import java.util.ArrayList;
+
+public class AbyssOfDissonanceScreen extends ExploringScreen {
+
+    public AbyssOfDissonanceScreen(Main game) { super(game); }
+
+    @Override
+    protected void initMapData() {
+        this.mapName = "Abyss of Dissonance";
+        game.ctx.MAP_SIZE = 1800f;
+
+        game.ctx.rooms = new ArrayList<>();
+        game.ctx.rooms.add(new Room(726f, 1439f, 227f, 250f));
+        game.ctx.rooms.add(new Room(726f, 788f, 227f, 250f));
+        //final room
+        game.ctx.rooms.add(new Room(726f, 135f, 227f, 250f));
+
+        this.mapTexture = game.assets.abyssOfDissonanceTex;
+        this.mapDecor = null;
+        this.exitTexture = null;
+
+        this.exitRoom = null;
+    }
+
+    @Override
+    protected void initWalkable() {
+        walkableZones.clear();
+
+        for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
+
+        walkableZones.add(new Rectangle(839f,  200f, 0.1f, 1300f));
+
+    }
+
+    @Override
+    protected ExploringScreen getNextScreen() {
+        // can return to main or start screen
+        return null;
+    }
+
+    @Override
+    protected void spawnEnemies() {
+        game.ctx.mapEnemies.clear();
+
+        Room semiBossRoom = game.ctx.rooms.get(1);
+        float sbX = semiBossRoom.getBounds().x + (semiBossRoom.getBounds().width  - 64f) / 2f;
+        float sbY = semiBossRoom.getBounds().y + (semiBossRoom.getBounds().height - 64f) / 2f;
+        Enemy labagoliath = Enemy.labagoliath(sbX, sbY);
+        semiBossRoom.addEnemy(labagoliath);
+        game.ctx.mapEnemies.add(labagoliath);
+
+        Room finalBossRoom = game.ctx.rooms.get(2);
+        float fbX = finalBossRoom.getBounds().x + (finalBossRoom.getBounds().width  - 64f) / 2f;
+        float fbY = finalBossRoom.getBounds().y + (finalBossRoom.getBounds().height - 64f) / 2f;
+        Enemy maestroSyozan = Enemy.maestroSyozan(fbX, fbY);
+        finalBossRoom.addEnemy(maestroSyozan);
+        game.ctx.mapEnemies.add(maestroSyozan);
+    }
+}

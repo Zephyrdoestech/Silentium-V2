@@ -5,9 +5,6 @@ Audio/BGM_BATTLE_silentcaverns.wav
 Audio/BGM_BATTLE_townofechoes.wav
 Audio/BGM_Title.wav
 Audio/BGM_intro_story.wav
-Audio/banjo.wav
-Audio/flute.wav
-Audio/harp.wav
 Audio/title_music.wav
 Aurelius/Select/aureliusSelect1.png
 Aurelius/Select/aureliusSelect10.png
@@ -35,6 +32,8 @@ Background/Combat/Cavern.jpg
 Background/Combat/Town.jpg
 Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Dungeon.png
+Background/Map/Town_Decorations.png
+Background/Map/Town_Exit.png
 Background/Map/Town_Of_Echoes.png
 Background/Story/story_panel_1.png
 Background/Story/story_panel_2.png
@@ -222,6 +221,11 @@ Sprites/Combat/SplashScreen/Victory/Victory5.png
 Sprites/Combat/SplashScreen/Victory/Victory6.png
 Sprites/Combat/SplashScreen/Victory/Victory7.png
 Sprites/Combat/SplashScreen/Victory/Victory8.png
+UI/credits_btn.png
+UI/exit_btn.png
+UI/start_btn.png
+UI/story_btn.png
+UI/tutorial_btn.png
 aurelius.png
 cave.png
 lyron.png

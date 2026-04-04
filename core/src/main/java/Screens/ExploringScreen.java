@@ -34,118 +34,93 @@ import Mechanics.MapTraversalSystem.Room;
  */
 public class ExploringScreen extends BaseScreen {
 
-    private static final Random RNG = new Random();
-    private List<Rectangle> walkableZones = new ArrayList<>();
+    protected static final Random RNG = new Random();
+    protected final List<Rectangle> walkableZones = new ArrayList<>();
+
+    protected TextureRegion mapTexture;
+    protected TextureRegion mapDecor;
+    protected String mapName = "Unknown";
+    protected Room exitRoom;
+    protected TextureRegion exitTexture;
+    private boolean atExit = false;
+    private boolean showingExitPrompt = false;
 
     public ExploringScreen(Main game) { super(game); }
 
-    @Override
-    public void show() {
-        // Only initialise the map once; re-entering from combat keeps the existing state
-        if (game.ctx.player == null) {
-            initMap();
-        }else {
-            initWalkable(); // ← rebuild zones on the new instance
-        }
-        game.ctx.stateTime = 0f;
+    //overriden by map classes
+    protected int getRequiredKills() { return 0; }
+    protected ExploringScreen getNextScreen() { return null; }
+    protected int getEnemyCount() { return 3; }
+    protected void initMapData() { }
+    protected void initWalkable() {
+        walkableZones.clear();
+        for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
     }
+    protected void spawnEnemies() { game.ctx.mapEnemies.clear(); }
 
-    private void initMap() {
-        game.ctx.playerState = GameContext.PlayerState.IDLE;
-        game.ctx.facing      = GameContext.Facing.RIGHT;
 
-        // --- ADD THIS ONE LINE TO BUILD THE ROOMS AND MONSTERS! ---
+    protected void initPlayerPosition() {
         spawnEnemies();
-
-        initWalkable();
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty())
+            if (r.getEnemies().isEmpty() && r != exitRoom)
                 emptyRooms.add(r);
 
-        Room spawnRoom = emptyRooms.get(RNG.nextInt(emptyRooms.size()));
+        Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));
+
         float x = spawnRoom.getBounds().x + (spawnRoom.getBounds().width  - GameContext.CHAR_SIZE) / 2f;
         float y = spawnRoom.getBounds().y + (spawnRoom.getBounds().height - GameContext.CHAR_SIZE) / 2f;
 
         game.ctx.player = new MapCharacter(x, y);
     }
 
-    private void spawnEnemies() {
-        game.ctx.mapEnemies = new ArrayList<>();
-        game.ctx.rooms      = new ArrayList<>();
-
-        // 1st row
-        game.ctx.rooms.add(new Room(65f,   1770f, 200f, 200f));
-        game.ctx.rooms.add(new Room(637f,  1770f, 200f, 200f));
-        game.ctx.rooms.add(new Room(1215f, 1770f, 200f, 200f));
-        game.ctx.rooms.add(new Room(1787f, 1770f, 200f, 200f));
-        // 2nd row
-        game.ctx.rooms.add(new Room(65f,   1195f, 200f, 200f));
-        game.ctx.rooms.add(new Room(637f,  1195f, 200f, 200f));
-        game.ctx.rooms.add(new Room(1215f, 1195f, 200f, 200f));
-        game.ctx.rooms.add(new Room(1787f, 1195f, 200f, 200f));
-        // 3rd row
-        game.ctx.rooms.add(new Room(65f,   623f,  200f, 200f));
-        game.ctx.rooms.add(new Room(637f,  623f,  200f, 200f));
-        game.ctx.rooms.add(new Room(1215f, 623f,  200f, 200f));
-        game.ctx.rooms.add(new Room(1787f, 623f,  200f, 200f));
-        // 4th row
-        game.ctx.rooms.add(new Room(65f,   45f,   200f, 200f));
-        game.ctx.rooms.add(new Room(637f,  45f,   200f, 200f));
-        game.ctx.rooms.add(new Room(1215f, 45f,   200f, 200f));
-        game.ctx.rooms.add(new Room(1787f, 45f,   200f, 200f));
-
-        int totalEnemies = 5 + RNG.nextInt(4); // 5, 6, 7, or 8
-
-        List<Room> shuffled = new ArrayList<>(game.ctx.rooms);
-        Collections.shuffle(shuffled, RNG);
-
-        for (int i = 0; i < totalEnemies; i++) {
-            Room room = shuffled.get(i);
-            float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - GameContext.CHAR_SIZE);
-            float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - GameContext.CHAR_SIZE);
-            Enemy e = RNG.nextBoolean()
-                ? Enemy.fleshFeeder(x, y)
-                : Enemy.darrylion(x, y);
-            room.addEnemy(e);
-            game.ctx.mapEnemies.add(e);
-        }
-    }
-
-    private void initWalkable() {
-        walkableZones.clear();
-
-        for (Room r : game.ctx.rooms)
-            walkableZones.add(r.getBounds());
-
-        //horizontal
-        walkableZones.add(new Rectangle(65f,  140f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  710f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1290f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1870f, 1900f, 30f));
-        //vertical
-        walkableZones.add(new Rectangle(150f,  65f, 20f, 1900f));
-        walkableZones.add(new Rectangle(725f,  65f, 20f, 1900f));
-        walkableZones.add(new Rectangle(1300f,  65f, 20f, 1900f));
-        walkableZones.add(new Rectangle(1872f,  65f, 20f, 1900f));
-
-    }
-
-    private boolean isInWalkableZone(float x, float y) {
-        Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        for (Rectangle zone : walkableZones) {
-            if (zone.overlaps(playerRect)) {
-                return true;
-            }
-        }
-        return false;
-    } // <--- This bracket closes the zone method!
-
-    // ── Render ────────────────────────────────────────────────────────────────
 
     @Override
+    public void show() {
+        if (game.ctx.rooms.isEmpty()) {
+            initMapData();
+            initWalkable();
+        }
+
+        if (game.ctx.player == null) {
+            game.ctx.activeCharacterStats.resetStats();
+            initPlayerPosition();
+        } else {
+            for (Room r : game.ctx.rooms) {
+                if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
+                    game.ctx.player.setX(r.getBounds().x + (r.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
+                    game.ctx.player.setY(r.getBounds().y + (r.getBounds().height - GameContext.CHAR_SIZE) / 2f);
+                    break;
+                }
+            }
+        }
+        game.ctx.stateTime = 0f;
+    }
+
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    @Override
     public void render(float delta) {
+        if (game.ctx.activeCharacterStats.getHp() <= 0) {
+            game.ctx.lives--;
+
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+
+            if (game.ctx.lives <= 0) {
+                game.ctx.lives = 3;
+                game.ctx.player = null;
+                game.setScreen(new MainMenuScreen(game));
+                return;
+            } else {
+                game.ctx.activeCharacterStats.resetStats();
+                this.show();
+                return;
+            }
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
@@ -157,64 +132,57 @@ public class ExploringScreen extends BaseScreen {
         game.batch.begin();
 
         // Map
-        game.batch.draw(game.assets.townTex, 0, 0, GameContext.MAP_SIZE, GameContext.MAP_SIZE);
-
+        if (mapTexture != null) {
+            game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+        }
+        if (exitRoom != null && exitTexture != null) {
+            float exitSize = 104f;
+            game.batch.draw(exitTexture,
+                exitRoom.getBounds().x + (exitRoom.getBounds().width - exitSize) / 2f,
+                exitRoom.getBounds().y + (exitRoom.getBounds().height) / 1.16f,
+                exitSize, exitSize);
+        }
         game.batch.end();
 
         // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
         // Debug room outlines + enemy rects (ShapeRenderer)
-//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        game.shapeRenderer.setColor(Color.GREEN);
-//        for (Room r : game.ctx.rooms)
-//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-//        game.shapeRenderer.setColor(Color.YELLOW);
-//        for (Rectangle h : walkableZones)
-//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-//        game.shapeRenderer.end();
 
-        // --- DELETED THE RED BOX SHAPERENDERER HERE ---
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        game.shapeRenderer.setColor(Color.GREEN);
+        for (Room r : game.ctx.rooms)
+            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+        game.shapeRenderer.setColor(Color.YELLOW);
+        for (Rectangle h : walkableZones)
+            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+        game.shapeRenderer.end();
 
-        game.batch.setProjectionMatrix(game.gameCamera.combined);
+
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
+        for (Enemy e : game.ctx.mapEnemies) {
+            if (!e.isDefeated())
+                game.shapeRenderer.rect(e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
+        }
+        game.shapeRenderer.end();
+
         game.batch.begin();
-
-        // --- DRAW ENEMIES (SPRITES + NAMES) ---
+        game.assets.font.setColor(Color.RED);
         for (Enemy e : game.ctx.mapEnemies) {
             if (!e.isDefeated()) {
-
-                // 1. Pick the right animation frame based on the enemy's name
-                com.badlogic.gdx.graphics.g2d.TextureRegion currentFrame = null;
-
-                if (e.getName().equals("Darryllion")) {
-                    currentFrame = game.assets.darryllionIdle.getKeyFrame(game.ctx.stateTime, true);
-                }
-                else if (e.getName().equals("Flesh Feeder")) {
-                    // TODO: Replace with Flesh Feeder animation when you make it!
-                    // Example: currentFrame = game.assets.fleshFeederIdle.getKeyFrame(game.ctx.stateTime, true);
-                }
-                else if (e.getName().equals("Andrewellers")) {
-                    // TODO: Replace with Andrewellers animation
-                }
-
-                // 2. Draw the sprite! (We check != null just in case you haven't drawn the other monsters yet)
-                if (currentFrame != null) {
-                    game.batch.draw(currentFrame, e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-                }
-
-                // 3. Draw Enemy name labels right above their head
-                game.assets.font.setColor(Color.RED);
                 game.assets.font.draw(game.batch, e.getName(),
                     e.getX() - 10, e.getY() + GameContext.CHAR_SIZE + 18);
             }
         }
-        game.assets.font.setColor(Color.WHITE); // Reset font color
-
+        game.assets.font.setColor(Color.WHITE);
         // Player sprite
         drawPlayerSprite();
+        //MAP DECORS
+        if (mapDecor != null)
+            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
 
         // Darkness overlay (world space, centred on player)
         drawDarknessOverlay();
-
         game.batch.end();
 
         // HUD (uses fixed uiCamera)
@@ -226,7 +194,6 @@ public class ExploringScreen extends BaseScreen {
     }
 
     // ── Movement ──────────────────────────────────────────────────────────────
-
     private void handleMovement(float delta) {
         float move = GameContext.SPEED * delta;
         float prevX = game.ctx.player.getX();
@@ -234,23 +201,25 @@ public class ExploringScreen extends BaseScreen {
 
         game.ctx.playerState = GameContext.PlayerState.IDLE;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            game.ctx.player.up(move);
-            game.ctx.playerState = GameContext.PlayerState.WALK_UP;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            game.ctx.player.down(move);
-            game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            game.ctx.player.left(move);
-            game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
-            game.ctx.facing = GameContext.Facing.LEFT;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            game.ctx.player.right(move);
-            game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
-            game.ctx.facing = GameContext.Facing.RIGHT;
+        if (!showingExitPrompt) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                game.ctx.player.up(move);
+                game.ctx.playerState = GameContext.PlayerState.WALK_UP;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                game.ctx.player.down(move);
+                game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                game.ctx.player.left(move);
+                game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
+                game.ctx.facing = GameContext.Facing.LEFT;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                game.ctx.player.right(move);
+                game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
+                game.ctx.facing = GameContext.Facing.RIGHT;
+            }
         }
 
         if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -258,35 +227,84 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.player.setY(prevY);
         }
 
-        float S = GameContext.MAP_SIZE, C = GameContext.CHAR_SIZE;
-        if (game.ctx.player.getX() < 0)     game.ctx.player.setX(0);
-        if (game.ctx.player.getY() < 0)     game.ctx.player.setY(0);
-        if (game.ctx.player.getX() > S - C) game.ctx.player.setX(S - C);
-        if (game.ctx.player.getY() > S - C) game.ctx.player.setY(S - C);
+        float S = game.ctx.MAP_SIZE, C = GameContext.CHAR_SIZE;
+        game.ctx.player.setX(MathUtils.clamp(game.ctx.player.getX(), 0, S - C));
+        game.ctx.player.setY(MathUtils.clamp(game.ctx.player.getY(), 0, S - C));
+
+        // Exit Logic
+        if (exitRoom != null) {
+            float exitSize = 104f;
+            Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
+            Rectangle exitRect = new Rectangle(
+                exitRoom.getBounds().x + (exitRoom.getBounds().width - exitSize) / 2f,
+                exitRoom.getBounds().y + (exitRoom.getBounds().height) / 1.16f,
+                exitSize, exitSize);
+
+            if (pRect.overlaps(exitRect)) {
+                if (!atExit) { showingExitPrompt = true; atExit = true; }
+            } else atExit = false;
+        }
+
+        if (showingExitPrompt) {
+            boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
+            if (canExit) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+                    ExploringScreen next = getNextScreen();
+                    if (next != null) {
+                        game.ctx.player = null;
+                        game.ctx.enemiesDefeatedInCurrentMap = 0;
+                        game.ctx.rooms.clear();
+                        game.ctx.mapEnemies.clear();
+
+                        game.setScreen(next);
+                    }
+                    showingExitPrompt = false;
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+                    showingExitPrompt = false;
+                }
+            } else {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                    showingExitPrompt = false;
+                    game.ctx.player.setY(game.ctx.player.getY() - 15f);
+                }
+            }
+        }
+
 
         // Enemy collision
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
-            if (pRect.overlaps(new Rectangle(e.getX(), e.getY(), C, C))) {
+            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
+            if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
                 game.ctx.currentEnemy = e;
-                game.ctx.noteHandler.noteCount    = 0;
-                game.ctx.combatLog    = "A " + e.getName() + " appears! Enter 3 notes to attack.";
-                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                game.ctx.noteHandler.noteCount = 0;
+                game.ctx.combatLog    = "A " + e.getName() + " appears!";
+                game.ctx.combatState  = GameContext.CombatState.ATTACK;
+                game.ctx.lastMapScreen = this;
                 game.setScreen(new CombatScreen(game));
                 return;
             }
         }
     }
 
+    private boolean isInWalkableZone(float x, float y) {
+        Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
+        for (Rectangle zone : walkableZones)
+            if (zone.overlaps(playerRect))
+                return true;
+        return false;
+    }
+
+
     // ── Camera ────────────────────────────────────────────────────────────────
 
     private void updateCamera() {
         float halfW = Main.WORLD_WIDTH  / 2f;
         float halfH = Main.WORLD_HEIGHT / 2f;
-        float S     = GameContext.MAP_SIZE;
+        float S     = game.ctx.MAP_SIZE;
         float C     = GameContext.CHAR_SIZE;
         float camX  = MathUtils.clamp(game.ctx.player.getX() + C / 2f, halfW, S - halfW);
         float camY  = MathUtils.clamp(game.ctx.player.getY() + C / 2f, halfH, S - halfH);
@@ -339,7 +357,6 @@ public class ExploringScreen extends BaseScreen {
     }
 
     // ── Darkness overlay ──────────────────────────────────────────────────────
-
     private void drawDarknessOverlay() {
         float drawSize = 1100f;
         float cx = game.ctx.player.getX() + GameContext.CHAR_SIZE / 2f;
@@ -358,7 +375,6 @@ public class ExploringScreen extends BaseScreen {
     }
 
     // ── HUD ───────────────────────────────────────────────────────────────────
-
     private void drawHUD() {
         Character c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
@@ -385,6 +401,27 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.setColor(Color.GRAY);
         game.assets.font.draw(game.batch, "ESC – Menu", 10, 20);
         game.assets.font.setColor(Color.WHITE);
+        game.batch.end();
+
+        game.batch.begin();
+        game.assets.font.draw(game.batch, "LIVES: " + game.ctx.lives, 20, Main.WORLD_HEIGHT - 85);
+        // show kill progress (can remove later)
+        if (getRequiredKills() > 0) {
+            String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
+            game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
+        }
+
+        if (showingExitPrompt) {
+            if (game.ctx.enemiesDefeatedInCurrentMap < getRequiredKills()) {
+                game.assets.font.draw(game.batch, "LOCKED: Defeat " + getRequiredKills() + " enemies first!",
+                    Main.WORLD_WIDTH / 2f - 150, Main.WORLD_HEIGHT / 2f + 50);
+                game.assets.font.draw(game.batch, "[Press ENTER to go back]",
+                    Main.WORLD_WIDTH / 2f - 100, Main.WORLD_HEIGHT / 2f + 20);
+            } else {
+                game.assets.font.draw(game.batch, "EXIT READY! (Y/N)",
+                    Main.WORLD_WIDTH / 2f - 80, Main.WORLD_HEIGHT / 2f + 50);
+            }
+        }
         game.batch.end();
     }
 

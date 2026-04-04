@@ -163,6 +163,14 @@ public class Character {
         currentHp  = Math.min(maxHp, currentHp + hpGain);
     }
 
+    public void resetStats() {
+        this.currentHp        = this.maxHp;
+        this.currentShield    = 0;
+        this.level            = 1;
+        this.monstersDefeated = 0;
+        this.damageBuff       = 0.0;
+    }
+
     // ─── Passive Skill ────────────────────────────────────────────────────────
 
     public void PassiveSkillEffect(Character player, Enemy monster, int damage) {;
@@ -206,22 +214,25 @@ public class Character {
     }
 
     // ─── Active Skill ─────────────────────────────────────────────────────────
-
     public int activeSkillEffect(int damage) {
-        switch (name) {
-            case "Sonara":
-                return damage + 1; // Adds 1 point to initial damage
-            default:
+        switch (this.name) {
+            case "Sonara" -> {
+                return damage + 1;
+            }
+            default -> {
                 return damage;
+            }
         }
     }
 
     public boolean activeSkillReRoll() {
-        switch (name) {
-            case "Lyron":
-                return true; // Re-roll notes
-            default:
+        switch (this.name) {
+            case "Lyron" -> {
+                return true;
+            }
+            default -> {
                 return false;
+            }
         }
     }
 
