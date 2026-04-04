@@ -204,10 +204,29 @@ public class CombatScreen extends BaseScreen {
         splashTimer += delta;
         TextureRegion frame = null;
 
+        // If battleIntroAnim is null, immediately transition to ENEMY_INTRODUCTION to avoid NullPointerException.
+        // This is a safety measure if the asset is missing or not yet loaded.
+        if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN && game.assets.battleIntroAnim == null) {
+            game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
+            return; // Skip drawing and animation checks for this frame
+        }
+
         switch (game.ctx.combatState) {
-            case BATTLE_SCREEN: frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false); break;
-            case VICTORY:       frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);     break;
-            case DEFEAT:        frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);      break;
+            case BATTLE_SCREEN:
+                if (game.assets.battleIntroAnim != null) {
+                    frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
+            case VICTORY:
+                if (game.assets.victoryAnim != null) {
+                    frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
+            case DEFEAT:
+                if (game.assets.defeatAnim != null) {
+                    frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
             default: break;
         }
 
@@ -220,16 +239,19 @@ public class CombatScreen extends BaseScreen {
         }
 
         if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN
+            && game.assets.battleIntroAnim != null
             && game.assets.battleIntroAnim.isAnimationFinished(splashTimer)) {
             game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
         }
 
         if (game.ctx.combatState == GameContext.CombatState.VICTORY
+            && game.assets.victoryAnim != null
             && game.assets.victoryAnim.isAnimationFinished(splashTimer)) {
             endCombat();
         }
 
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT
+            && game.assets.defeatAnim != null
             && game.assets.defeatAnim.isAnimationFinished(splashTimer)) {
             endCombat();
         }
