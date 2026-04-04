@@ -25,4 +25,13 @@ public class MinorsGrace implements Item {
         System.out.println("[MinorsGrace] Effect applied: " + player.getName()
             + " starts the next battle with +1 free Minor chord use.");
     }
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
+        return player.getAssets().minorsGraceInvTex;
+    }
+
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
+        return player.getAssets().minorsGraceBattleTex;
+    }
 }

@@ -32,7 +32,20 @@ public class Assets implements Disposable {
     public final BitmapFont titleFont;  // headings   (scale 2.2)
     public final BitmapFont bigFont;    // victory/defeat (scale 3.0)
 
-    // ── UI / Map Textures ─────────────────────────────────────────────────────
+    // ── Item Textures ─────────────────────────────────────────────────────────
+
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion crimsonChorusInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion crimsonChorusBattleTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion majorsBlessingInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion majorsBlessingBattleTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion minorsGraceInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion minorsGraceBattleTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion resolvedDissonanceInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion resolvedDissonanceBattleTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion silentBarrierInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion silentBarrierBattleTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion timeOrbInvTex;
+    public final com.badlogic.gdx.graphics.g2d.TextureRegion timeOrbBattleTex;
 
     public final Texture titleScreenTex;
 
@@ -192,7 +205,20 @@ public class Assets implements Disposable {
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
         noteTextures = buildNoteTextures();
 
-        // ── Exploration Animations ────────────────────────────────────────────
+        // ── Item Textures ─────────────────────────────────────────────────────
+
+        crimsonChorusInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/crimson_chorus.png"));
+        crimsonChorusBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/crimson_chorus_battle.png"));
+        majorsBlessingInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/majors_blessing.png"));
+        majorsBlessingBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/majors_blessing_battle.png"));
+        minorsGraceInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/minors_grace.png"));
+        minorsGraceBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/minors_grace_battle.png"));
+        resolvedDissonanceInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/resolved_dissonance.png"));
+        resolvedDissonanceBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/resolved_dissonance_battle.png"));
+        silentBarrierInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/silent_barrier.png"));
+        silentBarrierBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/silent_barrier_battle.png"));
+        timeOrbInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/time_orb.png"));
+        timeOrbBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/time_orb_battle.png"));
 
         aureliusIdleRight = loadAnim("Sprites/Characters/Aurelius/Idle",   "Idle",      4, 0.2f);
         aureliusIdleLeft  = flipped(aureliusIdleRight);

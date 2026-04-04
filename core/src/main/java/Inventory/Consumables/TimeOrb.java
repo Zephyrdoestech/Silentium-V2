@@ -28,4 +28,13 @@ public class TimeOrb implements Item {
         System.out.println("[TimeOrb] Effect applied: +" + BONUS_SECONDS
             + " seconds added to the next battle's turn timer.");
     }
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
+        return player.getAssets().timeOrbInvTex;
+    }
+
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
+        return player.getAssets().timeOrbBattleTex;
+    }
 }

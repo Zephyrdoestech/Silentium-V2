@@ -25,4 +25,13 @@ public class ResolvedDissonance implements Item {
         System.out.println("[ResolvedDissonance] Effect applied: " + player.getName()
             + "'s next B Diminished chord will not cost HP.");
     }
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
+        return player.getAssets().resolvedDissonanceInvTex;
+    }
+
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
+        return player.getAssets().resolvedDissonanceBattleTex;
+    }
 }

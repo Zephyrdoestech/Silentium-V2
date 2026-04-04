@@ -25,4 +25,13 @@ public class SilentBarrier implements Item {
         System.out.println("[SilentBarrier] Effect applied: " + player.getName()
             + " is immune to damage and debuffs for 1 turn.");
     }
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
+        return player.getAssets().silentBarrierInvTex;
+    }
+
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
+        return player.getAssets().silentBarrierBattleTex;
+    }
 }

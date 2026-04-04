@@ -25,4 +25,13 @@ public class MajorsBlessing implements Item {
         System.out.println("[MajorsBlessing] Effect applied: " + player.getName()
             + " starts the next battle with +1 free Major chord use.");
     }
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
+        return player.getAssets().majorsBlessingInvTex;
+    }
+
+    @Override
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
+        return player.getAssets().majorsBlessingBattleTex;
+    }
 }

@@ -25,4 +25,6 @@ public interface Item {
      * @param player the active player {@link Character}
      */
     void applyEffect(Character player);
+    com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon();
+    com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon();
 }
