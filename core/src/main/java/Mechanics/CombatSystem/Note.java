@@ -85,4 +85,16 @@ public class Note{
             }
         }
     }
+
+    /**
+     * Returns the input prompt shown to the player during the ATTACK state.
+     * Reflects which notes are available at the player's current level.
+     */
+    public String getInputGuide(int level) {
+        switch (level) {
+            case 1:  return "Input A-C notes (3 total)";
+            case 2:  return "Input A-E notes (3 total)  |  BACKSPACE to undo";
+            default: return "Input A-G notes (3 total)  |  BACKSPACE to undo";
+        }
+    }
 }

@@ -159,7 +159,10 @@ public class MainMenuScreen extends BaseScreen {
 
     private void handleSelection() {
         switch (selection) {
-            case 0: game.setScreen(new IntroScreen(game));       break;
+            case 0:
+                game.assets.titleBgm.stop();
+                game.setScreen(new CharSelectScreen(game));
+                break;
             case 1: game.setScreen(new HowToPlayScreen(game));   break;
             case 2: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Story
             case 3: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Credits

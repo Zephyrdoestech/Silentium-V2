@@ -139,6 +139,8 @@ public class CharSelectScreen extends BaseScreen {
         }
 
         // Removed stopTheme() from here
+        game.assets.titleBgm.stop();
+        game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {
             case 0: game.ctx.activeCharacterStats = new Character("Sonara",   "Banjo", 150, 40); break;

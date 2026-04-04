@@ -142,4 +142,54 @@ public class Chord {
                 return "Unknown chord.";
         }
     }
+
+    /**
+     * Returns the display name of a chord key.
+     * e.g. "CMAJOR" → "C Major"
+     */
+    public String getChordName(String chord) {
+        switch (chord) {
+            case "CMAJOR": return "C Major";
+            case "DMINOR": return "D Minor";
+            case "EMINOR": return "E Minor";
+            case "FMAJOR": return "F Major";
+            case "GMAJOR": return "G Major";
+            case "AMINOR": return "A Minor";
+            case "BDIM":   return "B Diminished";
+            default:       return "Unknown";
+        }
+    }
+
+    /**
+     * Returns the feedback message describing what a chord did.
+     * Requires the Character to compute HP-based values.
+     */
+    public String getChordMessage(String chord, Character c) {
+        switch (chord) {
+            case "CMAJOR": {
+                int h = (int)(c.getMaxHp() * 0.20f);
+                return "C Major! Healed " + h + " HP.";
+            }
+            case "DMINOR":
+                return "D Minor! +20% damage buff.";
+            case "EMINOR": {
+                int h = (int)(c.getMaxHp() * 0.10f);
+                return "E Minor! Healed " + h + " HP + 10% buff.";
+            }
+            case "FMAJOR":
+                return "F Major! +25 shield.";
+            case "GMAJOR": {
+                int h = (int)(c.getMaxHp() * 0.15f);
+                return "G Major! Healed " + h + " HP + 15 shield.";
+            }
+            case "AMINOR":
+                return "A Minor! +35 shield.";
+            case "BDIM": {
+                int sd = (int)(c.getMaxHp() * 0.10f);
+                return "B Diminished! +30% dmg, lost " + sd + " HP.";
+            }
+            default:
+                return "";
+        }
+    }
 }

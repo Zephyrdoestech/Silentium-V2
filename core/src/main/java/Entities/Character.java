@@ -1,27 +1,41 @@
 package Entities;
 
+import Mechanics.CombatSystem.Note;
+import io.github.Zephyrdoestech.GameContext;
+
 public class Character {
-    public static class PassiveSkill{
+
+    // ── Inner Classes ─────────────────────────────────────────────────────────
+
+    public static class PassiveSkill {
         public final String psName;
         public final String psDescription;
 
-        PassiveSkill(String psName, String psDescription){
-            this.psName = psName;
+        PassiveSkill(String psName, String psDescription) {
+            this.psName        = psName;
             this.psDescription = psDescription;
         }
+
+        public String getPsName(){return psName;}
+         public String getPsDescription(){return psDescription;}
     }
 
-    public static class ActiveSkill{
+    public static class ActiveSkill {
         public final String asName;
         public final String asDescription;
         public boolean activate;
 
-        ActiveSkill(String asName, String asDescription){
-            this.asName = asName;
+        ActiveSkill(String asName, String asDescription) {
+            this.asName        = asName;
             this.asDescription = asDescription;
-            this.activate = false;
+            this.activate      = false;
         }
+
+        public String getAsName(){return asName;}
+        public String getAsDescription(){return asDescription;}
     }
+
+    // ── Fields ────────────────────────────────────────────────────────────────
 
     private String name;
     private String instrument;
@@ -30,47 +44,54 @@ public class Character {
     private int currentHp;
     private int maxShield;
     private int currentShield;
+
     private PassiveSkill passiveSkill;
-    private ActiveSkill activeSkill;
+    private ActiveSkill  activeSkill;
 
-    private int level;
-    private int monstersDefeated;
-    private double damageBuff; // Multiplier bonus from chords/skills (e.g., 0.20 = +20%)
+    private int    level;
+    private int    monstersDefeated;
+    private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
 
-    // Base HP values per character per level, matching the GDD
-    private static final int[] SONARA_HP   = {150, 175, 225, 300, 400};
-    private static final int[] AURELIUS_HP = {150, 175, 225, 300, 400};
-    private static final int[] LYRON_HP    = {250, 270, 310, 370, 450};
+    // ── HP Tables (GDD values per level) ──────────────────────────────────────
+
+    private static final int[] SONARA_HP   = { 150, 175, 225, 300, 400 };
+    private static final int[] AURELIUS_HP = { 150, 175, 225, 300, 400 };
+    private static final int[] LYRON_HP    = { 250, 270, 310, 370, 450 };
+
+    // ── Constructor ───────────────────────────────────────────────────────────
 
     public Character(String name, String instrument, int maxHp, int maxShield) {
-        this.name       = name;
-        this.instrument = instrument;
-        this.maxHp      = maxHp;
-        this.currentHp  = maxHp;   // Start at full health
-        this.maxShield  = maxShield;
-        this.currentShield = 0;    // Shield starts empty until a chord grants it
-        this.level      = 1;
+        this.name          = name;
+        this.instrument    = instrument;
+        this.maxHp         = maxHp;
+        this.currentHp     = maxHp;   // Start at full health
+        this.maxShield     = maxShield;
+        this.currentShield = 0;       // Shield starts empty until a chord grants it
+        this.level         = 1;
         this.monstersDefeated = 0;
-        this.damageBuff = 0.0;
+        this.damageBuff    = 0.0;
         setPassiveSkill(name);
         setActiveSkill(name);
     }
 
-    // ─── Getters ───────────────────────────────────────────────────────────────
+    // ── Getters ───────────────────────────────────────────────────────────────
 
-    public String getName()       { return name; }
-    public String getInstrument() { return instrument; }
+    public String getName()        { return name; }
+    public String getInstrument()  { return instrument; }
 
-    public int getHp()      { return currentHp; }
-    public int getMaxHp()   { return maxHp; }
-    public int getShield()  { return currentShield; }
-    public int getMaxShield() { return maxShield; }
+    public int getHp()             { return currentHp; }
+    public int getMaxHp()          { return maxHp; }
+    public int getShield()         { return currentShield; }
+    public int getMaxShield()      { return maxShield; }
 
-    public int    getLevel()           { return level; }
-    public int    getMonstersDefeated(){ return monstersDefeated; }
-    public double getDamageBuff()      { return damageBuff; }
+    public int    getLevel()            { return level; }
+    public int    getMonstersDefeated() { return monstersDefeated; }
+    public double getDamageBuff()       { return damageBuff; }
 
-    // ─── Setters ───────────────────────────────────────────────────────────────
+    public PassiveSkill getPassiveSkill() { return passiveSkill; }
+    public ActiveSkill  getActiveSkill()  { return activeSkill; }
+
+    // ── Setters ───────────────────────────────────────────────────────────────
 
     public void setHp(int hp) {
         this.currentHp = Math.max(0, Math.min(hp, maxHp));
@@ -81,36 +102,60 @@ public class Character {
     }
 
     public void setMaxHp(int maxHp) {
-        this.maxHp = maxHp;
-        // Don't let currentHp exceed the new cap
+        this.maxHp     = maxHp;
         this.currentHp = Math.min(this.currentHp, maxHp);
-    }
-
-    public void setPassiveSkill(String name){
-        switch(name){
-            case "Sonara":   this.passiveSkill = new PassiveSkill("Body of Thorns", "Sonara's passive skill reflects 15% of incoming damage back to the attacker."); break;
-            case "Aurelius": this.passiveSkill = new PassiveSkill("Melodic Remedy", "Aurelius's passive skill heals him for 5% of his max HP at the start of each turn."); break;
-            case "Lyron":    this.passiveSkill = new PassiveSkill("Winner Takes It All", "Lyron's passive skill grants him a shield equal to 25% of the damage he deals to enemies."); break;
-            default:         this.passiveSkill = new PassiveSkill("",""); break;
-        }
-    }
-    public void setActiveSkill(String name){
-        switch(name){
-            case "Sonara":   this.activeSkill = new ActiveSkill("Melodic Impromptu", "Sonara's active skill adds one (1) point to her initial damage."); break;
-            case "Aurelius": this.activeSkill = new ActiveSkill("Conservation", "Aurelius's active skill preserves the notes' current damage for next turn"); break;
-            case "Lyron":    this.activeSkill = new ActiveSkill("Musical Roulette", "Lyron's active skill rerolls the current damage of the notes."); break;
-            default:         this.activeSkill = new ActiveSkill("",""); break;
-        }
     }
 
     public void setDamageBuff(double buff) {
         this.damageBuff = buff;
     }
 
-    // ─── Combat Utilities ──────────────────────────────────────────────────────
+    public void setPassiveSkill(String name) {
+        switch (name) {
+            case "Sonara":
+                this.passiveSkill = new PassiveSkill("Body of Thorns",
+                    "Sonara's passive skill reflects 15% of incoming damage back to the attacker.");
+                break;
+            case "Aurelius":
+                this.passiveSkill = new PassiveSkill("Melodic Remedy",
+                    "Aurelius's passive skill heals him for 5% of his max HP at the start of each turn.");
+                break;
+            case "Lyron":
+                this.passiveSkill = new PassiveSkill("Winner Takes It All",
+                    "Lyron's passive skill grants him a shield equal to 25% of the damage he deals.");
+                break;
+            default:
+                this.passiveSkill = new PassiveSkill("", "");
+                break;
+        }
+    }
 
-//    Applies incoming damage, first absorbing through shield then HP.
-//    @param damage Raw damage after enemy's attack roll.
+    public void setActiveSkill(String name) {
+        switch (name) {
+            case "Sonara":
+                this.activeSkill = new ActiveSkill("Melodic Impromptu",
+                    "Sonara's active skill adds one (1) point to her initial damage.");
+                break;
+            case "Aurelius":
+                this.activeSkill = new ActiveSkill("Conservation",
+                    "Aurelius's active skill preserves the notes' current damage for next turn.");
+                break;
+            case "Lyron":
+                this.activeSkill = new ActiveSkill("Musical Roulette",
+                    "Lyron's active skill rerolls the current damage of the notes.");
+                break;
+            default:
+                this.activeSkill = new ActiveSkill("", "");
+                break;
+        }
+    }
+
+    // ── Combat Utilities ──────────────────────────────────────────────────────
+
+    /**
+     * Applies incoming damage, first absorbing through shield then HP.
+     * @param damage Raw damage value.
+     */
     public void takeDamage(int damage) {
         if (damage <= 0) return;
 
@@ -123,13 +168,12 @@ public class Character {
         currentHp = Math.max(0, currentHp - damage);
     }
 
-
-//    Restores HP by a flat amount, capped at maxHp.
+    /** Restores HP by a flat amount, capped at maxHp. */
     public void heal(int amount) {
         currentHp = Math.min(maxHp, currentHp + amount);
     }
 
-//    Adds shield points, capped at maxShield.
+    /** Adds shield points, capped at maxShield. */
     public void gainShield(int amount) {
         currentShield = Math.min(maxShield, currentShield + amount);
     }
@@ -138,15 +182,17 @@ public class Character {
         return currentHp > 0;
     }
 
-    // ─── Progression ───────────────────────────────────────────────────────────
+    // ── Progression ───────────────────────────────────────────────────────────
 
-//    Called after defeating an enemy; tracks kill count for level-up logic.
+    /** Called after defeating an enemy; tracks kill count for level-up logic. */
     public void defeatedMonster() {
         monstersDefeated++;
     }
 
-//    Levels the hero up to the given level, updating maxHp from GDD tables.
-//    @param newLevel Target level (1–5).
+    /**
+     * Levels the character up to the given level, updating maxHp from GDD tables.
+     * @param newLevel Target level (1–5).
+     */
     public void levelUp(int newLevel) {
         if (newLevel < 1 || newLevel > 5 || newLevel <= level) return;
         level = newLevel;
@@ -158,82 +204,98 @@ public class Character {
             case "Lyron":    newMaxHp = LYRON_HP[level - 1];    break;
             default:         newMaxHp = maxHp + 25;             break;
         }
+
         int hpGain = newMaxHp - maxHp;
-        maxHp      = newMaxHp;
-        currentHp  = Math.min(maxHp, currentHp + hpGain);
+        maxHp     = newMaxHp;
+        currentHp = Math.min(maxHp, currentHp + hpGain);
+    }
+
+    // ── Passive Skill Effects ─────────────────────────────────────────────────
+
+    /**
+     * Called after the player deals damage to an enemy.
+     * Lyron: gains shield equal to 25% of damage dealt.
+     *
+     * @param self   the character who attacked
+     * @param target the enemy that was hit
+     * @param damage the damage that was dealt
+     */
+    public void onDamageDealt(Character self, Enemy target, int damage) {
+        if (name.equals("Lyron")) {
+            int shieldAmount = (int)(damage * 0.25f);
+            self.gainShield(shieldAmount);
+        }
+    }
+
+    /**
+     * Called after the player receives damage from an enemy.
+     * Sonara: reflects 15% of received damage back to the attacker.
+     *
+     * @param source the enemy that attacked
+     * @param damage the damage received
+     */
+    public void onDamageReceived(Enemy source, int damage) {
+        if (name.equals("Sonara")) {
+            int thornDamage = (int)(damage * 0.15f);
+            source.takeDamage(thornDamage);
+        }
+    }
+
+    /**
+     * Called at the end of each round, after the enemy attack resolves.
+     * Aurelius: heals 5% of max HP at the end of each turn.
+     *
+     * @param self the character whose turn just ended
+     */
+    public void onTurnEnd(Character self) {
+        if (name.equals("Aurelius")) {
+            int healAmount = (int)(self.getMaxHp() * 0.05f);
+            self.heal(healAmount);
+        }
+    }
+
+    // ── Active Skill ──────────────────────────────────────────────────────────
+
+    /**
+     * Applies this character's active skill damage modifier.
+     * Called during attack resolution if the skill was used this turn.
+     * @param damage the current initial damage value
+     * @return the modified damage value
+     */
+    public int activeSkillEffect(int damage) {
+        if (name.equals("Sonara")) {
+            return damage + 1;
+        }
+        return damage;
+    }
+
+    /**
+     * Called when the player confirms "Use" in the skill menu.
+     * Executes the character's active skill and writes to the combat log.
+     *
+     * @param noteHandler the current Note handler (skills may reroll or lock notes)
+     * @param ctx         the current GameContext (for writing to combatLog)
+     */
+    public void useActiveSkill(Note noteHandler, GameContext ctx) {
+        switch (name) {
+            case "Aurelius":
+                noteHandler.lockNoteDamage();
+                ctx.combatLog = name + " used Conservation! Note damages locked.";
+                break;
+            case "Lyron":
+                noteHandler.rollNotes();
+                ctx.combatLog = name + " used Musical Roulette! Notes rerolled.";
+                break;
+            case "Sonara":
+                ctx.combatLog = name + " used Melodic Impromptu! +1 to initial damage.";
+                break;
+            default:
+                break;
+        }
     }
 
     public void resetStats() {
-        this.currentHp        = this.maxHp;
-        this.currentShield    = 0;
-        this.level            = 1;
-        this.monstersDefeated = 0;
-        this.damageBuff       = 0.0;
+        this.hp = this.maxHp;
+        this.shield = 0;
     }
-
-    // ─── Passive Skill ────────────────────────────────────────────────────────
-
-    public void PassiveSkillEffect(Character player, Enemy monster, int damage) {;
-        switch(name){
-            case "Sonara":
-                // Body of Thorns is handled in the Combat system when taking damage
-                SonaraPassiveSkillEffect(monster, damage);
-                break;
-            case "Aurelius":
-                // Melodic Remedy is handled in the Combat system at the start of each turn
-                AureliusPassiveSkillEffect(player);
-                break;
-            case "Lyron":
-                // Winner Takes It All is handled in the Combat system when dealing damage
-                LyronPassiveSkillEffect(player, damage);
-                break;
-             default:
-                 break;
-        }
-    }
-
-    public void SonaraPassiveSkillEffect(Enemy monster, int damage) {
-        int thornDamage = (int)(damage * 0.15);
-        //Display update enemy HP after thorn damage
-
-        // This thorn damage would be applied back to the enemy in the Combat system
-        monster.takeDamage(thornDamage);
-    }
-
-    public void AureliusPassiveSkillEffect(Character player) {
-        int healAmount = (int)(player.getMaxHp() * 0.05);
-        //Display update player HP after heal
-
-        // This heal would be applied at the start of the player's turn in the Combat system
-        player.heal(healAmount);
-    }
-
-    public void LyronPassiveSkillEffect(Character player, int damageDealt) {
-        int shieldAmount = (int)(damageDealt * 0.25);
-        player.gainShield(shieldAmount);
-    }
-
-    // ─── Active Skill ─────────────────────────────────────────────────────────
-    public int activeSkillEffect(int damage) {
-        switch (this.name) {
-            case "Sonara" -> {
-                return damage + 1;
-            }
-            default -> {
-                return damage;
-            }
-        }
-    }
-
-    public boolean activeSkillReRoll() {
-        switch (this.name) {
-            case "Lyron" -> {
-                return true;
-            }
-            default -> {
-                return false;
-            }
-        }
-    }
-
 }
