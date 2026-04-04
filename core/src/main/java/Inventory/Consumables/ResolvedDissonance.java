@@ -26,12 +26,12 @@ public class ResolvedDissonance implements Item {
             + "'s next B Diminished chord will not cost HP.");
     }
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
-        return player.getAssets().resolvedDissonanceInvTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.resolvedDissonanceInvTex;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
-        return player.getAssets().resolvedDissonanceBattleTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.resolvedDissonanceBattleTex;
     }
 }

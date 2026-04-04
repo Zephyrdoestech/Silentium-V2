@@ -25,12 +25,12 @@ public class CrimsonChorus implements Item {
         System.out.println("[CrimsonChorus] Effect applied: enemy takes 5-10% more damage for 2-3 turns.");
     }
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
-        return player.getAssets().crimsonChorusInvTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.crimsonChorusInvTex;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
-        return player.getAssets().crimsonChorusBattleTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.crimsonChorusBattleTex;
     }
 }

@@ -29,12 +29,12 @@ public class TimeOrb implements Item {
             + " seconds added to the next battle's turn timer.");
     }
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
-        return player.getAssets().timeOrbInvTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.timeOrbInvTex;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
-        return player.getAssets().timeOrbBattleTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.timeOrbBattleTex;
     }
 }

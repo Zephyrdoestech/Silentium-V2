@@ -26,12 +26,12 @@ public class MinorsGrace implements Item {
             + " starts the next battle with +1 free Minor chord use.");
     }
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
-        return player.getAssets().minorsGraceInvTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.minorsGraceInvTex;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
-        return player.getAssets().minorsGraceBattleTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.minorsGraceBattleTex;
     }
 }

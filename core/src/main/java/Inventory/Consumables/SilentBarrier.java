@@ -26,12 +26,12 @@ public class SilentBarrier implements Item {
             + " is immune to damage and debuffs for 1 turn.");
     }
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon() {
-        return player.getAssets().silentBarrierInvTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.silentBarrierInvTex;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon() {
-        return player.getAssets().silentBarrierBattleTex;
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.silentBarrierBattleTex;
     }
 }

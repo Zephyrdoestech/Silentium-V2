@@ -25,6 +25,6 @@ public interface Item {
      * @param player the active player {@link Character}
      */
     void applyEffect(Character player);
-    com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon();
-    com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon();
+    com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets);
+    com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets);
 }
