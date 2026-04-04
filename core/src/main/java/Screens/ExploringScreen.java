@@ -229,20 +229,20 @@ public class ExploringScreen extends BaseScreen {
 
         if (!showingExitPrompt) {
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.ctx.player.up(move);
+                game.ctx.player.setY(game.ctx.player.getY() + move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_UP;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                game.ctx.player.down(move);
+                game.ctx.player.setY(game.ctx.player.getY() - move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                game.ctx.player.left(move);
+                game.ctx.player.setX(game.ctx.player.getX() - move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
                 game.ctx.facing = GameContext.Facing.LEFT;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                game.ctx.player.right(move);
+                game.ctx.player.setX(game.ctx.player.getX() + move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
                 game.ctx.facing = GameContext.Facing.RIGHT;
             }
