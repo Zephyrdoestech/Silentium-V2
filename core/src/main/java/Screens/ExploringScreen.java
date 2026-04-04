@@ -96,6 +96,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
         game.ctx.stateTime = 0f;
+        updateCamera(); // Initialize camera position after player position is set
     }
 
 
@@ -137,6 +138,8 @@ public class ExploringScreen extends BaseScreen {
         // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+        } else {
+            System.err.println("Warning: Map texture is null in ExploringScreen.java. Check asset loading.");
         }
         if (exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
