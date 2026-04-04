@@ -1263,7 +1263,20 @@ public class CombatScreen extends BaseScreen {
         game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
 
-        game.setScreen(new ExploringScreen(game));
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                game.setScreen(new TownOfEchoesScreen(game));
+                break;
+            case SILENT_CAVERNS:
+                game.setScreen(new SilentCavernsScreen(game));
+                break;
+            case ABYSS_OF_DISSONANCE:
+                game.setScreen(new AbyssOfDissonanceScreen(game));
+                break;
+            default:
+                game.setScreen(new TownOfEchoesScreen(game)); // Default to Town
+                break;
+        }
     }
 
     // =========================================================================

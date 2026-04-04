@@ -45,7 +45,12 @@ public class ExploringScreen extends BaseScreen {
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
 
-    public ExploringScreen(Main game) { super(game); }
+    public ExploringScreen(Main game) {
+        super(game);
+        if (game.ctx.mapName == null) {
+            game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
+        }
+    }
 
     //overriden by map classes
     protected int getRequiredKills() { return 0; }
@@ -463,5 +468,8 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override public void dispose() {}
+    @Override
+    public void dispose() {
+        // Do not dispose of global assets here
+    }
 }
