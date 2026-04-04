@@ -50,6 +50,21 @@ public class ExploringScreen extends BaseScreen {
         if (game.ctx.mapName == null) {
             game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
         }
+        // Set the map texture based on the map name
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                mapTexture = game.assets.townTex;
+                break;
+            case SILENT_CAVERNS:
+                mapTexture = game.assets.silentCavernsTex;
+                break;
+            case ABYSS_OF_DISSONANCE:
+                mapTexture = game.assets.abyssOfDissonanceTex;
+                break;
+            default:
+                mapTexture = game.assets.townTex; // Default to Town
+                break;
+        }
     }
 
     //overriden by map classes
