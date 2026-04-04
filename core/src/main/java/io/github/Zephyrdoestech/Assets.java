@@ -397,35 +397,81 @@ public class Assets implements Disposable {
         bigFont.dispose();
 
         titleScreenTex.dispose();
-        townTex.getTexture().dispose();
-        sonaraTex.dispose();
-        lyronTex.dispose();
-        aureliusTex.dispose();
-        darknessOverlay.dispose();
+        if (townTex != null && townTex.getTexture() != null) {
+            townTex.getTexture().dispose();
+        }
+        if (sonaraTex != null) {
+            sonaraTex.dispose();
+        }
+        if (lyronTex != null) {
+            lyronTex.dispose();
+        }
+        if (aureliusTex != null) {
+            aureliusTex.dispose();
+        }
+        if (darknessOverlay != null) {
+            darknessOverlay.dispose();
+        }
 
         story1Tex.dispose();
         story2Tex.dispose();
         story3Tex.dispose();
         story4Tex.dispose();
 
-        for (Texture t : noteTextures)      t.dispose();
-        for (Texture t : animationTextures) t.dispose();
+        for (Texture t : noteTextures) {
+            if (t != null) {
+                t.dispose();
+            }
+        }
+        for (Texture t : animationTextures) {
+            if (t != null) {
+                t.dispose();
+            }
+        }
 
-        townCombatBackground.dispose();
-        cavernsCombatBackground.dispose();
-        abyssCombatBackground.dispose();
+        if (townCombatBackground != null) {
+            townCombatBackground.dispose();
+        }
+        if (cavernsCombatBackground != null) {
+            cavernsCombatBackground.dispose();
+        }
+        if (abyssCombatBackground != null) {
+            abyssCombatBackground.dispose();
+        }
 
-        healthBar.dispose();
-        shieldBar.dispose();
-        staticHudBackground.dispose();
-        timerBackground.dispose();
-        dynamicHudBackground.dispose();
-        noteContainer.dispose();
-        turnMenuHud.dispose();
-        attackHud.dispose();
-        skillHud.dispose();
-        inventoryHud.dispose();
+        if (healthBar != null) {
+            healthBar.dispose();
+        }
+        if (shieldBar != null) {
+            shieldBar.dispose();
+        }
+        if (staticHudBackground != null) {
+            staticHudBackground.dispose();
+        }
+        if (timerBackground != null) {
+            timerBackground.dispose();
+        }
+        if (dynamicHudBackground != null) {
+            dynamicHudBackground.dispose();
+        }
+        if (noteContainer != null) {
+            noteContainer.dispose();
+        }
+        if (turnMenuHud != null) {
+            turnMenuHud.dispose();
+        }
+        if (attackHud != null) {
+            attackHud.dispose();
+        }
+        if (skillHud != null) {
+            skillHud.dispose();
+        }
+        if (inventoryHud != null) {
+            inventoryHud.dispose();
+        }
 
-        titleBgm.dispose();
+        if (titleBgm != null) {
+            titleBgm.dispose();
+        }
     }
 }
