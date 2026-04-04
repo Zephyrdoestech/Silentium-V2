@@ -93,7 +93,7 @@ public class Assets implements Disposable {
     // ── Combat Animations ─────────────────────────────────────────────────────
 
 
-    public final Animation<TextureRegion> battleIntroAnim;
+    public Animation<TextureRegion> battleIntroAnim;
     public final Animation<TextureRegion> victoryAnim;
     public final Animation<TextureRegion> defeatAnim;
     public final Animation<TextureRegion> timerAnim;
@@ -119,10 +119,6 @@ public class Assets implements Disposable {
     public Animation<TextureRegion> syozanCombatAttack;
 
     // ── Music ─────────────────────────────────────────────────────────────────
-
-    public final Music sonaraTheme;
-    public final Music aureliusTheme;
-    public final Music lyronTheme;
     public final Music titleBgm;
 
     // Internal list so dispose() can clean up animation textures
@@ -168,12 +164,11 @@ public class Assets implements Disposable {
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
-        battleIntroAnim = loadAnim("UI/Combat/Intro", "frame", 10, 0.1f);
 
-        story1Tex = new Texture("Background/Story/story_panel_1.png");
-        story2Tex = new Texture("Background/Story/story_panel_2.png");
-        story3Tex = new Texture("Background/Story/story_panel_3.png");
-        story4Tex = new Texture("Background/Story/story_panel_4.png");
+        story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
+        story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
+        story3Tex = safeLoadTexture("Background/Story/story_panel_3.png");
+        story4Tex = safeLoadTexture("Background/Story/story_panel_4.png");
 
         // Load the 11-frame selection animations!
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
@@ -224,7 +219,7 @@ public class Assets implements Disposable {
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
-        battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro",   "Battle",  8, 0.2f);
+//        battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro",   "Battle",  8, 0.2f);
         victoryAnim     = loadAnim("Sprites/Combat/SplashScreen/Victory", "Victory", 8, 0.15f);
         defeatAnim      = loadAnim("Sprites/Combat/SplashScreen/Defeat",  "Defeat",  8, 0.15f);
         timerAnim       = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
@@ -250,25 +245,25 @@ public class Assets implements Disposable {
         syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
 
         // ── Audio ─────────────────────────────────────────────────────────────
-
-        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
         titleBgm      = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
 
-        sonaraTheme.setLooping(true);
-        aureliusTheme.setLooping(true);
-        lyronTheme.setLooping(true);
         titleBgm.setLooping(true);
     }
 
     // ── Private Helpers ───────────────────────────────────────────────────────
 
-    private Animation<TextureRegion> loadAnim(String folder, String base,
-                                              int count, float duration) {
+    private Animation<TextureRegion> loadAnim(String folder, String base, int count, float duration) {
         TextureRegion[] frames = new TextureRegion[count];
         for (int i = 0; i < count; i++) {
-            Texture tex = new Texture(folder + "/" + base + (i + 1) + ".png");
+            String path = folder + "/" + base + (i + 1) + ".png";
+
+            // Safety Check: If the file is missing, print a warning and cancel the animation!
+            if (!Gdx.files.internal(path).exists()) {
+                System.out.println("Missing Anim Frame: " + path);
+                return null;
+            }
+
+            Texture tex = new Texture(path);
             animationTextures.add(tex);
             frames[i] = new TextureRegion(tex);
         }
@@ -276,6 +271,7 @@ public class Assets implements Disposable {
     }
 
     private Animation<TextureRegion> flipped(Animation<TextureRegion> src) {
+        if (src == null) return null;
         TextureRegion[] orig    = src.getKeyFrames();
         TextureRegion[] flipped = new TextureRegion[orig.length];
         for (int i = 0; i < orig.length; i++) {
@@ -391,9 +387,6 @@ public class Assets implements Disposable {
         skillHud.dispose();
         inventoryHud.dispose();
 
-        sonaraTheme.dispose();
-        aureliusTheme.dispose();
-        lyronTheme.dispose();
         titleBgm.dispose();
     }
 }
