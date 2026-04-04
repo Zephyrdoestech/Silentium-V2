@@ -103,7 +103,7 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-        if (game.ctx.player == null) {
+        if (game.ctx.player == null || game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
         } else {
