@@ -295,7 +295,7 @@ public class Character {
     }
 
     public void resetStats() {
-        this.hp = this.maxHp;
-        this.shield = 0;
+        this.setHp(this.getMaxHp());
+        this.setShield(0);
     }
 }
