@@ -1263,6 +1263,9 @@ public class CombatScreen extends BaseScreen {
         game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
 
+        // Reset player movement state
+        game.ctx.playerState = GameContext.PlayerState.IDLE; // Reset player state
+
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:
                 game.setScreen(new TownOfEchoesScreen(game));
