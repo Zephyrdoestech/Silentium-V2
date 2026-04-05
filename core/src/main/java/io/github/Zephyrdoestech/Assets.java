@@ -151,10 +151,6 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> syozanCombatAttack;
 
     // ── Music ─────────────────────────────────────────────────────────────────
-
-    public final Music sonaraTheme;
-    public final Music aureliusTheme;
-    public final Music lyronTheme;
     public final Music titleBgm;
 
     // Internal list so dispose() can clean up animation textures
@@ -277,10 +273,6 @@ public class Assets implements Disposable {
         syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
 
         // ── Audio ─────────────────────────────────────────────────────────────
-
-        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
         titleBgm      = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
 
         sonaraTheme.setLooping(true);
@@ -421,9 +413,6 @@ public class Assets implements Disposable {
         skillHud.getTexture().dispose();
         inventoryHud.getTexture().dispose();
 
-        sonaraTheme.dispose();
-        aureliusTheme.dispose();
-        lyronTheme.dispose();
         titleBgm.dispose();
     }
 }
