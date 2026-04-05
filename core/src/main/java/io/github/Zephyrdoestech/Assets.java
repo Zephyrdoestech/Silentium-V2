@@ -29,19 +29,19 @@ public class Assets implements Disposable {
     // ── UI / Map Textures ─────────────────────────────────────────────────────
 
     public final TextureRegion titleScreenTex;
-    public final TextureRegion townTex; // Changed to TextureRegion
-    public final TextureRegion silentCavernsTex; // Changed to TextureRegion
-    public final TextureRegion abyssOfDissonanceTex; // Changed to TextureRegion
-    public final Texture sonaraTex; // Changed back to Texture
-    public final Texture aureliusTex; // Changed back to Texture
-    public final Texture lyronTex; // Changed back to Texture
-    public final Texture darknessOverlay; // Changed to Texture
-    public final Texture[] noteTextures; // Changed to Texture[]
+    public final TextureRegion townTex; // Must be TextureRegion
+    public final TextureRegion silentCavernsTex; // Must be TextureRegion
+    public final TextureRegion abyssOfDissonanceTex; // Must be TextureRegion
+    public final Texture sonaraTex; // Must be Texture
+    public final Texture aureliusTex; // Must be Texture
+    public final Texture lyronTex; // Must be Texture
+    public final Texture darknessOverlay; // Must be Texture
+    public final Texture[] noteTextures; // Must be Texture[]
 
-    public final Texture story1Tex; // Changed back to Texture
-    public final Texture story2Tex; // Changed back to Texture
-    public final Texture story3Tex; // Changed back to Texture
-    public final Texture story4Tex; // Changed back to Texture
+    public final Texture story1Tex; // Must be Texture
+    public final Texture story2Tex; // Must be Texture
+    public final Texture story3Tex; // Must be Texture
+    public final Texture story4Tex; // Must be Texture
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -56,9 +56,9 @@ public class Assets implements Disposable {
 
     // ── Combat Background Textures ────────────────────────────────────────────
 
-    public final Texture townCombatBackground; // Changed back to Texture
-    public final Texture cavernsCombatBackground; // Changed back to Texture
-    public final Texture abyssCombatBackground; // Changed back to Texture
+    public final Texture townCombatBackground; // Must be Texture
+    public final Texture cavernsCombatBackground; // Must be Texture
+    public final Texture abyssCombatBackground; // Must be Texture
 
     // ── Combat HUD Textures ───────────────────────────────────────────────────
 
@@ -67,29 +67,29 @@ public class Assets implements Disposable {
     public final TextureRegion staticHudBackground;
     public final TextureRegion timerBackground;
     public final TextureRegion dynamicHudBackground;
-    public final Texture noteContainer; // Changed to Texture
+    public final Texture noteContainer; // Must be Texture
     public final TextureRegion noteContainerFilled;
-    public final Texture turnMenuHud; // Changed to Texture
+    public final Texture turnMenuHud; // Must be Texture
     public final TextureRegion attackHud;
     public final TextureRegion skillHud;
     public final TextureRegion inventoryHud;
     public final TextureRegion musicStaff;
-    public final Texture musicNote; // Changed back to Texture
+    public final Texture musicNote; // Must be Texture
 
-    public final TextureRegion cMajor; // Changed to Texture
-    public final TextureRegion cMajorUsed; // Changed to Texture
-    public final TextureRegion dMinor; // Changed to Texture
-    public final TextureRegion dMinorUsed; // Changed to Texture
-    public final TextureRegion eMinor; // Changed to Texture
-    public final TextureRegion eMinorUsed; // Changed to Texture
-    public final TextureRegion fMajor; // Changed to Texture
-    public final TextureRegion fMajorUsed; // Changed to Texture
-    public final TextureRegion gMajor; // Changed to Texture
-    public final TextureRegion gMajorUsed; // Changed to Texture
-    public final TextureRegion aMinor; // Changed to Texture
-    public final TextureRegion aMinorUsed; // Changed to Texture
-    public final TextureRegion bDim; // Changed to Texture
-    public final TextureRegion bDimUsed; // Changed to Texture
+    public final Texture cMajor; // Must be Texture
+    public final Texture cMajorUsed; // Must be Texture
+    public final Texture dMinor; // Must be Texture
+    public final Texture dMinorUsed; // Must be Texture
+    public final Texture eMinor; // Must be Texture
+    public final Texture eMinorUsed; // Must be Texture
+    public final Texture fMajor; // Must be Texture
+    public final Texture fMajorUsed; // Must be Texture
+    public final Texture gMajor; // Must be Texture
+    public final Texture gMajorUsed; // Must be Texture
+    public final Texture aMinor; // Must be Texture
+    public final Texture aMinorUsed; // Must be Texture
+    public final Texture bDim; // Must be Texture
+    public final Texture bDimUsed; // Must be Texture
 
     public final TextureRegion inventoryBackground;
     public final TextureRegion crimsonChorusSlotItem;
@@ -115,11 +115,11 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> sonaraSelectAnim;
     public final Animation<TextureRegion> aureliusSelectAnim;
     public final Music titleBGM;
-    public final Texture startBtnTex; // Changed back to Texture
-    public final Texture tutorialBtnTex; // Changed back to Texture
-    public final Texture storyBtnTex; // Changed back to Texture
-    public final Texture creditsBtnTex; // Changed back to Texture
-    public final Texture exitBtnTex; // Changed back to Texture
+    public final Texture startBtnTex; // Must be Texture
+    public final Texture tutorialBtnTex; // Must be Texture
+    public final Texture storyBtnTex; // Must be Texture
+    public final Texture creditsBtnTex; // Must be Texture
+    public final Texture exitBtnTex; // Must be Texture
     public final TextureRegion townDecorationsTex;
     public final TextureRegion townExitTex;
 
@@ -173,14 +173,14 @@ public class Assets implements Disposable {
         titleScreenTex = new TextureRegion(new Texture("Background/Title_Screen/Title_Screen_Placeholder.png"));
         townTex        = new TextureRegion(new Texture("Background/Map/Town_Of_Echoes.png"));
         townTex.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        sonaraTex   = new Texture("sonara.png"); // Changed back to Texture
-        lyronTex    = new Texture("lyron.png"); // Changed back to Texture
-        aureliusTex = new Texture("aurelius.png"); // Changed back to Texture
+        sonaraTex   = new Texture("sonara.png"); // Must be Texture
+        lyronTex    = new Texture("lyron.png"); // Must be Texture
+        aureliusTex = new Texture("aurelius.png"); // Must be Texture
 
-        story1Tex = new Texture("Background/Story/story_panel_1.png"); // Changed back to Texture
-        story2Tex = new Texture("Background/Story/story_panel_2.png"); // Changed back to Texture
-        story3Tex = new Texture("Background/Story/story_panel_3.png"); // Changed back to Texture
-        story4Tex = new Texture("Background/Story/story_panel_4.png"); // Changed back to Texture
+        story1Tex = new Texture("Background/Story/story_panel_1.png"); // Must be Texture
+        story2Tex = new Texture("Background/Story/story_panel_2.png"); // Must be Texture
+        story3Tex = new Texture("Background/Story/story_panel_3.png"); // Must be Texture
+        story4Tex = new Texture("Background/Story/story_panel_4.png"); // Must be Texture
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -205,9 +205,9 @@ public class Assets implements Disposable {
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
 
-        townCombatBackground    = new Texture("Background/Combat/Town.jpg"); // Changed back to Texture
-        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg"); // Changed back to Texture
-        abyssCombatBackground   = new Texture("Background/Combat/Abyss.jpg"); // Changed back to Texture
+        townCombatBackground    = new Texture("Background/Combat/Town.jpg"); // Must be Texture
+        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg"); // Must be Texture
+        abyssCombatBackground   = new Texture("Background/Combat/Abyss.jpg"); // Must be Texture
 
         // ── Combat HUD ────────────────────────────────────────────────────────
 
@@ -216,30 +216,30 @@ public class Assets implements Disposable {
         staticHudBackground  = new TextureRegion(new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png"));
         timerBackground      = new TextureRegion(new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png"));
         dynamicHudBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png"));
-        noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"); // Changed back to Texture
+        noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"); // Must be Texture
         noteContainerFilled  = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png"));
-        turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"); // Changed back to Texture
+        turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"); // Must be Texture
         attackHud            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png"));
         skillHud             = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png"));
         inventoryHud         = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png"));
         musicStaff           = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png"));
-        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"); // Changed back to Texture
+        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"); // Must be Texture
 
-        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png"); // Changed to Texture
-        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"); // Changed to Texture
-        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png"); // Changed to Texture
-        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png"); // Changed to Texture
-        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png"); // Changed to Texture
-        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png"); // Changed to Texture
-        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png"); // Changed to Texture
+        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png"); // Must be Texture
+        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"); // Must be Texture
+        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png"); // Must be Texture
+        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png"); // Must be Texture
+        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png"); // Must be Texture
+        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png"); // Must be Texture
+        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png"); // Must be Texture
 
-        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png"); // Changed to Texture
-        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png"); // Changed to Texture
-        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png"); // Changed to Texture
-        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png"); // Changed to Texture
-        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png"); // Changed to Texture
-        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png"); // Changed to Texture
-        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png"); // Changed to Texture
+        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png"); // Must be Texture
+        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png"); // Must be Texture
+        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png"); // Must be Texture
+        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png"); // Must be Texture
+        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png"); // Must be Texture
+        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png"); // Must be Texture
+        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png"); // Must be Texture
 
         inventoryBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png"));
         crimsonChorusSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png"));
@@ -389,33 +389,33 @@ public class Assets implements Disposable {
         bigFont.dispose();
 
         titleScreenTex.getTexture().dispose();
-        townTex.dispose(); // Changed to dispose
-        silentCavernsTex.dispose(); // Changed to dispose
-        abyssOfDissonanceTex.dispose(); // Changed to dispose
-        sonaraTex.dispose(); // Changed to dispose
-        lyronTex.dispose(); // Changed to dispose
-        aureliusTex.dispose(); // Changed to dispose
-        darknessOverlay.dispose(); // Changed to dispose
+        townTex.getTexture().dispose(); // Must use getTexture().dispose()
+        silentCavernsTex.getTexture().dispose(); // Must use getTexture().dispose()
+        abyssOfDissonanceTex.getTexture().dispose(); // Must use getTexture().dispose()
+        sonaraTex.dispose(); // Must use dispose()
+        lyronTex.dispose(); // Must use dispose()
+        aureliusTex.dispose(); // Must use dispose()
+        darknessOverlay.dispose(); // Must use dispose()
 
-        story1Tex.dispose(); // Changed back to dispose
-        story2Tex.dispose(); // Changed back to dispose
-        story3Tex.dispose(); // Changed back to dispose
-        story4Tex.dispose(); // Changed back to dispose
+        story1Tex.dispose(); // Must use dispose()
+        story2Tex.dispose(); // Must use dispose()
+        story3Tex.dispose(); // Must use dispose()
+        story4Tex.dispose(); // Must use dispose()
 
-        for (Texture t : noteTextures)      t.dispose();
-        for (Texture t : animationTextures) t.dispose();
+        for (Texture t : noteTextures)      t.dispose(); // Must use dispose()
+        for (Texture t : animationTextures) t.dispose(); // Must use dispose()
 
-        townCombatBackground.dispose(); // Changed back to dispose
-        cavernsCombatBackground.dispose(); // Changed back to dispose
-        abyssCombatBackground.dispose(); // Changed back to dispose
+        townCombatBackground.dispose(); // Must use dispose()
+        cavernsCombatBackground.dispose(); // Must use dispose()
+        abyssCombatBackground.dispose(); // Must use dispose()
 
         healthBar.getTexture().dispose();
         shieldBar.getTexture().dispose();
         staticHudBackground.getTexture().dispose();
         timerBackground.getTexture().dispose();
         dynamicHudBackground.getTexture().dispose();
-        noteContainer.dispose(); // Changed back to dispose
-        turnMenuHud.dispose(); // Changed back to dispose
+        noteContainer.dispose(); // Must use dispose()
+        turnMenuHud.dispose(); // Must use dispose()
         attackHud.getTexture().dispose();
         skillHud.getTexture().dispose();
         inventoryHud.getTexture().dispose();
