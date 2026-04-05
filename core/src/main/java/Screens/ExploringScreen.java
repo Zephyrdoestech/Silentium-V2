@@ -101,6 +101,8 @@ public class ExploringScreen extends BaseScreen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this); // Set input processor to this screen
+
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
             initWalkable();
