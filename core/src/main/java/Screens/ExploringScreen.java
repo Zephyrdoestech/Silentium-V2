@@ -50,6 +50,7 @@ public class ExploringScreen extends BaseScreen {
         if (game.ctx.mapName == null) {
             game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
         }
+        System.out.println("Returning to map: " + game.ctx.mapName); // Print statement added
         // Set the map texture based on the map name
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:
@@ -65,6 +66,10 @@ public class ExploringScreen extends BaseScreen {
                 mapTexture = game.assets.townTex; // Default to Town
                 break;
         }
+        if (this.mapTexture == null) { // Fallback added
+            System.out.println("WARNING: Defaulting to Town.");
+            this.mapTexture = game.assets.townTex;
+        }
     }
 
     //overriden by map classes
@@ -77,7 +82,6 @@ public class ExploringScreen extends BaseScreen {
         for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
     }
     protected void spawnEnemies() { game.ctx.mapEnemies.clear(); }
-
 
     protected void initPlayerPosition() {
         spawnEnemies();
@@ -94,7 +98,6 @@ public class ExploringScreen extends BaseScreen {
 
         game.ctx.player = new MapCharacter(x, y);
     }
-
 
     @Override
     public void show() {
@@ -118,7 +121,6 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.stateTime = 0f;
         updateCamera(); // Initialize camera position after player position is set
     }
-
 
     // ── Render ────────────────────────────────────────────────────────────────
     @Override
@@ -182,7 +184,6 @@ public class ExploringScreen extends BaseScreen {
         for (Rectangle h : walkableZones)
             game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
         game.shapeRenderer.end();
-
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
@@ -296,7 +297,6 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-
         // Enemy collision
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {
@@ -308,37 +308,10 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.currentEnemy = e;
                 game.ctx.noteHandler.noteCount    = 0;
 
-
-
-//                // TEST TRAVERSAL
-//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-//                if (game.ctx.rooms != null) {
-//                    for (Room r : game.ctx.rooms) {
-//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-//                            break;
-//                        }
-//                    }
-//                }
-//                // Level up the player after victory
-//                game.ctx.activeCharacterStats.defeatedMonster();
-//                int monstersDefeated = game.ctx.activeCharacterStats.getMonstersDefeated();
-//
-//                // Level up logic: level 2 at 1 kill, 3 at 2, 4 at 4, 5 at 7 (adjusted progression)
-//                int newLevel = 1;
-//                if (monstersDefeated >= 7) newLevel = 5;
-//                else if (monstersDefeated >= 4) newLevel = 4;
-//                else if (monstersDefeated >= 2) newLevel = 3;
-//                else if (monstersDefeated >= 1) newLevel = 2;
-//                if (newLevel > game.ctx.activeCharacterStats.getLevel()) {
-//                    game.ctx.activeCharacterStats.levelUp(newLevel);
-//                }
-
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
-
             }
         }
     }
@@ -350,7 +323,6 @@ public class ExploringScreen extends BaseScreen {
                 return true;
         return false;
     }
-
 
     // ── Camera ────────────────────────────────────────────────────────────────
 
