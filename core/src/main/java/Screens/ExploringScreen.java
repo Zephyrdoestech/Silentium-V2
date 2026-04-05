@@ -70,6 +70,7 @@ public class ExploringScreen extends BaseScreen {
             System.out.println("WARNING: Defaulting to Town.");
             this.mapTexture = game.assets.townTex;
         }
+        game.ctx.player.setInCombat(false); // Ensure player can move after combat
     }
 
     //overriden by map classes
@@ -101,7 +102,7 @@ public class ExploringScreen extends BaseScreen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this); // Set input processor to this screen
+        // Removed Gdx.input.setInputProcessor(this); line
 
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
