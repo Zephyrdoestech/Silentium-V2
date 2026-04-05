@@ -68,7 +68,7 @@ public class Assets implements Disposable {
     public final TextureRegion timerBackground;
     public final TextureRegion dynamicHudBackground;
     public final Texture noteContainer; // Must be Texture
-    public final TextureRegion noteContainerFilled;
+    public final Texture noteContainerFilled; // Changed to Texture
     public final Texture turnMenuHud; // Must be Texture
     public final TextureRegion attackHud;
     public final TextureRegion skillHud;
@@ -217,7 +217,7 @@ public class Assets implements Disposable {
         timerBackground      = new TextureRegion(new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png"));
         dynamicHudBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png"));
         noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"); // Must be Texture
-        noteContainerFilled  = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png"));
+        noteContainerFilled  = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png"); // Changed to Texture
         turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"); // Must be Texture
         attackHud            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png"));
         skillHud             = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png"));
@@ -415,6 +415,7 @@ public class Assets implements Disposable {
         timerBackground.getTexture().dispose();
         dynamicHudBackground.getTexture().dispose();
         noteContainer.dispose(); // Must use dispose()
+        noteContainerFilled.dispose(); // Added dispose()
         turnMenuHud.dispose(); // Must use dispose()
         attackHud.getTexture().dispose();
         skillHud.getTexture().dispose();
