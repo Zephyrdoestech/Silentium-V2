@@ -119,6 +119,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
         game.ctx.stateTime = 0f;
+        game.ctx.playerState = GameContext.PlayerState.IDLE; // Reset player state
         updateCamera(); // Initialize camera position after player position is set
     }
 
