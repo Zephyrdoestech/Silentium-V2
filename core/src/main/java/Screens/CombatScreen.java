@@ -42,11 +42,11 @@ public class CombatScreen extends BaseScreen {
 
     // ── Turn State ────────────────────────────────────────────────────────────
 
-    private boolean notesRolledThisTurn    = false;
+    private boolean notesRolledThisTurn     = false;
     private boolean activeSkillUsedThisTurn = false;
-    private boolean activeSkillUsed = false;
-    private boolean enemyAttacked          = false;
-    private String  chordUsedThisTurn      = null;
+    private boolean activeSkillUsed         = false;
+    private boolean enemyAttacked           = false;
+    private String  chordUsedThisTurn       = null;
 
     // ── Timers ────────────────────────────────────────────────────────────────
 
@@ -874,7 +874,7 @@ public class CombatScreen extends BaseScreen {
             float labelY = actionPanelTop - (actionPanelHeight / 16f * (4f + (i * 3f)));
             if (i == turnMenuSelection) {
                 game.assets.font.setColor(Color.YELLOW);
-                game.assets.font.draw(game.batch, "> " + turnMenuOptions[i], labelX, labelY);
+                game.assets.font.draw(game.batch, "> " + turnMenuOptions[i] + " <", labelX - px(0.4f), labelY);
             } else {
                 game.assets.font.setColor(Color.WHITE);
                 game.assets.font.draw(game.batch, turnMenuOptions[i], labelX, labelY);
@@ -1157,14 +1157,32 @@ public class CombatScreen extends BaseScreen {
             return;
         }
 
-        float itemSlotWidth = px(1f);
-        float itemSlotHeight = px(1f);
-        float itemSlotsWidth = itemSlotWidth * 5;
-        float itemSlotsHeight = itemSlotHeight * 2;
+        float Xgap = px(0.1f);
+        float Ygap = px(0.1f);
+        float itemSlotWidth = px(2.2f);
+        float itemSlotHeight = px(2.2f);
+        float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
+        float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
 
+        beginUiBatch();
+        float itemXPosition = actionPanelLeft + ((actionPanelWidth - itemSlotsWidth) / 2f);
+        float itemYPosition = actionPanelTop - ((actionPanelHeight - itemSlotsHeight) / 2f);
+        Texture item = game.assets.crimsonChorusSlotItem;
         for(int i = 0; i < 10; i++){
+            switch(i){
+                case 0: case 5: item = game.assets.crimsonChorusSlotItem; break;
+                case 1: case 6: item = game.assets.majorsBlessingSlotItem; break;
+                case 2: case 7: item = game.assets.minorsGraceSlotItem; break;
+                case 3: case 8: item = game.assets.resolvedDissonanceSlotItem; break;
+                case 4: case 9: item = game.assets.timeOrbSlotItem; break;
+            }
+            game.batch.draw(item,
+                itemXPosition + ((i % 5) * itemSlotWidth) + ((i % 5) * Xgap),
+                itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? +1 : -2) * Ygap),
+                itemSlotWidth, itemSlotHeight);
 
         }
+        game.batch.end();
     }
 
     // =========================================================================
@@ -1369,6 +1387,7 @@ public class CombatScreen extends BaseScreen {
         if (newLevel > player.getLevel()) player.levelUp(newLevel);
 
         // Reset shared context before leaving
+        game.ctx.activeCharacterStats.resetDamageBuff();
         game.ctx.currentEnemy              = null;
         game.ctx.noteHandler.noteCount     = 0;
         game.ctx.combatLog                 = "";

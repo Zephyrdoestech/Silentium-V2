@@ -227,9 +227,9 @@ public class Assets implements Disposable {
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
-        battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro",   "Battle",  8, 0.2f);
-        victoryAnim     = loadAnim("Sprites/Combat/SplashScreen/Victory", "Victory", 8, 0.15f);
-        defeatAnim      = loadAnim("Sprites/Combat/SplashScreen/Defeat",  "Defeat",  8, 0.15f);
+        battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro",   "",  20, 0.05f);
+        victoryAnim     = loadAnim("Sprites/Combat/SplashScreen/Victory", "", 30, 0.05f);
+        defeatAnim      = loadAnim("Sprites/Combat/SplashScreen/Defeat",  "",  30, 0.05f);
         timerAnim       = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
 
         sonaraCombatIdle     = loadAnim("Sprites/Combat/Character/Sonara/Idle",     "Idle",   4, 0.2f);
