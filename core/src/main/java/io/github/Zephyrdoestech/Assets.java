@@ -29,12 +29,14 @@ public class Assets implements Disposable {
     // ── UI / Map Textures ─────────────────────────────────────────────────────
 
     public final TextureRegion titleScreenTex;
-    public final Texture townTex; // Changed back to Texture
+    public final TextureRegion townTex; // Changed to TextureRegion
+    public final TextureRegion silentCavernsTex; // Changed to TextureRegion
+    public final TextureRegion abyssOfDissonanceTex; // Changed to TextureRegion
     public final Texture sonaraTex; // Changed back to Texture
     public final Texture aureliusTex; // Changed back to Texture
     public final Texture lyronTex; // Changed back to Texture
-    public final TextureRegion darknessOverlay;
-    public final TextureRegion[] noteTextures;
+    public final Texture darknessOverlay; // Changed to Texture
+    public final Texture[] noteTextures; // Changed to Texture[]
 
     public final Texture story1Tex; // Changed back to Texture
     public final Texture story2Tex; // Changed back to Texture
@@ -65,30 +67,29 @@ public class Assets implements Disposable {
     public final TextureRegion staticHudBackground;
     public final TextureRegion timerBackground;
     public final TextureRegion dynamicHudBackground;
-    public final TextureRegion noteContainer; // Changed back to Texture
+    public final Texture noteContainer; // Changed to Texture
     public final TextureRegion noteContainerFilled;
-    public final TextureRegion turnMenuHud; // Changed back to Texture
+    public final Texture turnMenuHud; // Changed to Texture
     public final TextureRegion attackHud;
     public final TextureRegion skillHud;
     public final TextureRegion inventoryHud;
     public final TextureRegion musicStaff;
     public final Texture musicNote; // Changed back to Texture
 
-    public final TextureRegion cMajor;
-    public final TextureRegion dMinor;
-    public final TextureRegion eMinor;
-    public final TextureRegion fMajor;
-    public final TextureRegion gMajor;
-    public final TextureRegion aMinor;
-    public final TextureRegion bDim;
-
-    public final TextureRegion cMajorUsed;
-    public final TextureRegion dMinorUsed;
-    public final TextureRegion eMinorUsed;
-    public final TextureRegion fMajorUsed;
-    public final TextureRegion gMajorUsed;
-    public final TextureRegion aMinorUsed;
-    public final TextureRegion bDimUsed;
+    public final TextureRegion cMajor; // Changed to Texture
+    public final TextureRegion cMajorUsed; // Changed to Texture
+    public final TextureRegion dMinor; // Changed to Texture
+    public final TextureRegion dMinorUsed; // Changed to Texture
+    public final TextureRegion eMinor; // Changed to Texture
+    public final TextureRegion eMinorUsed; // Changed to Texture
+    public final TextureRegion fMajor; // Changed to Texture
+    public final TextureRegion fMajorUsed; // Changed to Texture
+    public final TextureRegion gMajor; // Changed to Texture
+    public final TextureRegion gMajorUsed; // Changed to Texture
+    public final TextureRegion aMinor; // Changed to Texture
+    public final TextureRegion aMinorUsed; // Changed to Texture
+    public final TextureRegion bDim; // Changed to Texture
+    public final TextureRegion bDimUsed; // Changed to Texture
 
     public final TextureRegion inventoryBackground;
     public final TextureRegion crimsonChorusSlotItem;
@@ -111,8 +112,6 @@ public class Assets implements Disposable {
     public final TextureRegion silentBarrierBattleTex;
     public final TextureRegion timeOrbInvTex;
     public final TextureRegion timeOrbBattleTex;
-    public final TextureRegion silentCavernsTex; // Remains TextureRegion
-    public final TextureRegion abyssOfDissonanceTex; // Remains TextureRegion
     public final Animation<TextureRegion> sonaraSelectAnim;
     public final Animation<TextureRegion> aureliusSelectAnim;
     public final Music titleBGM;
@@ -226,21 +225,21 @@ public class Assets implements Disposable {
         musicStaff           = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png"));
         musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"); // Changed back to Texture
 
-        cMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/C_Major.png"));
-        dMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"));
-        eMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/E_Minor.png"));
-        fMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/F_Major.png"));
-        gMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/G_Major.png"));
-        aMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/A_Minor.png"));
-        bDim = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/B_Dim.png"));
+        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png"); // Changed to Texture
+        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"); // Changed to Texture
+        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png"); // Changed to Texture
+        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png"); // Changed to Texture
+        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png"); // Changed to Texture
+        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png"); // Changed to Texture
+        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png"); // Changed to Texture
 
-        cMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/C_Used.png"));
-        dMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/D_Used.png"));
-        eMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/E_Used.png"));
-        fMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/F_Used.png"));
-        gMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/G_Used.png"));
-        aMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/A_Used.png"));
-        bDimUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/B_Used.png"));
+        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png"); // Changed to Texture
+        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png"); // Changed to Texture
+        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png"); // Changed to Texture
+        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png"); // Changed to Texture
+        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png"); // Changed to Texture
+        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png"); // Changed to Texture
+        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png"); // Changed to Texture
 
         inventoryBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png"));
         crimsonChorusSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png"));
@@ -390,11 +389,13 @@ public class Assets implements Disposable {
         bigFont.dispose();
 
         titleScreenTex.getTexture().dispose();
-        townTex.getTexture().dispose();
-        sonaraTex.getTexture().dispose();
-        lyronTex.getTexture().dispose();
-        aureliusTex.getTexture().dispose();
-        darknessOverlay.dispose();
+        townTex.dispose(); // Changed to dispose
+        silentCavernsTex.dispose(); // Changed to dispose
+        abyssOfDissonanceTex.dispose(); // Changed to dispose
+        sonaraTex.dispose(); // Changed to dispose
+        lyronTex.dispose(); // Changed to dispose
+        aureliusTex.dispose(); // Changed to dispose
+        darknessOverlay.dispose(); // Changed to dispose
 
         story1Tex.dispose(); // Changed back to dispose
         story2Tex.dispose(); // Changed back to dispose
