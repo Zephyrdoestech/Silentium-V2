@@ -28,18 +28,18 @@ public class Assets implements Disposable {
 
     // ── UI / Map Textures ─────────────────────────────────────────────────────
 
-    public final Texture titleScreenTex;
-    public final Texture townTex;
-    public final Texture sonaraTex;
-    public final Texture lyronTex;
-    public final Texture aureliusTex;
-    public final Texture darknessOverlay;
-    public final Texture[] noteTextures;
+    public final TextureRegion titleScreenTex;
+    public final TextureRegion townTex;
+    public final TextureRegion sonaraTex;
+    public final TextureRegion lyronTex;
+    public final TextureRegion aureliusTex;
+    public final TextureRegion darknessOverlay;
+    public final TextureRegion[] noteTextures;
 
-    public final Texture story1Tex;
-    public final Texture story2Tex;
-    public final Texture story3Tex;
-    public final Texture story4Tex;
+    public final TextureRegion story1Tex;
+    public final TextureRegion story2Tex;
+    public final TextureRegion story3Tex;
+    public final TextureRegion story4Tex;
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -54,50 +54,75 @@ public class Assets implements Disposable {
 
     // ── Combat Background Textures ────────────────────────────────────────────
 
-    public final Texture townCombatBackground;
-    public final Texture cavernsCombatBackground;
-    public final Texture abyssCombatBackground;
+    public final TextureRegion townCombatBackground;
+    public final TextureRegion cavernsCombatBackground;
+    public final TextureRegion abyssCombatBackground;
 
     // ── Combat HUD Textures ───────────────────────────────────────────────────
 
-    public final Texture healthBar;
-    public final Texture shieldBar;
-    public final Texture staticHudBackground;
-    public final Texture timerBackground;
-    public final Texture dynamicHudBackground;
-    public final Texture noteContainer;
-    public final Texture noteContainerFilled;
-    public final Texture turnMenuHud;
-    public final Texture attackHud;
-    public final Texture skillHud;
-    public final Texture inventoryHud;
-    public final Texture musicStaff;
-    public final Texture musicNote;
+    public final TextureRegion healthBar;
+    public final TextureRegion shieldBar;
+    public final TextureRegion staticHudBackground;
+    public final TextureRegion timerBackground;
+    public final TextureRegion dynamicHudBackground;
+    public final TextureRegion noteContainer;
+    public final TextureRegion noteContainerFilled;
+    public final TextureRegion turnMenuHud;
+    public final TextureRegion attackHud;
+    public final TextureRegion skillHud;
+    public final TextureRegion inventoryHud;
+    public final TextureRegion musicStaff;
+    public final TextureRegion musicNote;
 
-    public final Texture cMajor;
-    public final Texture dMinor;
-    public final Texture eMinor;
-    public final Texture fMajor;
-    public final Texture gMajor;
-    public final Texture aMinor;
-    public final Texture bDim;
+    public final TextureRegion cMajor;
+    public final TextureRegion dMinor;
+    public final TextureRegion eMinor;
+    public final TextureRegion fMajor;
+    public final TextureRegion gMajor;
+    public final TextureRegion aMinor;
+    public final TextureRegion bDim;
 
-    public final Texture cMajorUsed;
-    public final Texture dMinorUsed;
-    public final Texture eMinorUsed;
-    public final Texture fMajorUsed;
-    public final Texture gMajorUsed;
-    public final Texture aMinorUsed;
-    public final Texture bDimUsed;
+    public final TextureRegion cMajorUsed;
+    public final TextureRegion dMinorUsed;
+    public final TextureRegion eMinorUsed;
+    public final TextureRegion fMajorUsed;
+    public final TextureRegion gMajorUsed;
+    public final TextureRegion aMinorUsed;
+    public final TextureRegion bDimUsed;
 
-    public final Texture inventoryBackground;
-    public final Texture crimsonChorusSlotItem;
-    public final Texture majorsBlessingSlotItem;
-    public final Texture minorsGraceSlotItem;
-    public final Texture silentBarrierSlotItem;
-    public final Texture resolvedDissonanceSlotItem;
-    public  final Texture timeOrbSlotItem;
+    public final TextureRegion inventoryBackground;
+    public final TextureRegion crimsonChorusSlotItem;
+    public final TextureRegion majorsBlessingSlotItem;
+    public final TextureRegion minorsGraceSlotItem;
+    public final TextureRegion silentBarrierSlotItem;
+    public final TextureRegion resolvedDissonanceSlotItem;
+    public final TextureRegion timeOrbSlotItem;
 
+    // New variables added
+    public final TextureRegion crimsonChorusInvTex;
+    public final TextureRegion crimsonChorusBattleTex;
+    public final TextureRegion majorsBlessingInvTex;
+    public final TextureRegion majorsBlessingBattleTex;
+    public final TextureRegion minorsGraceInvTex;
+    public final TextureRegion minorsGraceBattleTex;
+    public final TextureRegion resolvedDissonanceInvTex;
+    public final TextureRegion resolvedDissonanceBattleTex;
+    public final TextureRegion silentBarrierInvTex;
+    public final TextureRegion silentBarrierBattleTex;
+    public final TextureRegion timeOrbInvTex;
+    public final TextureRegion timeOrbBattleTex;
+    public final TextureRegion silentCavernsTex;
+    public final TextureRegion abyssOfDissonanceTex;
+    public final Animation<TextureRegion> sonaraSelectAnim;
+    public final Animation<TextureRegion> aureliusSelectAnim;
+    public final Music titleBGM;
+    public final TextureRegion startBtnTex;
+    public final TextureRegion tutorialBtnTex;
+    public final TextureRegion storyBtnTex;
+    public final TextureRegion creditsBtnTex;
+    public final TextureRegion exitBtnTex;
+    public final TextureRegion townDecorationsTex;
+    public final TextureRegion townExitTex;
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -146,17 +171,17 @@ public class Assets implements Disposable {
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
 
         // Static textures
-        titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Town_Of_Echoes.png");
-        townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        sonaraTex   = new Texture("sonara.png");
-        lyronTex    = new Texture("lyron.png");
-        aureliusTex = new Texture("aurelius.png");
+        titleScreenTex = new TextureRegion(new Texture("Background/Title_Screen/Title_Screen_Placeholder.png"));
+        townTex        = new TextureRegion(new Texture("Background/Map/Town_Of_Echoes.png"));
+        townTex.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        sonaraTex   = new TextureRegion(new Texture("sonara.png"));
+        lyronTex    = new TextureRegion(new Texture("lyron.png"));
+        aureliusTex = new TextureRegion(new Texture("aurelius.png"));
 
-        story1Tex = new Texture("Background/Story/story_panel_1.png");
-        story2Tex = new Texture("Background/Story/story_panel_2.png");
-        story3Tex = new Texture("Background/Story/story_panel_3.png");
-        story4Tex = new Texture("Background/Story/story_panel_4.png");
+        story1Tex = new TextureRegion(new Texture("Background/Story/story_panel_1.png"));
+        story2Tex = new TextureRegion(new Texture("Background/Story/story_panel_2.png"));
+        story3Tex = new TextureRegion(new Texture("Background/Story/story_panel_3.png"));
+        story4Tex = new TextureRegion(new Texture("Background/Story/story_panel_4.png"));
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -181,49 +206,49 @@ public class Assets implements Disposable {
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
 
-        townCombatBackground    = new Texture("Background/Combat/Town.jpg");
-        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg");
-        abyssCombatBackground   = new Texture("Background/Combat/Abyss.jpg");
+        townCombatBackground    = new TextureRegion(new Texture("Background/Combat/Town.jpg"));
+        cavernsCombatBackground = new TextureRegion(new Texture("Background/Combat/Cavern.jpg"));
+        abyssCombatBackground   = new TextureRegion(new Texture("Background/Combat/Abyss.jpg"));
 
         // ── Combat HUD ────────────────────────────────────────────────────────
 
-        healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
-        shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
-        staticHudBackground  = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
-        timerBackground      = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
-        dynamicHudBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
-        noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png");
-        noteContainerFilled  = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png");
-        turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png");
-        attackHud            = new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
-        skillHud             = new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
-        inventoryHud         = new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
-        musicStaff           = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png");
-        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png");
+        healthBar          = new TextureRegion(new Texture("Sprites/Combat/Interface/HealthBar.png"));
+        shieldBar          = new TextureRegion(new Texture("Sprites/Combat/Interface/ShieldBar.png"));
+        staticHudBackground  = new TextureRegion(new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png"));
+        timerBackground      = new TextureRegion(new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png"));
+        dynamicHudBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png"));
+        noteContainer        = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"));
+        noteContainerFilled  = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png"));
+        turnMenuHud          = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"));
+        attackHud            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png"));
+        skillHud             = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png"));
+        inventoryHud         = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png"));
+        musicStaff           = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png"));
+        musicNote            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"));
 
-        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png");
-        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png");
-        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png");
-        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png");
-        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png");
-        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png");
-        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png");
+        cMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/C_Major.png"));
+        dMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"));
+        eMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/E_Minor.png"));
+        fMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/F_Major.png"));
+        gMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/G_Major.png"));
+        aMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/A_Minor.png"));
+        bDim = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/B_Dim.png"));
 
-        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png");
-        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png");
-        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png");
-        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png");
-        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png");
-        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
-        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
+        cMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/C_Used.png"));
+        dMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/D_Used.png"));
+        eMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/E_Used.png"));
+        fMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/F_Used.png"));
+        gMajorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/G_Used.png"));
+        aMinorUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/A_Used.png"));
+        bDimUsed = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/B_Used.png"));
 
-        inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
-        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png");
-        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MajorsBlessing.png");
-        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MinorsGrace.png");
-        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SilentBarrier.png");
-        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/ResolvedDissonance.png");
-        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/TimeOrb.png");
+        inventoryBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png"));
+        crimsonChorusSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png"));
+        majorsBlessingSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/MajorsBlessing.png"));
+        minorsGraceSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/MinorsGrace.png"));
+        silentBarrierSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/SilentBarrier.png"));
+        resolvedDissonanceSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/ResolvedDissonance.png"));
+        timeOrbSlotItem = new TextureRegion(new Texture("Sprites/Combat/Interface/Inventory/TimeOrb.png"));
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -364,35 +389,35 @@ public class Assets implements Disposable {
         titleFont.dispose();
         bigFont.dispose();
 
-        titleScreenTex.dispose();
-        townTex.dispose();
-        sonaraTex.dispose();
-        lyronTex.dispose();
-        aureliusTex.dispose();
+        titleScreenTex.getTexture().dispose();
+        townTex.getTexture().dispose();
+        sonaraTex.getTexture().dispose();
+        lyronTex.getTexture().dispose();
+        aureliusTex.getTexture().dispose();
         darknessOverlay.dispose();
 
-        story1Tex.dispose();
-        story2Tex.dispose();
-        story3Tex.dispose();
-        story4Tex.dispose();
+        story1Tex.getTexture().dispose();
+        story2Tex.getTexture().dispose();
+        story3Tex.getTexture().dispose();
+        story4Tex.getTexture().dispose();
 
         for (Texture t : noteTextures)      t.dispose();
         for (Texture t : animationTextures) t.dispose();
 
-        townCombatBackground.dispose();
-        cavernsCombatBackground.dispose();
-        abyssCombatBackground.dispose();
+        townCombatBackground.getTexture().dispose();
+        cavernsCombatBackground.getTexture().dispose();
+        abyssCombatBackground.getTexture().dispose();
 
-        healthBar.dispose();
-        shieldBar.dispose();
-        staticHudBackground.dispose();
-        timerBackground.dispose();
-        dynamicHudBackground.dispose();
-        noteContainer.dispose();
-        turnMenuHud.dispose();
-        attackHud.dispose();
-        skillHud.dispose();
-        inventoryHud.dispose();
+        healthBar.getTexture().dispose();
+        shieldBar.getTexture().dispose();
+        staticHudBackground.getTexture().dispose();
+        timerBackground.getTexture().dispose();
+        dynamicHudBackground.getTexture().dispose();
+        noteContainer.getTexture().dispose();
+        turnMenuHud.getTexture().dispose();
+        attackHud.getTexture().dispose();
+        skillHud.getTexture().dispose();
+        inventoryHud.getTexture().dispose();
 
         sonaraTheme.dispose();
         aureliusTheme.dispose();
