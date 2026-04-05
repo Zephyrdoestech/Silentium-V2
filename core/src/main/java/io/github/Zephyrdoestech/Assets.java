@@ -29,17 +29,17 @@ public class Assets implements Disposable {
     // ── UI / Map Textures ─────────────────────────────────────────────────────
 
     public final TextureRegion titleScreenTex;
-    public final TextureRegion townTex;
-    public final TextureRegion sonaraTex;
-    public final TextureRegion lyronTex;
-    public final TextureRegion aureliusTex;
+    public final Texture townTex; // Changed back to Texture
+    public final Texture sonaraTex; // Changed back to Texture
+    public final Texture aureliusTex; // Changed back to Texture
+    public final Texture lyronTex; // Changed back to Texture
     public final TextureRegion darknessOverlay;
     public final TextureRegion[] noteTextures;
 
-    public final TextureRegion story1Tex;
-    public final TextureRegion story2Tex;
-    public final TextureRegion story3Tex;
-    public final TextureRegion story4Tex;
+    public final Texture story1Tex; // Changed back to Texture
+    public final Texture story2Tex; // Changed back to Texture
+    public final Texture story3Tex; // Changed back to Texture
+    public final Texture story4Tex; // Changed back to Texture
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -54,9 +54,9 @@ public class Assets implements Disposable {
 
     // ── Combat Background Textures ────────────────────────────────────────────
 
-    public final TextureRegion townCombatBackground;
-    public final TextureRegion cavernsCombatBackground;
-    public final TextureRegion abyssCombatBackground;
+    public final Texture townCombatBackground; // Changed back to Texture
+    public final Texture cavernsCombatBackground; // Changed back to Texture
+    public final Texture abyssCombatBackground; // Changed back to Texture
 
     // ── Combat HUD Textures ───────────────────────────────────────────────────
 
@@ -65,14 +65,14 @@ public class Assets implements Disposable {
     public final TextureRegion staticHudBackground;
     public final TextureRegion timerBackground;
     public final TextureRegion dynamicHudBackground;
-    public final TextureRegion noteContainer;
+    public final TextureRegion noteContainer; // Changed back to Texture
     public final TextureRegion noteContainerFilled;
-    public final TextureRegion turnMenuHud;
+    public final TextureRegion turnMenuHud; // Changed back to Texture
     public final TextureRegion attackHud;
     public final TextureRegion skillHud;
     public final TextureRegion inventoryHud;
     public final TextureRegion musicStaff;
-    public final TextureRegion musicNote;
+    public final Texture musicNote; // Changed back to Texture
 
     public final TextureRegion cMajor;
     public final TextureRegion dMinor;
@@ -111,16 +111,16 @@ public class Assets implements Disposable {
     public final TextureRegion silentBarrierBattleTex;
     public final TextureRegion timeOrbInvTex;
     public final TextureRegion timeOrbBattleTex;
-    public final TextureRegion silentCavernsTex;
-    public final TextureRegion abyssOfDissonanceTex;
+    public final TextureRegion silentCavernsTex; // Remains TextureRegion
+    public final TextureRegion abyssOfDissonanceTex; // Remains TextureRegion
     public final Animation<TextureRegion> sonaraSelectAnim;
     public final Animation<TextureRegion> aureliusSelectAnim;
     public final Music titleBGM;
-    public final TextureRegion startBtnTex;
-    public final TextureRegion tutorialBtnTex;
-    public final TextureRegion storyBtnTex;
-    public final TextureRegion creditsBtnTex;
-    public final TextureRegion exitBtnTex;
+    public final Texture startBtnTex; // Changed back to Texture
+    public final Texture tutorialBtnTex; // Changed back to Texture
+    public final Texture storyBtnTex; // Changed back to Texture
+    public final Texture creditsBtnTex; // Changed back to Texture
+    public final Texture exitBtnTex; // Changed back to Texture
     public final TextureRegion townDecorationsTex;
     public final TextureRegion townExitTex;
 
@@ -174,14 +174,14 @@ public class Assets implements Disposable {
         titleScreenTex = new TextureRegion(new Texture("Background/Title_Screen/Title_Screen_Placeholder.png"));
         townTex        = new TextureRegion(new Texture("Background/Map/Town_Of_Echoes.png"));
         townTex.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        sonaraTex   = new TextureRegion(new Texture("sonara.png"));
-        lyronTex    = new TextureRegion(new Texture("lyron.png"));
-        aureliusTex = new TextureRegion(new Texture("aurelius.png"));
+        sonaraTex   = new Texture("sonara.png"); // Changed back to Texture
+        lyronTex    = new Texture("lyron.png"); // Changed back to Texture
+        aureliusTex = new Texture("aurelius.png"); // Changed back to Texture
 
-        story1Tex = new TextureRegion(new Texture("Background/Story/story_panel_1.png"));
-        story2Tex = new TextureRegion(new Texture("Background/Story/story_panel_2.png"));
-        story3Tex = new TextureRegion(new Texture("Background/Story/story_panel_3.png"));
-        story4Tex = new TextureRegion(new Texture("Background/Story/story_panel_4.png"));
+        story1Tex = new Texture("Background/Story/story_panel_1.png"); // Changed back to Texture
+        story2Tex = new Texture("Background/Story/story_panel_2.png"); // Changed back to Texture
+        story3Tex = new Texture("Background/Story/story_panel_3.png"); // Changed back to Texture
+        story4Tex = new Texture("Background/Story/story_panel_4.png"); // Changed back to Texture
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -206,9 +206,9 @@ public class Assets implements Disposable {
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
 
-        townCombatBackground    = new TextureRegion(new Texture("Background/Combat/Town.jpg"));
-        cavernsCombatBackground = new TextureRegion(new Texture("Background/Combat/Cavern.jpg"));
-        abyssCombatBackground   = new TextureRegion(new Texture("Background/Combat/Abyss.jpg"));
+        townCombatBackground    = new Texture("Background/Combat/Town.jpg"); // Changed back to Texture
+        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg"); // Changed back to Texture
+        abyssCombatBackground   = new Texture("Background/Combat/Abyss.jpg"); // Changed back to Texture
 
         // ── Combat HUD ────────────────────────────────────────────────────────
 
@@ -217,14 +217,14 @@ public class Assets implements Disposable {
         staticHudBackground  = new TextureRegion(new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png"));
         timerBackground      = new TextureRegion(new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png"));
         dynamicHudBackground = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png"));
-        noteContainer        = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"));
+        noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png"); // Changed back to Texture
         noteContainerFilled  = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png"));
-        turnMenuHud          = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"));
+        turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png"); // Changed back to Texture
         attackHud            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png"));
         skillHud             = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png"));
         inventoryHud         = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png"));
         musicStaff           = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png"));
-        musicNote            = new TextureRegion(new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"));
+        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png"); // Changed back to Texture
 
         cMajor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/C_Major.png"));
         dMinor = new TextureRegion(new Texture("Sprites/Combat/Interface/Chords/D_Minor.png"));
@@ -396,25 +396,25 @@ public class Assets implements Disposable {
         aureliusTex.getTexture().dispose();
         darknessOverlay.dispose();
 
-        story1Tex.getTexture().dispose();
-        story2Tex.getTexture().dispose();
-        story3Tex.getTexture().dispose();
-        story4Tex.getTexture().dispose();
+        story1Tex.dispose(); // Changed back to dispose
+        story2Tex.dispose(); // Changed back to dispose
+        story3Tex.dispose(); // Changed back to dispose
+        story4Tex.dispose(); // Changed back to dispose
 
         for (Texture t : noteTextures)      t.dispose();
         for (Texture t : animationTextures) t.dispose();
 
-        townCombatBackground.getTexture().dispose();
-        cavernsCombatBackground.getTexture().dispose();
-        abyssCombatBackground.getTexture().dispose();
+        townCombatBackground.dispose(); // Changed back to dispose
+        cavernsCombatBackground.dispose(); // Changed back to dispose
+        abyssCombatBackground.dispose(); // Changed back to dispose
 
         healthBar.getTexture().dispose();
         shieldBar.getTexture().dispose();
         staticHudBackground.getTexture().dispose();
         timerBackground.getTexture().dispose();
         dynamicHudBackground.getTexture().dispose();
-        noteContainer.getTexture().dispose();
-        turnMenuHud.getTexture().dispose();
+        noteContainer.dispose(); // Changed back to dispose
+        turnMenuHud.dispose(); // Changed back to dispose
         attackHud.getTexture().dispose();
         skillHud.getTexture().dispose();
         inventoryHud.getTexture().dispose();
