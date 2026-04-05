@@ -51,6 +51,7 @@ public class Character {
     private int    level;
     private int    monstersDefeated;
     private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
+    private boolean inCombat; // Track combat state
 
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
 
@@ -70,6 +71,7 @@ public class Character {
         this.level         = 1;
         this.monstersDefeated = 0;
         this.damageBuff    = 0.0;
+        this.inCombat      = false;   // Initialize combat state
         setPassiveSkill(name);
         setActiveSkill(name);
     }
@@ -108,6 +110,14 @@ public class Character {
 
     public void setDamageBuff(double buff) {
         this.damageBuff = buff;
+    }
+
+    public void setInCombat(boolean inCombat) {
+        this.inCombat = inCombat;
+    }
+
+    public boolean isInCombat() {
+        return inCombat;
     }
 
     public void setPassiveSkill(String name) {
@@ -297,5 +307,6 @@ public class Character {
     public void resetStats() {
         this.setHp(this.getMaxHp());
         this.setShield(0);
+        this.setInCombat(false); // Reset combat state
     }
 }
