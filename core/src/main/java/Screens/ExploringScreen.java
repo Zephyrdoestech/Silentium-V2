@@ -322,7 +322,6 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-
         // Enemy collision
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {

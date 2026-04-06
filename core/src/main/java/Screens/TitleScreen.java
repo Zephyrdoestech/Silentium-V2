@@ -47,7 +47,10 @@ public class TitleScreen extends BaseScreen {
 
         game.batch.end();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) ||
+            Gdx.input.isKeyJustPressed(Input.Keys.ENTER) ||
+            Gdx.input.justTouched()) {
+
             game.setScreen(new MainMenuScreen(game));
         }
     }

@@ -1,6 +1,7 @@
 package Screens;
 
 import Mechanics.MusicNote;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

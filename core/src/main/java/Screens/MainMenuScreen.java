@@ -18,6 +18,7 @@ import io.github.Zephyrdoestech.Main;
  * - Fade-in transition on entry
  */
 public class MainMenuScreen extends BaseScreen {
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     private static final String[] OPTIONS = {
         "START GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
@@ -48,7 +49,7 @@ public class MainMenuScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
         game.gameViewport.apply();
         cursorTime += delta;
@@ -97,10 +98,10 @@ public class MainMenuScreen extends BaseScreen {
 
         // 4. DRAW THE CORNER BRACKETS AROUND THE SELECTED BUTTON
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
 
         // Make the brackets pulse slightly to catch the eye
-        float pulse = (MathUtils.sin(cursorTime * 6f) + 1f) / 2f;
+        float pulse = (com.badlogic.gdx.math.MathUtils.sin(cursorTime * 6f) + 1f) / 2f;
         // Setting color to a nice light grey/white that matches your buttons
         game.shapeRenderer.setColor(0.7f + pulse * 0.3f, 0.7f + pulse * 0.3f, 0.75f + pulse * 0.25f, 1f);
 
@@ -140,13 +141,13 @@ public class MainMenuScreen extends BaseScreen {
         // Hint Text
         game.assets.font.setColor(new Color(0.7f, 0.7f, 0.7f, 0.85f));
         game.assets.font.draw(game.batch,
-            "W/S or Arrows to navigate  |  ENTER to select", 185, 40);
+            "W/S or Arrows to navigate  |  Hover/Click to select", 185, 40);
         game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
         game.batch.end();
 
-        // 6. Handle Input
+        // 6. Handle Keyboard Input
         if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             selection = selection > 0 ? selection - 1 : buttons.length - 1;
         }
@@ -155,6 +156,27 @@ public class MainMenuScreen extends BaseScreen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             handleSelection();
+        }
+
+        // 7. Handle Mouse Input
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.gameViewport.unproject(mousePos);
+
+        for (int i = 0; i < buttons.length; i++) {
+            float btnY = startY - (i * gap);
+
+            // If the mouse is inside this specific button's area...
+            if (mousePos.x >= centerX && mousePos.x <= centerX + BTN_WIDTH &&
+                mousePos.y >= btnY && mousePos.y <= btnY + BTN_HEIGHT) {
+
+                // Move the corner brackets to this button
+                selection = i;
+
+                // If left-clicked, trigger the selection logic
+                if (Gdx.input.justTouched()) {
+                    handleSelection();
+                }
+            }
         }
     }
 
@@ -174,7 +196,7 @@ public class MainMenuScreen extends BaseScreen {
                 break;
 
             case 3: // CREDITS
-                game.setScreen(new HowToPlayScreen(game));
+                game.setScreen(new CreditsScreen(game));
                 break;
 
             case 4: // EXIT
