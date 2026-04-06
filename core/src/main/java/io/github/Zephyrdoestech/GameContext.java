@@ -37,6 +37,8 @@ public class GameContext {
         VICTORY, DEFEAT, EXIT
     }
 
+
+
     public enum MapName{
         TOWN_OF_ECHOES, SILENT_CAVERNS, ABYSS_OF_DISSONANCE
     }

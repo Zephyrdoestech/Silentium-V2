@@ -2,6 +2,7 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Silent Barrier
@@ -27,12 +28,12 @@ public class SilentBarrier implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.silentBarrierInvTex;
+    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.silentBarrierInvTex);
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.silentBarrierBattleTex;
+    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.silentBarrierBattleTex);
     }
 }

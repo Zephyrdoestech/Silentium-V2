@@ -1,5 +1,6 @@
 package Screens;
 
+import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -55,21 +56,21 @@ public class ExploringScreen extends BaseScreen {
         System.out.println("Returning to map: " + game.ctx.mapName);
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:
-                mapTexture = game.assets.townTex;
+                mapTexture = new TextureRegion(game.assets.townTex);
                 break;
             case SILENT_CAVERNS:
-                mapTexture = game.assets.silentCavernsTex;
+                mapTexture = new TextureRegion(game.assets.silentCavernsTex);
                 break;
             case ABYSS_OF_DISSONANCE:
-                mapTexture = game.assets.abyssOfDissonanceTex;
+                mapTexture = new TextureRegion(game.assets.abyssOfDissonanceTex);
                 break;
             default:
-                mapTexture = game.assets.townTex;
+                mapTexture = new TextureRegion(game.assets.townTex);
                 break;
         }
         if (this.mapTexture == null) {
             System.out.println("WARNING: Defaulting to Town.");
-            this.mapTexture = game.assets.townTex;
+            this.mapTexture = new TextureRegion(game.assets.townTex);
         }
         if (game.ctx.player != null) {
             game.ctx.player.resetMovementState();
@@ -348,6 +349,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
+
             }
         }
     }

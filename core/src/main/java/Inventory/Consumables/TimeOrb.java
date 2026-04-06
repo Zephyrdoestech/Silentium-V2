@@ -2,6 +2,7 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Time Orb
@@ -31,12 +32,12 @@ public class TimeOrb implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.timeOrbInvTex;
+    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.timeOrbInvTex);
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.timeOrbBattleTex;
+    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.timeOrbBattleTex);
     }
 }

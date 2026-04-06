@@ -4,6 +4,7 @@ import Entities.Enemy;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,9 +36,9 @@ public class SilentCavernsScreen extends ExploringScreen {
             }
         }
 
-        this.mapTexture  = game.assets.silentCavernsTex;
+        this.mapTexture  = new TextureRegion(game.assets.silentCavernsTex);
         this.mapDecor    = null;
-        this.exitTexture = game.assets.townExitTex;
+        this.exitTexture = new TextureRegion(game.assets.townExitTex);
 
         // Exit spawns in one of the rooms in the top-most row (indices 16-19)
         this.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));

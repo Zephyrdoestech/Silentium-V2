@@ -1,13 +1,9 @@
 package Entities;
 
-import Inventory.Item;
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Character {
@@ -24,7 +20,7 @@ public class Character {
         }
 
         public String getPsName(){return psName;}
-        public String getPsDescription(){return psDescription;}
+         public String getPsDescription(){return psDescription;}
     }
 
     public static class ActiveSkill {
@@ -40,32 +36,6 @@ public class Character {
 
         public String getAsName(){return asName;}
         public String getAsDescription(){return asDescription;}
-    }
-
-    public static class InventoryEntry {
-        private final Item item;
-        private int quantity;
-
-        public InventoryEntry(Item item, int quantity) {
-            this.item = item;
-            this.quantity = Math.max(0, quantity);
-        }
-
-        public Item getItem() {
-            return item;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void addQuantity(int amount) {
-            quantity = Math.max(0, quantity + amount);
-        }
-
-        public void removeQuantity(int amount) {
-            quantity = Math.max(0, quantity - amount);
-        }
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
@@ -84,10 +54,8 @@ public class Character {
     private int    level;
     private int    monstersDefeated;
     private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
-    private boolean inCombat; // Track combat state
 
-    public Map<String, Integer> inventory = new HashMap<>();
-    private final Map<String, InventoryEntry> consumableInventory;
+    public Map<String, Integer> inventory;
 
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
 
@@ -107,8 +75,7 @@ public class Character {
         this.level         = 1;
         this.monstersDefeated = 0;
         this.damageBuff    = 0.0;
-        this.inCombat      = false;   // Initialize combat state
-        this.consumableInventory = new LinkedHashMap<>();
+        this.inventory     = new HashMap<>();
         setPassiveSkill(name);
         setActiveSkill(name);
     }
@@ -130,21 +97,6 @@ public class Character {
     public PassiveSkill getPassiveSkill() { return passiveSkill; }
     public ActiveSkill  getActiveSkill()  { return activeSkill; }
 
-    public List<InventoryEntry> getConsumableInventoryEntries() {
-        List<InventoryEntry> entries = new ArrayList<>();
-        for (InventoryEntry entry : consumableInventory.values()) {
-            if (entry != null && entry.getQuantity() > 0) {
-                entries.add(entry);
-            }
-        }
-        return entries;
-    }
-
-    public int getItemQuantity(String itemName) {
-        InventoryEntry entry = consumableInventory.get(itemName);
-        return entry == null ? 0 : entry.getQuantity();
-    }
-
     // ── Setters ───────────────────────────────────────────────────────────────
 
     public void setHp(int hp) {
@@ -164,12 +116,11 @@ public class Character {
         this.damageBuff = buff;
     }
 
-    public void setInCombat(boolean inCombat) {
-        this.inCombat = inCombat;
-    }
+    public void resetDamageBuff() { this.damageBuff = 0.0; }
 
-    public boolean isInCombat() {
-        return inCombat;
+    public void resetStats() {
+        this.currentHp = this.maxHp;
+        this.currentShield = 0;
     }
 
     public void setPassiveSkill(String name) {
@@ -210,82 +161,6 @@ public class Character {
                 this.activeSkill = new ActiveSkill("", "");
                 break;
         }
-    }
-
-    // ── Inventory Methods ─────────────────────────────────────────────────────
-
-    public void addItem(String itemName, int amount) {
-        if (itemName == null || itemName.trim().isEmpty() || amount <= 0) return;
-        inventory.put(itemName, inventory.getOrDefault(itemName, 0) + amount);
-    }
-
-    public void addItem(Item item) {
-        addItem(item, 1);
-    }
-
-    public void addItem(Item item, int quantity) {
-        if (item == null || quantity <= 0) return;
-
-        InventoryEntry entry = consumableInventory.get(item.getName());
-        if (entry == null) {
-            consumableInventory.put(item.getName(), new InventoryEntry(item, quantity));
-        } else {
-            entry.addQuantity(quantity);
-        }
-
-        addItem(item.getName(), quantity);
-    }
-
-    public boolean removeItem(String itemName) {
-        return removeItem(itemName, 1);
-    }
-
-    public boolean removeItem(String itemName, int quantity) {
-        if (itemName == null || quantity <= 0) return false;
-
-        InventoryEntry entry = consumableInventory.get(itemName);
-        if (entry == null || entry.getQuantity() < quantity) {
-            Integer currentCount = inventory.get(itemName);
-            if (currentCount == null || currentCount < quantity) return false;
-
-            int newCount = currentCount - quantity;
-            if (newCount <= 0) {
-                inventory.remove(itemName);
-            } else {
-                inventory.put(itemName, newCount);
-            }
-            return true;
-        }
-
-        entry.removeQuantity(quantity);
-        if (entry.getQuantity() <= 0) {
-            consumableInventory.remove(itemName);
-        }
-
-        Integer currentCount = inventory.get(itemName);
-        if (currentCount != null) {
-            int newCount = currentCount - quantity;
-            if (newCount <= 0) {
-                inventory.remove(itemName);
-            } else {
-                inventory.put(itemName, newCount);
-            }
-        }
-
-        return true;
-    }
-
-    public boolean useItem(String itemName) {
-        InventoryEntry entry = consumableInventory.get(itemName);
-        if (entry == null || entry.getQuantity() <= 0) return false;
-
-        entry.getItem().applyEffect(this);
-        return removeItem(itemName, 1);
-    }
-
-    public Item getItemByName(String itemName) {
-        InventoryEntry entry = consumableInventory.get(itemName);
-        return entry == null ? null : entry.getItem();
     }
 
     // ── Combat Utilities ──────────────────────────────────────────────────────
@@ -430,11 +305,5 @@ public class Character {
             default:
                 break;
         }
-    }
-
-    public void resetStats() {
-        this.setHp(this.getMaxHp());
-        this.setShield(0);
-        this.setInCombat(false); // Reset combat state
     }
 }

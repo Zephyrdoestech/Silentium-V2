@@ -2,6 +2,7 @@ package Screens;
 
 import Entities.Enemy;
 import Entities.MapCharacter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.Zephyrdoestech.Main;
 import io.github.Zephyrdoestech.GameContext;
@@ -39,9 +40,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
         game.ctx.rooms.add(new Room(1215f, 45f,   200f, 200f));
         game.ctx.rooms.add(new Room(1787f, 45f,   200f, 200f));
 
-        this.mapTexture = game.assets.townTex;
-        this.mapDecor = game.assets.townDecorationsTex;
-        this.exitTexture = game.assets.townExitTex;
+        this.mapTexture = new TextureRegion(game.assets.townTex);
+        this.mapDecor = new TextureRegion(game.assets.townDecorationsTex);
+        this.exitTexture = new TextureRegion(game.assets.townExitTex);
 
         this.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
     }
@@ -96,7 +97,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty() && r != exitRoom)  // ← exclude exit room
+            if (r.getEnemies().isEmpty() && r != exitRoom)
                 emptyRooms.add(r);
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));

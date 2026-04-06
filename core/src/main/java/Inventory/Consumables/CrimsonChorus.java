@@ -2,6 +2,7 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Crimson Chorus
@@ -28,12 +29,12 @@ public class CrimsonChorus implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.crimsonChorusInvTex;
+    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.crimsonChorusInvTex);
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.crimsonChorusBattleTex;
+    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.crimsonChorusBattleTex);
     }
 }

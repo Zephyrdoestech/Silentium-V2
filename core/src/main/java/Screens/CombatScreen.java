@@ -42,16 +42,17 @@ public class CombatScreen extends BaseScreen {
 
     private static final float DISPLAY_TIME = 1.6f;
     private static final float NOTE_DISPLAY_TIME = 1.5f;
-    private static final Random RNG = new Random();
+
+    private static final float NOTE_COMPLETE_PAUSE  = 0.6f;
+    private static final float NOTE_REVEAL_INTERVAL = 0.35f;
 
     // ── Turn State ────────────────────────────────────────────────────────────
 
-    private boolean notesRolledThisTurn    = false;
+    private boolean notesRolledThisTurn     = false;
     private boolean activeSkillUsedThisTurn = false;
-    private boolean activeSkillUsed = false;
-    private boolean enemyAttacked          = false;
-    private String  chordUsedThisTurn      = null;
-    private String  lastUsedItemName       = null;
+    private boolean activeSkillUsed         = false;
+    private boolean enemyAttacked           = false;
+    private String  chordUsedThisTurn       = null;
 
     // ── Timers ────────────────────────────────────────────────────────────────
 
@@ -66,6 +67,9 @@ public class CombatScreen extends BaseScreen {
 
     private float noteDisplayTimer = 0f;
 
+    private int revealedNoteCount = 0;
+    private float noteRevealTimer = 0f;
+
     // ── Damage Values ─────────────────────────────────────────────────────────
 
     private int     initialDamage      = 0;
@@ -77,7 +81,8 @@ public class CombatScreen extends BaseScreen {
     private int           turnMenuSelection = 0;
     private final String[] turnMenuOptions  = { "Attack", "Skill", "Inventory" };
 
-    private int inventorySelection = 0;
+    private int           confirmSelection = 0;
+    private final String[] confirmOptions  = { "Use", "Cancel" };
 
     // ── Entity References ─────────────────────────────────────────────────────
 
@@ -98,7 +103,7 @@ public class CombatScreen extends BaseScreen {
     private float enemySpriteX  = 0;
     private float enemySpriteY  = 0;
 
-    // ── HUD Panel Regions ─────────────────────────────────────────────────────
+    // ── Chord & HUD Panel Regions ─────────────────────────────────────────────────────
 
     private final float notesPanelLeft   = 0;
     private final float notesPanelBottom = 0;
@@ -117,6 +122,11 @@ public class CombatScreen extends BaseScreen {
     private final float actionPanelWidth  = Main.WORLD_WIDTH * 0.55f;
     private final float actionPanelHeight = Main.WORLD_HEIGHT * 0.40f;
     private final float actionPanelTop    = actionPanelBottom + actionPanelHeight;
+
+    float chordContainerWidth  = px(7.0f);
+    float chordContainerHeight = px(1.0f);
+    float chordContainerX      = screenRight - chordContainerWidth - px(1.0f);
+    float chordContainerY      = actionPanelTop + px(0f);
 
     // ── Gap / Scale Helper ────────────────────────────────────────────────────
 
@@ -145,19 +155,18 @@ public class CombatScreen extends BaseScreen {
         game.ctx.metronome.reset();
         game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
 
-        animTimer               = 0f;
-        splashTimer             = 0f;
-        turnTime                = 0f;
-        turnMenuSelection       = 0;
-        inventorySelection      = 0;
-        notesRolledThisTurn     = false;
+        animTimer             = 0f;
+        splashTimer           = 0f;
+        turnTime              = 0f;
+        turnMenuSelection     = 0;
+        confirmSelection      = 0;
+        notesRolledThisTurn   = false;
         activeSkillUsedThisTurn = false;
-        enemyAttacked           = false;
-        chordUsedThisTurn       = null;
-        lastUsedItemName        = null;
-        initialDamage           = 0;
-        finalDamage             = 0;
-        metronomeActivated      = false;
+        enemyAttacked         = false;
+        chordUsedThisTurn     = null;
+        initialDamage         = 0;
+        finalDamage           = 0;
+        metronomeActivated    = false;
 
         // First enemy encountered gets 30% health (tutorial difficulty reduction)
         if (player.getMonstersDefeated() == 0) {
@@ -210,29 +219,10 @@ public class CombatScreen extends BaseScreen {
         splashTimer += delta;
         TextureRegion frame = null;
 
-        // If battleIntroAnim is null, immediately transition to ENEMY_INTRODUCTION to avoid NullPointerException.
-        // This is a safety measure if the asset is missing or not yet loaded.
-        if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN && game.assets.battleIntroAnim == null) {
-            game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
-            return; // Skip drawing and animation checks for this frame
-        }
-
         switch (game.ctx.combatState) {
-            case BATTLE_SCREEN:
-                if (game.assets.battleIntroAnim != null) {
-                    frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false);
-                }
-                break;
-            case VICTORY:
-                if (game.assets.victoryAnim != null) {
-                    frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);
-                }
-                break;
-            case DEFEAT:
-                if (game.assets.defeatAnim != null) {
-                    frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);
-                }
-                break;
+            case BATTLE_SCREEN: frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false); break;
+            case VICTORY:       frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);     break;
+            case DEFEAT:        frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);      break;
             default: break;
         }
 
@@ -245,19 +235,16 @@ public class CombatScreen extends BaseScreen {
         }
 
         if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN
-            && game.assets.battleIntroAnim != null
             && game.assets.battleIntroAnim.isAnimationFinished(splashTimer)) {
             game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
         }
 
         if (game.ctx.combatState == GameContext.CombatState.VICTORY
-            && game.assets.victoryAnim != null
             && game.assets.victoryAnim.isAnimationFinished(splashTimer)) {
             endCombat();
         }
 
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT
-            && game.assets.defeatAnim != null
             && game.assets.defeatAnim.isAnimationFinished(splashTimer)) {
             endCombat();
         }
@@ -271,9 +258,12 @@ public class CombatScreen extends BaseScreen {
         renderBackground();
         renderEntities();
         renderStats();
+
+        //Name Header
         renderNameHeader();
         renderNotesPanel(delta);
         renderTimerPanel(delta);
+        renderChords();
         renderActionPanel(delta);
     }
 
@@ -338,16 +328,16 @@ public class CombatScreen extends BaseScreen {
         switch (game.ctx.selectedCharacter) {
             case SONARA:
                 return isAttacking
-                    ? getSafeFrame(game.assets.sonaraCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.sonaraCombatIdle, animTimer);
+                    ? game.assets.sonaraCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.sonaraCombatIdle.getKeyFrame(animTimer, true);
             case AURELIUS:
                 return isAttacking
-                    ? getSafeFrame(game.assets.aureliusCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.aureliusCombatIdle, animTimer);
+                    ? game.assets.aureliusCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.aureliusCombatIdle.getKeyFrame(animTimer, true);
             case LYRON:
                 return isAttacking
-                    ? getSafeFrame(game.assets.lyronCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.lyronCombatIdle, animTimer);
+                    ? game.assets.lyronCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.lyronCombatIdle.getKeyFrame(animTimer, true);
             default:
                 return null;
         }
@@ -362,30 +352,30 @@ public class CombatScreen extends BaseScreen {
         switch (enemy.getName()) {
             case "Flesh Feeder":
                 return isAttacking
-                    ? getSafeFrame(game.assets.fleshfeederCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.fleshfeederCombatIdle, animTimer);
+                    ? game.assets.fleshfeederCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
             case "Darrylion":
                 return isAttacking
-                    ? getSafeFrame(game.assets.darrylionCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.darrylionCombatIdle, animTimer);
+                    ? game.assets.darrylionCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.darrylionCombatIdle.getKeyFrame(animTimer, true);
             case "Aryzachnid":
                 return isAttacking
-                    ? getSafeFrame(game.assets.gobninilCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.gobninilCombatIdle, animTimer);
+                    ? game.assets.gobninilCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.gobninilCombatIdle.getKeyFrame(animTimer, true);
             case "Chimericks":
                 return isAttacking
-                    ? getSafeFrame(game.assets.chimericksCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.chimericksCombatIdle, animTimer);
+                    ? game.assets.chimericksCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.chimericksCombatIdle.getKeyFrame(animTimer, true);
             case "Labagoliath":
                 return isAttacking
-                    ? getSafeFrame(game.assets.labagoliathCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.labagoliathCombatIdle, animTimer);
+                    ? game.assets.labagoliathCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.labagoliathCombatIdle.getKeyFrame(animTimer, true);
             case "Maestro Syozan":
                 return isAttacking
-                    ? getSafeFrame(game.assets.syozanCombatAttack, animTimer)
-                    : getSafeFrame(game.assets.syozanCombatIdle, animTimer);
+                    ? game.assets.syozanCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.syozanCombatIdle.getKeyFrame(animTimer, true);
             default:
-                return getSafeFrame(game.assets.fleshfeederCombatIdle, animTimer);
+                return game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
         }
     }
 
@@ -571,6 +561,9 @@ public class CombatScreen extends BaseScreen {
                 turnTime += delta;
                 displayTime = (int) Math.ceil(maxTurnTime - turnTime);
                 if (turnTime >= maxTurnTime) {
+                    if(game.ctx.selectedCharacter == GameContext.CharacterType.SONARA){
+                        activeSkillUsedThisTurn = false;
+                        activeSkillUsed = false;}
                     turnTime = 0f;
                     game.ctx.resultTimer = 0f;
                     game.ctx.combatState = GameContext.CombatState.MISSED_TURN;
@@ -583,25 +576,56 @@ public class CombatScreen extends BaseScreen {
         }
 
         // Countdown number
-        float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
-        float numY = timerPanelBottom + px(2.0f);
-
         beginUiBatch();
-        game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(displayTime <= 3 ? Color.RED : Color.GREEN);
+        game.assets.font.getData().setScale(2.0f);
+        game.assets.font.setColor(displayTime <= 3 ? Color.RED : Color.WHITE);
+        float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
+        float numY = timerPanelBottom + px(2.4f);
+
         game.assets.font.draw(game.batch, displayTime + "", numX, numY);
         game.assets.font.getData().setScale(1.0f);
         game.assets.font.setColor(Color.WHITE);
 
         // Timer animation sprite
         TextureRegion timerFrame = game.assets.timerAnim.getKeyFrame(animTimer, true);
-        float spriteW = px(1.0f);
-        float spriteH = px(1.6f);
+        float spriteW = px(1.6f);
+        float spriteH = px(2.0f);
         float spriteX = timerPanelLeft + ((timerPanelWidth - spriteW) / 2f);
         float spriteY = timerPanelTop  - px(1.0f) - spriteH;
         game.batch.draw(timerFrame, spriteX, spriteY, spriteW, spriteH);
 
         game.batch.end();
+    }
+
+    // =========================================================================
+    // Chord Display (Above Action Panel)
+    // =========================================================================
+
+    private void renderChords() {
+        if(player.getLevel() < 3) return;
+
+        beginUiBatch();
+        int numberOfChords = 7;
+        for(int i = 0; i < numberOfChords; i++) {
+            Texture chord = game.assets.cMajor;
+
+            switch(i){
+                case 0: chord = (game.ctx.chordSystem.isChordUsed('C') ? game.assets.cMajorUsed : game.assets.cMajor); break;
+                case 1: chord = (game.ctx.chordSystem.isChordUsed('D') ? game.assets.dMinorUsed : game.assets.dMinor); break;
+                case 2: chord = (game.ctx.chordSystem.isChordUsed('E') ? game.assets.eMinorUsed : game.assets.eMinor); break;
+                case 3: chord = (game.ctx.chordSystem.isChordUsed('F') ? game.assets.fMajorUsed : game.assets.fMajor); break;
+                case 4: chord = (game.ctx.chordSystem.isChordUsed('G') ? game.assets.gMajorUsed : game.assets.gMajor); break;
+                case 5: chord = (game.ctx.chordSystem.isChordUsed('A') ? game.assets.aMinorUsed : game.assets.aMinor); break;
+                case 6: chord = (game.ctx.chordSystem.isChordUsed('B') ? game.assets.bDimUsed : game.assets.bDim); break;
+            }
+
+            float gap = i * px(1.0f);
+            game.batch.draw(chord,
+                chordContainerX + gap, chordContainerY,
+                chordContainerWidth / 7, chordContainerHeight);
+        }
+        game.batch.end();
+
     }
 
     // =========================================================================
@@ -626,7 +650,7 @@ public class CombatScreen extends BaseScreen {
                 renderAttack(delta);
                 break;
             case ATTACK_FEEDBACK:
-                renderAttackFeedback();
+                renderAttackFeedback(delta);
                 break;
             case USE_SKILL:
                 renderSkillMenu();
@@ -635,6 +659,8 @@ public class CombatScreen extends BaseScreen {
                 renderInventoryMenu();
                 break;
             case USE_ITEM:
+                renderUseItem();
+                break;
             case SKILL_USED:
             case SKILL_CONFIRMED:
             case MISSED_TURN:
@@ -695,6 +721,10 @@ public class CombatScreen extends BaseScreen {
         String  message    = resolveBattleLogMessage();
         Color   color      = resolveBattleLogColor();
 
+        if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT
+            && message.equalsIgnoreCase("null")){
+            advanceBattleLogState();}
+
         drawCenteredText(message, actionPanelLeft, actionPanelBottom  + px(0.8f), actionPanelWidth,
             actionPanelHeight, color, 1.6f);
 
@@ -712,16 +742,12 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
                 return activeSkillDesription();
             case SKILL_USED:
-                return (activeSkillUsedThisTurn ? "Skill currently in use." : "Skill already used.");
-            case USE_ITEM:
-                return game.ctx.combatLog == null || game.ctx.combatLog.isEmpty()
-                    ? "Item used."
-                    : game.ctx.combatLog;
+                return (activeSkillUsedThisTurn ? "Skill currently in use." : "Skill already used.") ;
             case DISPLAY_CHORD_EFFECT:
                 return chordUsedThisTurn != null
                     ? "[" + game.ctx.chordSystem.getChordName(chordUsedThisTurn) + "] "
                     + game.ctx.chordSystem.getChordMessage(chordUsedThisTurn, player)
-                    : "";
+                    : "null";
             case DISPLAY_PLAYER_DAMAGE:
                 return (metronomeActivated ? "Initial" : "Total")
                     + " Damage Dealt: "
@@ -745,7 +771,6 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
             case DISPLAY_PLAYER_DAMAGE:
             case DISPLAY_FINAL_DAMAGE:   return Color.GREEN;
-            case USE_ITEM:               return Color.CYAN;
             case ENEMY_ATTACK:
             case MISSED_TURN:
             case DISPLAY_ENEMY_DAMAGE:   return Color.RED;
@@ -764,13 +789,6 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
                 break;
-
-            case USE_ITEM:
-                game.ctx.combatState = enemy.isDefeated()
-                    ? GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE
-                    : GameContext.CombatState.ENEMY_ATTACK;
-                break;
-
             case DISPLAY_CHORD_EFFECT:
                 // If there was no chord, skip straight past; otherwise show player damage
                 game.ctx.combatState = GameContext.CombatState.DISPLAY_PLAYER_DAMAGE;
@@ -833,11 +851,9 @@ public class CombatScreen extends BaseScreen {
                     }else{
                         game.ctx.combatState = GameContext.CombatState.USE_SKILL;
                     }
-                    break;
-                case 2:
-                    inventorySelection = 0;
-                    game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
-                    break;
+                    confirmSelection = 0;                                           break;
+                case 2: game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
+                    confirmSelection = 0;                                           break;
             }
             return;
         }
@@ -866,7 +882,7 @@ public class CombatScreen extends BaseScreen {
             float labelY = actionPanelTop - (actionPanelHeight / 16f * (4f + (i * 3f)));
             if (i == turnMenuSelection) {
                 game.assets.font.setColor(Color.YELLOW);
-                game.assets.font.draw(game.batch, "> " + turnMenuOptions[i], labelX, labelY);
+                game.assets.font.draw(game.batch, "> " + turnMenuOptions[i] + " <", labelX - px(0.4f), labelY);
             } else {
                 game.assets.font.setColor(Color.WHITE);
                 game.assets.font.draw(game.batch, turnMenuOptions[i], labelX, labelY);
@@ -959,8 +975,62 @@ public class CombatScreen extends BaseScreen {
         }
     }
 
-    private void renderAttackFeedback() {
-        // To be implemented
+    private void renderAttackFeedback(float delta) {
+        beginUiBatch();
+        game.batch.draw(game.assets.musicStaff,
+            actionPanelLeft, actionPanelBottom, actionPanelWidth, actionPanelHeight);
+        game.batch.end();
+
+        // Compute Y positions for each note based on their letter (A-G)
+        float[] notesY = new float[3];
+        float gapY = px(0.35f);
+        float baseY = actionPanelBottom + px(2.0f);
+        for (int i = 0; i < 3; i++) {
+            String letter = String.valueOf(
+                java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[i]));
+            switch (letter) {
+                case "A": notesY[i] = baseY + (gapY * 2); break;
+                case "B": notesY[i] = baseY + (gapY * 3); break;
+                case "C": notesY[i] = baseY + (gapY * 4); break;
+                case "D": notesY[i] = baseY + (gapY * 5); break;
+                case "E": notesY[i] = baseY + (gapY * 6); break;
+                case "F": notesY[i] = baseY ; break;
+                case "G": notesY[i] = baseY + (gapY * 1); break;
+                default:  notesY[i] = baseY; break;
+            }
+        }
+
+        float noteWidth  = game.assets.musicNote.getWidth();
+        float noteHeight = game.assets.musicNote.getHeight();
+        float gapX       = px(2.4f);
+        float startX     = actionPanelLeft + px(4.8f);
+
+        // Draw only the notes that have been revealed so far
+        beginUiBatch();
+        for (int i = 0; i < revealedNoteCount; i++) {
+            game.batch.draw(game.assets.musicNote,
+                startX + (i * gapX), notesY[i],
+                noteWidth, noteHeight);
+        }
+        game.batch.end();
+
+        noteRevealTimer += delta;
+
+        if (revealedNoteCount < 3) {
+            // Still revealing notes — advance one note per interval
+            if (noteRevealTimer >= NOTE_REVEAL_INTERVAL) {
+                noteRevealTimer = 0f;
+                revealedNoteCount++;
+            }
+        } else {
+            // All three notes shown — wait for the complete pause then move on
+            if (noteRevealTimer >= NOTE_COMPLETE_PAUSE) {
+                noteRevealTimer   = 0f;
+                revealedNoteCount = 0;
+                game.ctx.resultTimer = 0f;
+                game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+            }
+        }
     }
 
     // =========================================================================
@@ -1005,32 +1075,57 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderSkillMenu() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
+            || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
+            || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            player.useActiveSkill(game.ctx.noteHandler, game.ctx);
-            activeSkillUsedThisTurn = true;
-            activeSkillUsed = true;
-            game.ctx.resultTimer = 0f;
-            game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
+            if (confirmSelection == 0) {
+                player.useActiveSkill(game.ctx.noteHandler, game.ctx);
+                activeSkillUsedThisTurn = true;
+                activeSkillUsed = true;
+                game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
+            }else{
+                game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+            }
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-            game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-            return;
-        }
+        // ── Measure at correct scales before drawing ──────────────────────────────
 
         game.assets.font.getData().setScale(1.2f);
         String skillDescription = activeSkillDesription();
         float descW      = textWidth(skillDescription);
         float descHeight = game.assets.font.getCapHeight();
 
+        game.assets.font.getData().setScale(1.6f);
+        float useW      = textWidth("> " + confirmOptions[0]);
+        float cancelW   = textWidth(confirmOptions[1]);
+        float optionGap = px(3f);
+        float totalOptionsW  = useW + optionGap + cancelW;
+        float optionHeight   = game.assets.font.getCapHeight();
+
+        // ── Vertical block centred in the action panel ────────────────────────────
+
         float lineGap     = px(1.5f);
-        float blockHeight = descHeight;
+        float blockHeight = descHeight + lineGap + optionHeight;
         float blockStartY = actionPanelBottom + (actionPanelHeight / 2f) + (blockHeight / 2f);
 
-        float descY = blockStartY;
-        float hintY = descY - px(1.2f);
-        float descX = actionPanelLeft + ((actionPanelWidth - descW) / 2f);
+        float descY   = blockStartY;
+        float optionY = blockStartY - descHeight - lineGap;
+
+        // ── Horizontal centering ──────────────────────────────────────────────────
+
+        float descX         = actionPanelLeft + ((actionPanelWidth - descW)          / 2f);
+        float optionsStartX = actionPanelLeft + ((actionPanelWidth - totalOptionsW)  / 2f);
+        float cancelX       = optionsStartX + useW + optionGap;
+
+        // ── Draw ──────────────────────────────────────────────────────────────────
 
         beginUiBatch();
 
@@ -1038,13 +1133,17 @@ public class CombatScreen extends BaseScreen {
         game.assets.font.setColor(Color.WHITE);
         game.assets.font.draw(game.batch, skillDescription, descX, descY);
 
-        game.assets.font.getData().setScale(0.9f);
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        String hint = "[ENTER] Use   [ESC] Back";
+        game.assets.font.getData().setScale(1.6f);
+
+        game.assets.font.setColor(confirmSelection == 0 ? Color.YELLOW : Color.WHITE);
         game.assets.font.draw(game.batch,
-            hint,
-            actionPanelLeft + ((actionPanelWidth - textWidth(hint)) / 2f),
-            hintY);
+            confirmSelection == 0 ? "> " + confirmOptions[0] : confirmOptions[0],
+            optionsStartX, optionY);
+
+        game.assets.font.setColor(confirmSelection == 1 ? Color.YELLOW : Color.WHITE);
+        game.assets.font.draw(game.batch,
+            confirmSelection == 1 ? "> " + confirmOptions[1] : confirmOptions[1],
+            cancelX, optionY);
 
         game.assets.font.getData().setScale(1.0f);
         game.batch.end();
@@ -1055,116 +1154,120 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderInventoryMenu() {
-        List<Character.InventoryEntry> entries = player.getConsumableInventoryEntries();
+        beginUiBatch();
+        game.batch.draw(game.assets.inventoryBackground,
+            actionPanelLeft, actionPanelBottom, actionPanelWidth, actionPanelHeight);
+        game.batch.end();
 
-        if (entries.isEmpty()) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
-                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
-                || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
-                game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-                return;
-            }
 
-            beginUiBatch();
-            game.assets.font.getData().setScale(1.2f);
-            game.assets.font.setColor(Color.WHITE);
-            String noItems = "No items in inventory.";
-            game.assets.font.draw(game.batch,
-                noItems,
-                actionPanelLeft + ((actionPanelWidth - textWidth(noItems)) / 2f),
-                actionPanelBottom + (actionPanelHeight / 2f) + px(0.4f));
-
-            game.assets.font.getData().setScale(0.9f);
-            game.assets.font.setColor(Color.LIGHT_GRAY);
-            String hint = "[ENTER/ESC] Back";
-            game.assets.font.draw(game.batch,
-                hint,
-                actionPanelLeft + ((actionPanelWidth - textWidth(hint)) / 2f),
-                actionPanelBottom + (actionPanelHeight / 2f) - px(0.6f));
-            game.assets.font.getData().setScale(1.0f);
-            game.batch.end();
-            return;
-        }
-
-        if (inventorySelection < 0) inventorySelection = 0;
-        if (inventorySelection >= entries.size()) inventorySelection = entries.size() - 1;
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            inventorySelection = (inventorySelection - 1 + entries.size()) % entries.size();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            inventorySelection = (inventorySelection + 1) % entries.size();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             game.ctx.combatState = GameContext.CombatState.TURN_MENU;
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Character.InventoryEntry selectedEntry = entries.get(inventorySelection);
-            Item selectedItem = selectedEntry.getItem();
+        float Xgap = px(0.1f);
+        float Ygap = px(0.1f);
+        float itemSlotWidth = px(2.2f);
+        float itemSlotHeight = px(2.2f);
+        float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
+        float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
 
-            if (selectedItem != null && player.useItem(selectedItem.getName())) {
-                lastUsedItemName = selectedItem.getName();
-                game.ctx.combatLog = player.getName() + " used " + lastUsedItemName + ".";
-                game.ctx.resultTimer = 0f;
-                game.ctx.combatState = GameContext.CombatState.USE_ITEM;
+        beginUiBatch();
+        float itemXPosition = actionPanelLeft + ((actionPanelWidth - itemSlotsWidth) / 2f);
+        float itemYPosition = actionPanelTop - ((actionPanelHeight - itemSlotsHeight) / 2f);
+        Texture item = game.assets.crimsonChorusSlotItem;
+        for(int i = 0; i < 10; i++){
+            switch(i){
+                case 0: case 5: item = game.assets.crimsonChorusSlotItem; break;
+                case 1: case 6: item = game.assets.majorsBlessingSlotItem; break;
+                case 2: case 7: item = game.assets.minorsGraceSlotItem; break;
+                case 3: case 8: item = game.assets.resolvedDissonanceSlotItem; break;
+                case 4: case 9: item = game.assets.timeOrbSlotItem; break;
             }
+            game.batch.draw(item,
+                itemXPosition + ((i % 5) * itemSlotWidth) + ((i % 5) * Xgap),
+                itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? +1 : -2) * Ygap),
+                itemSlotWidth, itemSlotHeight);
+
+        }
+        game.batch.end();
+    }
+
+    // =========================================================================
+    // Inventory Menu
+    // =========================================================================
+
+    private void renderUseItem() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
+            || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
+            || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            if (confirmSelection == 0) {
+                game.ctx.combatLog = "Item used!"; // Placeholder
+            }
+            game.ctx.combatState = GameContext.CombatState.TURN_MENU;
             return;
         }
 
-        float titleX = actionPanelLeft + px(0.8f);
-        float titleY = actionPanelTop - px(0.8f);
+        // ── Measure at correct scales before drawing ──────────────────────────────
 
-        float startY = titleY - px(0.9f);
-        float rowGap = px(0.72f);
-        float iconSize = 26f;
-        float iconX = actionPanelLeft + px(0.9f);
-        float textX = iconX + iconSize + 12f;
+        String inventoryPrompt = "No items in inventory."; // Placeholder
+        game.assets.font.getData().setScale(1.2f);
+        float descW      = textWidth(inventoryPrompt);
+        float descHeight = game.assets.font.getCapHeight();
+
+        game.assets.font.getData().setScale(1.6f);
+        float useW         = textWidth("> " + confirmOptions[0]);
+        float cancelW      = textWidth(confirmOptions[1]);
+        float optionGap    = px(3f);
+        float totalOptionsW = useW + optionGap + cancelW;
+        float optionHeight  = game.assets.font.getCapHeight();
+
+        // ── Vertical block centred in the action panel ────────────────────────────
+
+        float lineGap     = px(1.5f);
+        float blockHeight = descHeight + lineGap + optionHeight;
+        float blockStartY = actionPanelBottom + (actionPanelHeight / 2f) + (blockHeight / 2f);
+
+        float descY   = blockStartY;
+        float optionY = blockStartY - descHeight - lineGap;
+
+        // ── Horizontal centering ──────────────────────────────────────────────────
+
+        float descX         = actionPanelLeft + ((actionPanelWidth - descW)         / 2f);
+        float optionsStartX = actionPanelLeft + ((actionPanelWidth - totalOptionsW) / 2f);
+        float cancelX       = optionsStartX + useW + optionGap;
+
+        // ── Draw ──────────────────────────────────────────────────────────────────
 
         beginUiBatch();
 
         game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(Color.YELLOW);
-        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.draw(game.batch, inventoryPrompt, descX, descY);
 
-        game.assets.font.getData().setScale(0.9f);
-        for (int i = 0; i < entries.size(); i++) {
-            Character.InventoryEntry entry = entries.get(i);
-            Item item = entry.getItem();
-            float rowY = startY - (i * rowGap);
+        game.assets.font.getData().setScale(1.6f);
 
-            if (item != null) {
-                TextureRegion icon = item.getInventoryIcon(game.assets);
-                if (icon != null) {
-                    game.batch.draw(icon, iconX, rowY - 20f, iconSize, iconSize);
-                }
-            }
-
-            String prefix = i == inventorySelection ? "> " : "";
-            String label = prefix + entry.getItem().getName() + " x" + entry.getQuantity();
-
-            game.assets.font.setColor(i == inventorySelection ? Color.YELLOW : Color.WHITE);
-            game.assets.font.draw(game.batch, label, textX, rowY);
-        }
-
-        Character.InventoryEntry selectedEntry = entries.get(inventorySelection);
-        String description = selectedEntry.getItem().getDescription();
-
-        game.assets.font.getData().setScale(0.8f);
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        game.assets.font.draw(game.batch, description, actionPanelLeft + px(0.8f), actionPanelBottom + px(1.0f));
-
-        game.assets.font.getData().setScale(0.75f);
-        String hint = "[W/S] Select   [ENTER] Use   [ESC] Back";
+        game.assets.font.setColor(confirmSelection == 0 ? Color.YELLOW : Color.WHITE);
         game.assets.font.draw(game.batch,
-            hint,
-            actionPanelLeft + px(0.8f),
-            actionPanelBottom + px(0.45f));
+            confirmSelection == 0 ? "> " + confirmOptions[0] : confirmOptions[0],
+            optionsStartX, optionY);
+
+        game.assets.font.setColor(confirmSelection == 1 ? Color.YELLOW : Color.WHITE);
+        game.assets.font.draw(game.batch,
+            confirmSelection == 1 ? "> " + confirmOptions[1] : confirmOptions[1],
+            cancelX, optionY);
 
         game.assets.font.getData().setScale(1.0f);
         game.batch.end();
     }
+
 
     // =========================================================================
     // Combat Logic — Attack Resolution
@@ -1220,7 +1323,9 @@ public class CombatScreen extends BaseScreen {
         enemy.takeDamage(finalDamage);
         player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside Character
 
-        game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+        revealedNoteCount    = 0;
+        noteRevealTimer      = 0f;
+        game.ctx.combatState = GameContext.CombatState.ATTACK_FEEDBACK;
         game.ctx.resultTimer = 0f;
     }
 
@@ -1247,11 +1352,12 @@ public class CombatScreen extends BaseScreen {
         activeSkillUsedThisTurn        = false;
         chordUsedThisTurn              = null;
         metronomeActivated             = false;
+        revealedNoteCount              = 0;
+        noteRevealTimer                = 0f;
         initialDamage                  = 0;
         finalDamage                    = 0;
         noteDisplayTimer               = 0f;
         enemyAttacked                  = false;
-        lastUsedItemName               = null;
     }
 
     // =========================================================================
@@ -1277,16 +1383,6 @@ public class CombatScreen extends BaseScreen {
             }
         }
 
-        String[] possibleDrops = {
-            "Crimson Chorus",
-            "Time Orb",
-            "Major's Blessing",
-            "Minor's Grace"
-        };
-        String droppedItem = possibleDrops[RNG.nextInt(possibleDrops.length)];
-        player.addItem(droppedItem, 1);
-        game.ctx.combatLog = enemy.getName() + " dropped " + droppedItem + "!";
-
         // Level-up progression
         player.defeatedMonster();
         int kills    = player.getMonstersDefeated();
@@ -1299,31 +1395,13 @@ public class CombatScreen extends BaseScreen {
         if (newLevel > player.getLevel()) player.levelUp(newLevel);
 
         // Reset shared context before leaving
+        game.ctx.activeCharacterStats.resetDamageBuff();
         game.ctx.currentEnemy              = null;
         game.ctx.noteHandler.noteCount     = 0;
+        game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
 
-        // Reset player movement state
-        game.ctx.playerState = GameContext.PlayerState.IDLE; // Reset player state
-
-        if (game.ctx.player != null) {
-            game.ctx.player.setInCombat(false); // <--- ADD THIS LINE!
-        }
-
-        switch (game.ctx.mapName) {
-            case TOWN_OF_ECHOES:
-                game.setScreen(new TownOfEchoesScreen(game));
-                break;
-            case SILENT_CAVERNS:
-                game.setScreen(new SilentCavernsScreen(game));
-                break;
-            case ABYSS_OF_DISSONANCE:
-                game.setScreen(new AbyssOfDissonanceScreen(game));
-                break;
-            default:
-                game.setScreen(new TownOfEchoesScreen(game)); // Default to Town
-                break;
-        }
+        game.setScreen(new ExploringScreen(game));
     }
 
     // =========================================================================
@@ -1365,22 +1443,18 @@ public class CombatScreen extends BaseScreen {
         String description = "";
         switch(game.ctx.selectedCharacter){
             case SONARA:
-                description = (activeSkillUsed ? "Initial Damage + (1) Point." : "Add (1) point to initial note damage.");
+                description = (activeSkillUsed ? "Initial Damage + (1) Point.": "Add (1) point to initial note damage.");
                 break;
             case AURELIUS:
-                description = (activeSkillUsed ? "Damage Preserved." : "Preserve notes' current damage for next turn.");
+                description = (activeSkillUsed ? "Damage Preserved.": "Preserve notes' current damage for next turn.");
                 break;
             case LYRON:
-                description = (activeSkillUsed ? "Damage Rerolled." : "Reroll notes' current damage.");
+                description = (activeSkillUsed ? "Damage Rerolled.": "Reroll notes' current damage.");
+                description = "";
                 break;
         }
 
         return description;
-    }
-
-    /** Returns a frame from an animation, or null if the animation itself is null. */
-    private TextureRegion getSafeFrame(Animation<TextureRegion> anim, float timer) {
-        return anim != null ? anim.getKeyFrame(timer, true) : null;
     }
 
     // =========================================================================

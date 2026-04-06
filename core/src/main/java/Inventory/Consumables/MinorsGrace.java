@@ -2,6 +2,7 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * Minor's Grace
@@ -28,12 +29,12 @@ public class MinorsGrace implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.minorsGraceInvTex;
+    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.minorsGraceInvTex);
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.minorsGraceBattleTex;
+    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return new TextureRegion(assets.minorsGraceBattleTex);
     }
 }
