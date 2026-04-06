@@ -17,6 +17,7 @@ import io.github.Zephyrdoestech.Main;
 import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Turn-based combat screen.
@@ -41,6 +42,7 @@ public class CombatScreen extends BaseScreen {
 
     private static final float DISPLAY_TIME = 1.6f;
     private static final float NOTE_DISPLAY_TIME = 1.5f;
+    private static final Random RNG = new Random();
 
     // ── Turn State ────────────────────────────────────────────────────────────
 
@@ -1275,6 +1277,16 @@ public class CombatScreen extends BaseScreen {
             }
         }
 
+        String[] possibleDrops = {
+            "Crimson Chorus",
+            "Time Orb",
+            "Major's Blessing",
+            "Minor's Grace"
+        };
+        String droppedItem = possibleDrops[RNG.nextInt(possibleDrops.length)];
+        player.addItem(droppedItem, 1);
+        game.ctx.combatLog = enemy.getName() + " dropped " + droppedItem + "!";
+
         // Level-up progression
         player.defeatedMonster();
         int kills    = player.getMonstersDefeated();
@@ -1289,7 +1301,6 @@ public class CombatScreen extends BaseScreen {
         // Reset shared context before leaving
         game.ctx.currentEnemy              = null;
         game.ctx.noteHandler.noteCount     = 0;
-        game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
 
         // Reset player movement state

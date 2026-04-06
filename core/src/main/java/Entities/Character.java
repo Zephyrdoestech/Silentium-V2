@@ -5,6 +5,7 @@ import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,7 @@ public class Character {
     private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
     private boolean inCombat; // Track combat state
 
+    public Map<String, Integer> inventory = new HashMap<>();
     private final Map<String, InventoryEntry> consumableInventory;
 
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
@@ -212,6 +214,11 @@ public class Character {
 
     // ── Inventory Methods ─────────────────────────────────────────────────────
 
+    public void addItem(String itemName, int amount) {
+        if (itemName == null || itemName.trim().isEmpty() || amount <= 0) return;
+        inventory.put(itemName, inventory.getOrDefault(itemName, 0) + amount);
+    }
+
     public void addItem(Item item) {
         addItem(item, 1);
     }
@@ -225,6 +232,8 @@ public class Character {
         } else {
             entry.addQuantity(quantity);
         }
+
+        addItem(item.getName(), quantity);
     }
 
     public boolean removeItem(String itemName) {
@@ -235,12 +244,34 @@ public class Character {
         if (itemName == null || quantity <= 0) return false;
 
         InventoryEntry entry = consumableInventory.get(itemName);
-        if (entry == null || entry.getQuantity() < quantity) return false;
+        if (entry == null || entry.getQuantity() < quantity) {
+            Integer currentCount = inventory.get(itemName);
+            if (currentCount == null || currentCount < quantity) return false;
+
+            int newCount = currentCount - quantity;
+            if (newCount <= 0) {
+                inventory.remove(itemName);
+            } else {
+                inventory.put(itemName, newCount);
+            }
+            return true;
+        }
 
         entry.removeQuantity(quantity);
         if (entry.getQuantity() <= 0) {
             consumableInventory.remove(itemName);
         }
+
+        Integer currentCount = inventory.get(itemName);
+        if (currentCount != null) {
+            int newCount = currentCount - quantity;
+            if (newCount <= 0) {
+                inventory.remove(itemName);
+            } else {
+                inventory.put(itemName, newCount);
+            }
+        }
+
         return true;
     }
 

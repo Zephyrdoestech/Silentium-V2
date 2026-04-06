@@ -15,6 +15,7 @@ import Entities.MapCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
 
@@ -43,6 +44,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
+    private boolean showInventory = false;
     private float exitPromptGraceTimer = 0f;
 
     public ExploringScreen(Main game) {
@@ -108,6 +110,7 @@ public class ExploringScreen extends BaseScreen {
 
         showingExitPrompt = false;
         atExit = false;
+        showInventory = false;
         exitPromptGraceTimer = 0.35f;
 
         if (game.ctx.rooms.isEmpty()) {
@@ -191,11 +194,13 @@ public class ExploringScreen extends BaseScreen {
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+        for (Room r : game.ctx.rooms) {
+            // game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+        }
         game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : walkableZones)
-            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+        for (Rectangle h : walkableZones) {
+            // game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+        }
         game.shapeRenderer.end();
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -224,11 +229,24 @@ public class ExploringScreen extends BaseScreen {
 
         drawHUD();
 
+        if (showInventory) {
+            drawInventoryOverlay();
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
             game.setScreen(new MainMenuScreen(game));
     }
 
     private void handleMovement(float delta) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            showInventory = !showInventory;
+        }
+
+        if (showInventory) {
+            game.ctx.playerState = GameContext.PlayerState.IDLE;
+            return;
+        }
+
         if (exitPromptGraceTimer > 0f) {
             exitPromptGraceTimer = Math.max(0f, exitPromptGraceTimer - delta);
         }
@@ -450,6 +468,7 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
         game.assets.font.setColor(Color.GRAY);
         game.assets.font.draw(game.batch, "ESC – Menu", 10, 20);
+        game.assets.font.draw(game.batch, "I – Inventory", 10, 40);
         game.assets.font.setColor(Color.WHITE);
         game.batch.end();
 
@@ -471,6 +490,55 @@ public class ExploringScreen extends BaseScreen {
                     Main.WORLD_WIDTH / 2f - 80, Main.WORLD_HEIGHT / 2f + 50);
             }
         }
+        game.batch.end();
+    }
+
+    private void drawInventoryOverlay() {
+        float overlayX = Main.WORLD_WIDTH * 0.2f;
+        float overlayY = Main.WORLD_HEIGHT * 0.18f;
+        float overlayW = Main.WORLD_WIDTH * 0.6f;
+        float overlayH = Main.WORLD_HEIGHT * 0.64f;
+
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.75f);
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        game.shapeRenderer.setColor(0.1f, 0.12f, 0.18f, 0.95f);
+        game.shapeRenderer.rect(overlayX, overlayY, overlayW, overlayH);
+        game.shapeRenderer.end();
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+
+        float titleX = overlayX + 24f;
+        float titleY = overlayY + overlayH - 24f;
+        game.assets.font.getData().setScale(1.2f);
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
+
+        game.assets.font.getData().setScale(0.9f);
+        game.assets.font.setColor(Color.LIGHT_GRAY);
+        game.assets.font.draw(game.batch, "[I] Close", overlayX + overlayW - 90f, titleY);
+
+        float itemY = titleY - 36f;
+        float lineGap = 26f;
+
+        Map<String, Integer> inventory = game.ctx.activeCharacterStats.inventory;
+        if (inventory == null || inventory.isEmpty()) {
+            game.assets.font.setColor(Color.WHITE);
+            game.assets.font.draw(game.batch, "Inventory is empty", titleX, itemY);
+        } else {
+            game.assets.font.setColor(Color.WHITE);
+            for (Map.Entry<String, Integer> entry : inventory.entrySet()) {
+                String line = "- " + entry.getKey() + " x" + entry.getValue();
+                game.assets.font.draw(game.batch, line, titleX, itemY);
+                itemY -= lineGap;
+                if (itemY < overlayY + 24f) break;
+            }
+        }
+
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.WHITE);
         game.batch.end();
     }
 
