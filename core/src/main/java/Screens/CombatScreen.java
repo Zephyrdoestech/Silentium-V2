@@ -1157,18 +1157,17 @@ public class CombatScreen extends BaseScreen {
             return;
         }
 
-        float Xgap = px(0.1f);
-        float Ygap = px(0.1f);
-        float itemSlotWidth = px(2.2f);
-        float itemSlotHeight = px(2.2f);
-        float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
-        float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
+
+        float itemSlotWidth = px(2.16f);
+        float itemSlotHeight = px(2.4f);
+        float itemSlotsWidth = itemSlotWidth * 5;
+        float itemSlotsHeight = itemSlotHeight * 2;
 
         beginUiBatch();
         float itemXPosition = actionPanelLeft + ((actionPanelWidth - itemSlotsWidth) / 2f);
         float itemYPosition = actionPanelTop - ((actionPanelHeight - itemSlotsHeight) / 2f);
         Texture item = game.assets.crimsonChorusSlotItem;
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 6; i++){
             switch(i){
                 case 0: case 5: item = game.assets.crimsonChorusSlotItem; break;
                 case 1: case 6: item = game.assets.majorsBlessingSlotItem; break;
@@ -1177,8 +1176,8 @@ public class CombatScreen extends BaseScreen {
                 case 4: case 9: item = game.assets.timeOrbSlotItem; break;
             }
             game.batch.draw(item,
-                itemXPosition + ((i % 5) * itemSlotWidth) + ((i % 5) * Xgap),
-                itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? +1 : -2) * Ygap),
+                itemXPosition + ((i % 5) * itemSlotWidth),
+                itemYPosition - (itemSlotHeight * (1 + (i / 5))),
                 itemSlotWidth, itemSlotHeight);
 
         }
