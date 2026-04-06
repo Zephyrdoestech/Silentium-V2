@@ -70,7 +70,9 @@ public class ExploringScreen extends BaseScreen {
             System.out.println("WARNING: Defaulting to Town.");
             this.mapTexture = game.assets.townTex;
         }
-        game.ctx.player.setInCombat(false); // Ensure player can move after combat
+        if (game.ctx.player != null) {
+            game.ctx.player.setInCombat(false);
+        }
     }
 
     //overriden by map classes
