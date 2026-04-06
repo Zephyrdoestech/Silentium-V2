@@ -1425,7 +1425,7 @@ public class CombatScreen extends BaseScreen {
                 game.setScreen(new AbyssOfDissonanceScreen(game));
                 break;
             default:
-                game.setScreen(new TownOfEchoesScreen(game)); // Default to Town
+                game.setScreen(game.ctx.currentMapScreen); // Default to Town
                 break;
         }
     }

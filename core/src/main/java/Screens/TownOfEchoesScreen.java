@@ -43,7 +43,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
         this.mapDecor = game.assets.townDecorationsTex;
         this.exitTexture = game.assets.townExitTex;
 
-        this.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
+        game.ctx.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
         game.ctx.mapEnemies.clear();
 
         List<Room> eligibleRooms = new ArrayList<>(game.ctx.rooms);
-        eligibleRooms.remove(exitRoom); // not exit room and room with enemy
+        eligibleRooms.remove(game.ctx.exitRoom); // not exit room and room with enemy
         Collections.shuffle(eligibleRooms, RNG);
 
         int count = Math.min(getEnemyCount(), eligibleRooms.size());
@@ -96,7 +96,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty() && r != exitRoom)  // ← exclude exit room
+            if (r.getEnemies().isEmpty() && r != game.ctx.exitRoom)  // ← exclude exit room
                 emptyRooms.add(r);
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));

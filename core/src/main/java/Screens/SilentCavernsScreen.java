@@ -40,7 +40,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         this.exitTexture = game.assets.townExitTex;
 
         // Exit spawns in one of the rooms in the top-most row (indices 16-19)
-        this.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));
+        this.game.ctx.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         game.ctx.mapEnemies.clear();
 
         List<Room> eligibleRooms = new ArrayList<>(game.ctx.rooms);
-        eligibleRooms.remove(exitRoom);
+        eligibleRooms.remove(game.ctx.exitRoom);
         Collections.shuffle(eligibleRooms, RNG);
 
         int count = Math.min(getEnemyCount(), eligibleRooms.size());

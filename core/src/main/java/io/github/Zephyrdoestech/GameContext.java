@@ -7,6 +7,7 @@ import Mechanics.CombatSystem.Note;
 import Mechanics.CombatSystem.Chord;
 import Mechanics.CombatSystem.Metronome;
 import Mechanics.MapTraversalSystem.Room;
+import Screens.ExploringScreen;
 import com.badlogic.gdx.audio.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,9 @@ public class GameContext {
     public List<Room>  rooms      = new ArrayList<>();
     public int lives = 3;
     public int enemiesDefeatedInCurrentMap = 0;
+    public Room exitRoom = null;
+    public ExploringScreen currentMapScreen = null;
+
 
     // Map dimensions — match your Dungeon.png pixel size
     public float MAP_SIZE  = 2048f;

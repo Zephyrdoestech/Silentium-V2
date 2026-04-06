@@ -40,7 +40,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
-    protected Room exitRoom;
+//    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
@@ -84,7 +84,7 @@ public class ExploringScreen extends BaseScreen {
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty() && r != exitRoom)
+            if (r.getEnemies().isEmpty() && r != game.ctx.exitRoom)
                 emptyRooms.add(r);
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));
@@ -98,6 +98,7 @@ public class ExploringScreen extends BaseScreen {
 
     @Override
     public void show() {
+        game.ctx.currentMapScreen = this;
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
             initWalkable();
@@ -170,11 +171,11 @@ public class ExploringScreen extends BaseScreen {
         } else {
             System.err.println("Warning: Map texture is null in ExploringScreen.java. Check asset loading.");
         }
-        if (exitRoom != null && exitTexture != null) {
+        if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
             game.batch.draw(exitTexture,
-                exitRoom.getBounds().x + (exitRoom.getBounds().width - exitSize) / 2f,
-                exitRoom.getBounds().y + (exitRoom.getBounds().height) / 1.16f,
+                game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
+                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
                 exitSize, exitSize);
         }
         game.batch.end();
@@ -267,12 +268,12 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player.setY(MathUtils.clamp(game.ctx.player.getY(), 0, S - C));
 
         // Exit Logic
-        if (exitRoom != null) {
+        if (game.ctx.exitRoom != null) {
             float exitSize = 104f;
             Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
             Rectangle exitRect = new Rectangle(
-                exitRoom.getBounds().x + (exitRoom.getBounds().width - exitSize) / 2f,
-                exitRoom.getBounds().y + (exitRoom.getBounds().height) / 1.16f,
+                game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
+                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
                 exitSize, exitSize);
 
             if (pRect.overlaps(exitRect)) {
@@ -319,29 +320,30 @@ public class ExploringScreen extends BaseScreen {
 
 
 
-//                // TEST TRAVERSAL
-//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-//                if (game.ctx.rooms != null) {
-//                    for (Room r : game.ctx.rooms) {
-//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-//                            break;
-//                        }
-//                    }
-//                }
-//                // Level up the player after victory
-//                game.ctx.activeCharacterStats.defeatedMonster();
-//                int monstersDefeated = game.ctx.activeCharacterStats.getMonstersDefeated();
-//
-//                // Level up logic: level 2 at 1 kill, 3 at 2, 4 at 4, 5 at 7 (adjusted progression)
-//                int newLevel = 1;
-//                if (monstersDefeated >= 7) newLevel = 5;
-//                else if (monstersDefeated >= 4) newLevel = 4;
-//                else if (monstersDefeated >= 2) newLevel = 3;
-//                else if (monstersDefeated >= 1) newLevel = 2;
-//                if (newLevel > game.ctx.activeCharacterStats.getLevel()) {
-//                    game.ctx.activeCharacterStats.levelUp(newLevel);
-//                }
+                // TEST TRAVERSAL
+                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
+                if (game.ctx.rooms != null) {
+                    for (Room r : game.ctx.rooms) {
+                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
+                            if (r.getEnemies().isEmpty()) r.setCleared(true);
+                            break;
+                        }
+                    }
+                }
+                game.ctx.enemiesDefeatedInCurrentMap++;
+                // Level up the player after victory
+                game.ctx.activeCharacterStats.defeatedMonster();
+                int monstersDefeated = game.ctx.activeCharacterStats.getMonstersDefeated();
+
+                // Level up logic: level 2 at 1 kill, 3 at 2, 4 at 4, 5 at 7 (adjusted progression)
+                int newLevel = 1;
+                if (monstersDefeated >= 7) newLevel = 5;
+                else if (monstersDefeated >= 4) newLevel = 4;
+                else if (monstersDefeated >= 2) newLevel = 3;
+                else if (monstersDefeated >= 1) newLevel = 2;
+                if (newLevel > game.ctx.activeCharacterStats.getLevel()) {
+                    game.ctx.activeCharacterStats.levelUp(newLevel);
+                }
 
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;

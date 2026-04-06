@@ -25,7 +25,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         this.mapDecor = null;
         this.exitTexture = null;
 
-        this.exitRoom = null;
+        game.ctx.exitRoom = null;
     }
 
     @Override
