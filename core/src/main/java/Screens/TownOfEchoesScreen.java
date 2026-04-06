@@ -5,7 +5,7 @@ import Entities.MapCharacter;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.Zephyrdoestech.Main;
 import io.github.Zephyrdoestech.GameContext;
-import Mechanics.Room;
+import Mechanics.MapTraversalSystem.Room;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

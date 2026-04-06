@@ -1,4 +1,4 @@
-package io.github.Zephyrdoestech;
+package Entities;
 
 public class Hero {
     private String name;

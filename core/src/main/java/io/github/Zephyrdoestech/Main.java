@@ -1,71 +1,60 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package io.github.Zephyrdoestech;
 
 import Screens.TitleScreen;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/**
- * Entry point. Owns the shared rendering infrastructure and delegates
- * everything else to screen classes via LibGDX's built-in Game + Screen system.
- *
- * Switching screens from anywhere:
- *   game.setScreen(new CombatScreen(game));
- */
 public class Main extends Game {
-
-    // ── Shared rendering infrastructure (created once, used by every screen) ──
-    public SpriteBatch   batch;
+    public SpriteBatch batch;
     public ShapeRenderer shapeRenderer;
-
     public OrthographicCamera gameCamera;
     public OrthographicCamera uiCamera;
-    public Viewport           gameViewport;
-    public Viewport           uiViewport;
-
-    public static final float WORLD_WIDTH  = 800f;
-    public static final float WORLD_HEIGHT = 480f;
-
-    // ── Shared asset manager and game state ────────────────────────────────────
-    public Assets      assets;
+    public Viewport gameViewport;
+    public Viewport uiViewport;
+    public static final float WORLD_WIDTH = 800.0F;
+    public static final float WORLD_HEIGHT = 480.0F;
+    public Assets assets;
     public GameContext ctx;
+    public GlyphLayout glyphLayout;
 
-    @Override
     public void create() {
-        batch         = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-
-        gameCamera   = new OrthographicCamera();
-        gameViewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, gameCamera);
-        gameCamera.position.set(WORLD_WIDTH / 2f, WORLD_HEIGHT / 2f, 0);
-
-        uiCamera   = new OrthographicCamera();
-        uiViewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, uiCamera);
-        uiCamera.position.set(WORLD_WIDTH / 2f, WORLD_HEIGHT / 2f, 0);
-        uiCamera.update();
-
-        assets = new Assets();
-        ctx    = new GameContext();
-
-        setScreen(new TitleScreen(this));
+        this.batch = new SpriteBatch();
+        this.shapeRenderer = new ShapeRenderer();
+        this.gameCamera = new OrthographicCamera();
+        this.gameViewport = new FitViewport(800.0F, 480.0F, this.gameCamera);
+        this.gameCamera.position.set(400.0F, 240.0F, 0.0F);
+        this.uiCamera = new OrthographicCamera();
+        this.uiViewport = new FitViewport(800.0F, 480.0F, this.uiCamera);
+        this.uiCamera.position.set(400.0F, 240.0F, 0.0F);
+        this.uiCamera.update();
+        this.assets = new Assets();
+        this.ctx = new GameContext();
+        this.glyphLayout = new GlyphLayout();
+        this.setScreen(new TitleScreen(this));
     }
 
-    @Override
     public void resize(int width, int height) {
-        if (width == 0 || height == 0) return;
-        gameViewport.update(width, height, true);
-        uiViewport.update(width, height, true);
-        super.resize(width, height); // forwards to the active screen
+        if (width != 0 && height != 0) {
+            this.gameViewport.update(width, height, true);
+            this.uiViewport.update(width, height, true);
+            super.resize(width, height);
+        }
     }
 
-    @Override
     public void dispose() {
-        super.dispose(); // disposes the active screen
-        batch.dispose();
-        shapeRenderer.dispose();
-        assets.dispose();
+        super.dispose();
+        this.batch.dispose();
+        this.shapeRenderer.dispose();
+        this.assets.dispose();
     }
 }

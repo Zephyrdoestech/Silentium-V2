@@ -2,7 +2,7 @@ package Screens;
 
 import Entities.Enemy;
 import io.github.Zephyrdoestech.Main;
-import Mechanics.Room;
+import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 

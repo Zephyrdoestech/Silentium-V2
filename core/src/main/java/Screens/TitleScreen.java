@@ -20,9 +20,9 @@ public class TitleScreen extends BaseScreen {
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
 
-        if (!game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.setVolume(0.6f);
-            game.assets.titleBGM.play();
+        if (!game.assets.titleBgm.isPlaying()) {
+            game.assets.titleBgm.setVolume(0.6f);
+            game.assets.titleBgm.play();
         }
     }
 
@@ -40,9 +40,9 @@ public class TitleScreen extends BaseScreen {
 
         drawFloatingNotes(delta);
 
-        // Prompt
         game.assets.font.setColor(new Color(0.85f, 0.85f, 0.85f, 0.9f));
-        game.assets.font.draw(game.batch, "Press SPACE to continue",290, 60);
+        game.assets.font.draw(game.batch, "Press SPACE to continue",
+            290, 60);
         game.assets.font.setColor(Color.WHITE);
 
         game.batch.end();

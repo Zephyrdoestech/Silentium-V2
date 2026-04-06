@@ -1,6 +1,5 @@
 package Screens;
 
-import Mechanics.Room;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import Mechanics.MapTraversalSystem.Room;
 
 /**
  * The overworld map screen.
@@ -45,7 +45,27 @@ public class ExploringScreen extends BaseScreen {
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
 
-    public ExploringScreen(Main game) { super(game); }
+    public ExploringScreen(Main game) {
+        super(game);
+        if (game.ctx.mapName == null) {
+            game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
+        }
+        // Set the map texture based on the map name
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                mapTexture = game.assets.townTex;
+                break;
+            case SILENT_CAVERNS:
+                mapTexture = game.assets.silentCavernsTex;
+                break;
+            case ABYSS_OF_DISSONANCE:
+                mapTexture = game.assets.abyssOfDissonanceTex;
+                break;
+            default:
+                mapTexture = game.assets.townTex; // Default to Town
+                break;
+        }
+    }
 
     //overriden by map classes
     protected int getRequiredKills() { return 0; }
@@ -83,7 +103,7 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-        if (game.ctx.player == null) {
+        if (game.ctx.player == null || game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
         } else {
@@ -96,6 +116,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
         game.ctx.stateTime = 0f;
+        updateCamera(); // Initialize camera position after player position is set
     }
 
 
@@ -131,9 +152,14 @@ public class ExploringScreen extends BaseScreen {
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
 
+        // Ensure batch color is white before drawing textures
+        game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+
         // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+        } else {
+            System.err.println("Warning: Map texture is null in ExploringScreen.java. Check asset loading.");
         }
         if (exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
@@ -144,6 +170,7 @@ public class ExploringScreen extends BaseScreen {
         }
         game.batch.end();
 
+        // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
         // Debug room outlines + enemy rects (ShapeRenderer)
 
@@ -202,26 +229,26 @@ public class ExploringScreen extends BaseScreen {
 
         if (!showingExitPrompt) {
             if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.ctx.player.up(move);
+                game.ctx.player.setY(game.ctx.player.getY() + move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_UP;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                game.ctx.player.down(move);
+                game.ctx.player.setY(game.ctx.player.getY() - move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                game.ctx.player.left(move);
+                game.ctx.player.setX(game.ctx.player.getX() - move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
                 game.ctx.facing = GameContext.Facing.LEFT;
             }
             if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                game.ctx.player.right(move);
+                game.ctx.player.setX(game.ctx.player.getX() + move);
                 game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
                 game.ctx.facing = GameContext.Facing.RIGHT;
             }
         }
 
-        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY()) || showingExitPrompt) {
             game.ctx.player.setX(prevX);
             game.ctx.player.setY(prevY);
         }
@@ -279,12 +306,39 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
                 game.ctx.currentEnemy = e;
-                game.ctx.noteCount    = 0;
-                game.ctx.combatLog    = "A " + e.getName() + " appears!";
-                game.ctx.combatState  = GameContext.CombatState.ATTACK;
-                game.ctx.lastMapScreen = this;
+                game.ctx.noteHandler.noteCount    = 0;
+
+
+
+//                // TEST TRAVERSAL
+//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
+//                if (game.ctx.rooms != null) {
+//                    for (Room r : game.ctx.rooms) {
+//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
+//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
+//                            break;
+//                        }
+//                    }
+//                }
+//                // Level up the player after victory
+//                game.ctx.activeCharacterStats.defeatedMonster();
+//                int monstersDefeated = game.ctx.activeCharacterStats.getMonstersDefeated();
+//
+//                // Level up logic: level 2 at 1 kill, 3 at 2, 4 at 4, 5 at 7 (adjusted progression)
+//                int newLevel = 1;
+//                if (monstersDefeated >= 7) newLevel = 5;
+//                else if (monstersDefeated >= 4) newLevel = 4;
+//                else if (monstersDefeated >= 2) newLevel = 3;
+//                else if (monstersDefeated >= 1) newLevel = 2;
+//                if (newLevel > game.ctx.activeCharacterStats.getLevel()) {
+//                    game.ctx.activeCharacterStats.levelUp(newLevel);
+//                }
+
+                // ORIGINAL COMBAT SCREEN ROUTING
+                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
+
             }
         }
     }
@@ -429,5 +483,8 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override public void dispose() {}
+    @Override
+    public void dispose() {
+        // Do not dispose of global assets here
+    }
 }

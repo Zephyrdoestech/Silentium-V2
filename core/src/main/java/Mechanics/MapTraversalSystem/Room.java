@@ -1,4 +1,4 @@
-package Mechanics;
+package Mechanics.MapTraversalSystem;
 
 import Entities.Enemy;
 import com.badlogic.gdx.math.Rectangle;
