@@ -1,6 +1,7 @@
 package Screens;
 
 import Entities.Enemy;
+import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.graphics.Color;
@@ -16,6 +17,7 @@ public class SilentCavernsScreen extends ExploringScreen {
     @Override
     protected void initMapData() {
         this.mapName = "Silent Caverns";
+        game.ctx.mapName = GameContext.MapName.SILENT_CAVERNS;
         game.ctx.MAP_SIZE = 2048f;
         game.ctx.rooms = new ArrayList<>();
 

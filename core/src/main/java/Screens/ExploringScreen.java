@@ -47,24 +47,24 @@ public class ExploringScreen extends BaseScreen {
 
     public ExploringScreen(Main game) {
         super(game);
-        if (game.ctx.mapName == null) {
-            game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
-        }
-        // Set the map texture based on the map name
-        switch (game.ctx.mapName) {
-            case TOWN_OF_ECHOES:
-                mapTexture = game.assets.townTex;
-                break;
-            case SILENT_CAVERNS:
-                mapTexture = game.assets.silentCavernsTex;
-                break;
-            case ABYSS_OF_DISSONANCE:
-                mapTexture = game.assets.abyssOfDissonanceTex;
-                break;
-            default:
-                mapTexture = game.assets.townTex; // Default to Town
-                break;
-        }
+//        if (game.ctx.mapName == null) {
+//            game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
+//        }
+//        // Set the map texture based on the map name
+//        switch (game.ctx.mapName) {
+//            case TOWN_OF_ECHOES:
+//                mapTexture = game.assets.townTex;
+//                break;
+//            case SILENT_CAVERNS:
+//                mapTexture = game.assets.silentCavernsTex;
+//                break;
+//            case ABYSS_OF_DISSONANCE:
+//                mapTexture = game.assets.abyssOfDissonanceTex;
+//                break;
+//            default:
+//                mapTexture = game.assets.townTex; // Default to Town
+//                break;
+//        }
     }
 
     //overriden by map classes
@@ -100,8 +100,9 @@ public class ExploringScreen extends BaseScreen {
     @Override
     public void show() {
         game.ctx.currentMapScreen = this;
+        initMapData();
+
         if (game.ctx.rooms.isEmpty()) {
-            initMapData();
             initWalkable();
         } else {
             restoreInstanceFields();
@@ -184,8 +185,9 @@ public class ExploringScreen extends BaseScreen {
 
         // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        // Debug room outlines + enemy rects (ShapeRenderer)
 
+
+        // Debug room outlines + enemy rects (ShapeRenderer)
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
         for (Room r : game.ctx.rooms)
@@ -323,15 +325,15 @@ public class ExploringScreen extends BaseScreen {
 
 
                 // TEST TRAVERSAL
-                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-                if (game.ctx.rooms != null) {
-                    for (Room r : game.ctx.rooms) {
-                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-                            break;
-                        }
-                    }
-                }
+//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
+//                if (game.ctx.rooms != null) {
+//                    for (Room r : game.ctx.rooms) {
+//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
+//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
+//                            break;
+//                        }
+//                    }
+//                }
                 game.ctx.enemiesDefeatedInCurrentMap++;
                 // Level up the player after victory
                 game.ctx.activeCharacterStats.defeatedMonster();
