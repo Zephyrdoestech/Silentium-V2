@@ -36,9 +36,9 @@ public class SilentCavernsScreen extends ExploringScreen {
             }
         }
 
-        this.mapTexture  = new TextureRegion(game.assets.silentCavernsTex);
+        this.mapTexture  = game.assets.silentCavernsTex;
         this.mapDecor    = null;
-        this.exitTexture = new TextureRegion(game.assets.townExitTex);
+        this.exitTexture = game.assets.townExitTex;
 
         // Exit spawns in one of the rooms in the top-most row (indices 16-19)
         this.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));

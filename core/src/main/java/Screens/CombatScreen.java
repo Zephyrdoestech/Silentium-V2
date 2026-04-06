@@ -11,13 +11,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import Entities.Character;
 import Entities.Enemy;
-import Inventory.Item;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import org.w3c.dom.Text;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Turn-based combat screen.
@@ -219,10 +215,29 @@ public class CombatScreen extends BaseScreen {
         splashTimer += delta;
         TextureRegion frame = null;
 
+        // If battleIntroAnim is null, immediately transition to ENEMY_INTRODUCTION to avoid NullPointerException.
+        // This is a safety measure if the asset is missing or not yet loaded.
+        if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN && game.assets.battleIntroAnim == null) {
+            game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
+            return; // Skip drawing and animation checks for this frame
+        }
+
         switch (game.ctx.combatState) {
-            case BATTLE_SCREEN: frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false); break;
-            case VICTORY:       frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);     break;
-            case DEFEAT:        frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);      break;
+            case BATTLE_SCREEN:
+                if (game.assets.battleIntroAnim != null) {
+                    frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
+            case VICTORY:
+                if (game.assets.victoryAnim != null) {
+                    frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
+            case DEFEAT:
+                if (game.assets.defeatAnim != null) {
+                    frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);
+                }
+                break;
             default: break;
         }
 
@@ -258,8 +273,6 @@ public class CombatScreen extends BaseScreen {
         renderBackground();
         renderEntities();
         renderStats();
-
-        //Name Header
         renderNameHeader();
         renderNotesPanel(delta);
         renderTimerPanel(delta);
@@ -1401,7 +1414,20 @@ public class CombatScreen extends BaseScreen {
         game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
 
-        game.setScreen(new ExploringScreen(game));
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                game.setScreen(new TownOfEchoesScreen(game));
+                break;
+            case SILENT_CAVERNS:
+                game.setScreen(new SilentCavernsScreen(game));
+                break;
+            case ABYSS_OF_DISSONANCE:
+                game.setScreen(new AbyssOfDissonanceScreen(game));
+                break;
+            default:
+                game.setScreen(new TownOfEchoesScreen(game)); // Default to Town
+                break;
+        }
     }
 
     // =========================================================================
@@ -1455,6 +1481,11 @@ public class CombatScreen extends BaseScreen {
         }
 
         return description;
+    }
+
+    /** Returns a frame from an animation, or null if the animation itself is null. */
+    private TextureRegion getSafeFrame(Animation<TextureRegion> anim, float timer) {
+        return anim != null ? anim.getKeyFrame(timer, true) : null;
     }
 
     // =========================================================================

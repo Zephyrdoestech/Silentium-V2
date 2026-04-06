@@ -32,12 +32,12 @@ public class TimeOrb implements Item {
     }
 
     @Override
-    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.timeOrbInvTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.timeOrbInvTex;
     }
 
     @Override
-    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.timeOrbBattleTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.timeOrbBattleTex;
     }
 }

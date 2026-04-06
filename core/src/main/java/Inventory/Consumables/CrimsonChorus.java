@@ -29,12 +29,12 @@ public class CrimsonChorus implements Item {
     }
 
     @Override
-    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.crimsonChorusInvTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.crimsonChorusInvTex;
     }
 
     @Override
-    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.crimsonChorusBattleTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.crimsonChorusBattleTex;
     }
 }

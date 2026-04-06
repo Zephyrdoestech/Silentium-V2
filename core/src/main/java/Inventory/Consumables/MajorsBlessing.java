@@ -29,12 +29,12 @@ public class MajorsBlessing implements Item {
     }
 
     @Override
-    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.majorsBlessingInvTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.majorsBlessingInvTex;
     }
 
     @Override
-    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.majorsBlessingBattleTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.majorsBlessingBattleTex;
     }
 }

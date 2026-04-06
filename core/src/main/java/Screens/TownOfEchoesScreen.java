@@ -40,9 +40,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
         game.ctx.rooms.add(new Room(1215f, 45f,   200f, 200f));
         game.ctx.rooms.add(new Room(1787f, 45f,   200f, 200f));
 
-        this.mapTexture = new TextureRegion(game.assets.townTex);
-        this.mapDecor = new TextureRegion(game.assets.townDecorationsTex);
-        this.exitTexture = new TextureRegion(game.assets.townExitTex);
+        this.mapTexture = game.assets.townTex;
+        this.mapDecor = game.assets.townDecorationsTex;
+        this.exitTexture = game.assets.townExitTex;
 
         this.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
     }
@@ -97,7 +97,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty() && r != exitRoom)
+            if (r.getEnemies().isEmpty() && r != exitRoom)  // ← exclude exit room
                 emptyRooms.add(r);
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));

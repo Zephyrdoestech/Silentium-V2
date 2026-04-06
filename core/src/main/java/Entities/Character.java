@@ -3,9 +3,6 @@ package Entities;
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Character {
 
     // ── Inner Classes ─────────────────────────────────────────────────────────
@@ -20,7 +17,7 @@ public class Character {
         }
 
         public String getPsName(){return psName;}
-         public String getPsDescription(){return psDescription;}
+        public String getPsDescription(){return psDescription;}
     }
 
     public static class ActiveSkill {
@@ -55,8 +52,6 @@ public class Character {
     private int    monstersDefeated;
     private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
 
-    public Map<String, Integer> inventory;
-
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
 
     private static final int[] SONARA_HP   = { 150, 175, 225, 300, 400 };
@@ -75,7 +70,6 @@ public class Character {
         this.level         = 1;
         this.monstersDefeated = 0;
         this.damageBuff    = 0.0;
-        this.inventory     = new HashMap<>();
         setPassiveSkill(name);
         setActiveSkill(name);
     }
@@ -117,11 +111,6 @@ public class Character {
     }
 
     public void resetDamageBuff() { this.damageBuff = 0.0; }
-
-    public void resetStats() {
-        this.currentHp = this.maxHp;
-        this.currentShield = 0;
-    }
 
     public void setPassiveSkill(String name) {
         switch (name) {
@@ -305,5 +294,10 @@ public class Character {
             default:
                 break;
         }
+    }
+
+    public void resetStats() {
+        this.setHp(this.getMaxHp());
+        this.setShield(0);
     }
 }

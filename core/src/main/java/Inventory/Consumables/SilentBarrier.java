@@ -28,12 +28,12 @@ public class SilentBarrier implements Item {
     }
 
     @Override
-    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.silentBarrierInvTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.silentBarrierInvTex;
     }
 
     @Override
-    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.silentBarrierBattleTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.silentBarrierBattleTex;
     }
 }

@@ -29,12 +29,12 @@ public class MinorsGrace implements Item {
     }
 
     @Override
-    public TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.minorsGraceInvTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.minorsGraceInvTex;
     }
 
     @Override
-    public TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
-        return new TextureRegion(assets.minorsGraceBattleTex);
+    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+        return assets.minorsGraceBattleTex;
     }
 }
