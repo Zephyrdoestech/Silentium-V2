@@ -43,6 +43,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
+    private float exitPromptGraceTimer = 0f;
 
     public ExploringScreen(Main game) {
         super(game);
@@ -107,6 +108,7 @@ public class ExploringScreen extends BaseScreen {
 
         showingExitPrompt = false;
         atExit = false;
+        exitPromptGraceTimer = 0.35f;
 
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
@@ -118,6 +120,8 @@ public class ExploringScreen extends BaseScreen {
             initPlayerPosition();
         } else {
             game.ctx.player.resetMovementState();
+            game.ctx.player.setInCombat(false);
+
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
                     game.ctx.player.setX(r.getBounds().x + (r.getBounds().width - GameContext.CHAR_SIZE) / 2f);
@@ -225,6 +229,10 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void handleMovement(float delta) {
+        if (exitPromptGraceTimer > 0f) {
+            exitPromptGraceTimer = Math.max(0f, exitPromptGraceTimer - delta);
+        }
+
         float move = GameContext.SPEED * delta;
         float prevX = game.ctx.player.getX();
         float prevY = game.ctx.player.getY();
@@ -252,7 +260,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY()) || showingExitPrompt) {
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
             game.ctx.player.setX(prevX);
             game.ctx.player.setY(prevY);
         }
@@ -261,7 +269,7 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player.setX(MathUtils.clamp(game.ctx.player.getX(), 0, S - C));
         game.ctx.player.setY(MathUtils.clamp(game.ctx.player.getY(), 0, S - C));
 
-        if (exitRoom != null) {
+        if (exitRoom != null && exitPromptGraceTimer <= 0f) {
             float exitSize = 104f;
             Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
             Rectangle exitRect = new Rectangle(
@@ -270,7 +278,10 @@ public class ExploringScreen extends BaseScreen {
                 exitSize, exitSize);
 
             if (pRect.overlaps(exitRect)) {
-                if (!atExit) { showingExitPrompt = true; atExit = true; }
+                if (!atExit) {
+                    showingExitPrompt = true;
+                    atExit = true;
+                }
             } else {
                 atExit = false;
             }
@@ -292,10 +303,14 @@ public class ExploringScreen extends BaseScreen {
                     showingExitPrompt = false;
                 } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
                     showingExitPrompt = false;
+                    atExit = false;
+                    exitPromptGraceTimer = 0.35f;
                 }
             } else {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                     showingExitPrompt = false;
+                    atExit = false;
+                    exitPromptGraceTimer = 0.35f;
                     game.ctx.player.setY(game.ctx.player.getY() - 15f);
                 }
             }
