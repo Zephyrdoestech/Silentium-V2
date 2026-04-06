@@ -43,7 +43,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
         this.mapDecor = game.assets.townDecorationsTex;
         this.exitTexture = game.assets.townExitTex;
 
-        game.ctx.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
+        if (game.ctx.exitRoom == null) {
+            game.ctx.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
+        }
     }
 
     @Override

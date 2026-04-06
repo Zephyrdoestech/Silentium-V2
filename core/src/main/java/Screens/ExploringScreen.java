@@ -295,6 +295,7 @@ public class ExploringScreen extends BaseScreen {
                         game.ctx.enemiesDefeatedInCurrentMap = 0;
                         game.ctx.rooms.clear();
                         game.ctx.mapEnemies.clear();
+                        game.ctx.exitRoom = null;
 
                         game.setScreen(next);
                     }
