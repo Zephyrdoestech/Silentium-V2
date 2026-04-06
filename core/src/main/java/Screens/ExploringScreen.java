@@ -101,18 +101,27 @@ public class ExploringScreen extends BaseScreen {
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
             initWalkable();
+        } else {
+            initWalkable();
         }
 
         if (game.ctx.player == null || game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
         } else {
+            boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
                     game.ctx.player.setX(r.getBounds().x + (r.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
                     game.ctx.player.setY(r.getBounds().y + (r.getBounds().height - GameContext.CHAR_SIZE) / 2f);
+                    placed = true;
                     break;
                 }
+            }
+            if (!placed && !game.ctx.rooms.isEmpty()) {
+                Room fallback = game.ctx.rooms.get(0);
+                game.ctx.player.setX(fallback.getBounds().x + (fallback.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
+                game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
         }
         game.ctx.stateTime = 0f;

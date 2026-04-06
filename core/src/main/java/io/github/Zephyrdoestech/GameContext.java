@@ -92,8 +92,24 @@ public class GameContext {
      * Switches character-select theme safely.
      * Passing -1 stops everything without starting a new track.
      */
+//    public void playTheme(int index, Assets assets) {
+//        if (index == lastThemeIndex) return;
+//        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
+//        lastThemeIndex = index;
+//        if (index < 0) return;
+//        switch (index) {
+//            case 0: currentTheme = assets.sonaraTheme;   break;
+//            case 1: currentTheme = assets.aureliusTheme; break;
+//            case 2: currentTheme = assets.lyronTheme;    break;
+//            default: return;
+//        }
+//        currentTheme.setVolume(0.75f);
+//        currentTheme.play();
+//    }
+
+    /** Stops all character-select music immediately. */
     public void stopTheme() {
-        // If your theme logic is handled elsewhere, you can leave this blank
-        // to just satisfy the compiler and stop the crash!
+        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
+        lastThemeIndex = -1;
     }
 }

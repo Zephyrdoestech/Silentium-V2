@@ -110,6 +110,8 @@ public class Character {
         this.damageBuff = buff;
     }
 
+    public void resetDamageBuff() { this.damageBuff = 0.0; }
+
     public void setPassiveSkill(String name) {
         switch (name) {
             case "Sonara":
