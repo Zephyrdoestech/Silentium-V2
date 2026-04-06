@@ -14,7 +14,6 @@ import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
@@ -50,8 +49,7 @@ public class ExploringScreen extends BaseScreen {
         if (game.ctx.mapName == null) {
             game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
         }
-        System.out.println("Returning to map: " + game.ctx.mapName); // Print statement added
-        // Set the map texture based on the map name
+        System.out.println("Returning to map: " + game.ctx.mapName);
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:
                 mapTexture = game.assets.townTex;
@@ -63,15 +61,15 @@ public class ExploringScreen extends BaseScreen {
                 mapTexture = game.assets.abyssOfDissonanceTex;
                 break;
             default:
-                mapTexture = game.assets.townTex; // Default to Town
+                mapTexture = game.assets.townTex;
                 break;
         }
-        if (this.mapTexture == null) { // Fallback added
+        if (this.mapTexture == null) {
             System.out.println("WARNING: Defaulting to Town.");
             this.mapTexture = game.assets.townTex;
         }
         if (game.ctx.player != null) {
-            game.ctx.player.setInCombat(false);
+            game.ctx.player.resetMovementState();
         }
     }
 
@@ -96,15 +94,19 @@ public class ExploringScreen extends BaseScreen {
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));
 
-        float x = spawnRoom.getBounds().x + (spawnRoom.getBounds().width  - GameContext.CHAR_SIZE) / 2f;
+        float x = spawnRoom.getBounds().x + (spawnRoom.getBounds().width - GameContext.CHAR_SIZE) / 2f;
         float y = spawnRoom.getBounds().y + (spawnRoom.getBounds().height - GameContext.CHAR_SIZE) / 2f;
 
         game.ctx.player = new MapCharacter(x, y);
+        game.ctx.player.resetMovementState();
     }
 
     @Override
     public void show() {
-        // Removed Gdx.input.setInputProcessor(this); line
+        Gdx.input.setInputProcessor(null);
+
+        showingExitPrompt = false;
+        atExit = false;
 
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
@@ -115,20 +117,25 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
         } else {
+            game.ctx.player.resetMovementState();
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
-                    game.ctx.player.setX(r.getBounds().x + (r.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
+                    game.ctx.player.setX(r.getBounds().x + (r.getBounds().width - GameContext.CHAR_SIZE) / 2f);
                     game.ctx.player.setY(r.getBounds().y + (r.getBounds().height - GameContext.CHAR_SIZE) / 2f);
                     break;
                 }
             }
         }
+
         game.ctx.stateTime = 0f;
-        game.ctx.playerState = GameContext.PlayerState.IDLE; // Reset player state
-        updateCamera(); // Initialize camera position after player position is set
+        game.ctx.playerState = GameContext.PlayerState.IDLE;
+        if (game.ctx.facing == null) {
+            game.ctx.facing = GameContext.Facing.RIGHT;
+        }
+
+        updateCamera();
     }
 
-    // ── Render ────────────────────────────────────────────────────────────────
     @Override
     public void render(float delta) {
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
@@ -160,10 +167,8 @@ public class ExploringScreen extends BaseScreen {
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
 
-        // Ensure batch color is white before drawing textures
         game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
 
-        // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
         } else {
@@ -178,9 +183,7 @@ public class ExploringScreen extends BaseScreen {
         }
         game.batch.end();
 
-        // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        // Debug room outlines + enemy rects (ShapeRenderer)
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
@@ -208,25 +211,19 @@ public class ExploringScreen extends BaseScreen {
             }
         }
         game.assets.font.setColor(Color.WHITE);
-        // Player sprite
         drawPlayerSprite();
-        //MAP DECORS
         if (mapDecor != null)
             game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
 
-        // Darkness overlay (world space, centred on player)
         drawDarknessOverlay();
         game.batch.end();
 
-        // HUD (uses fixed uiCamera)
         drawHUD();
 
-        // ESC → main menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
             game.setScreen(new MainMenuScreen(game));
     }
 
-    // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
         float move = GameContext.SPEED * delta;
         float prevX = game.ctx.player.getX();
@@ -264,7 +261,6 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player.setX(MathUtils.clamp(game.ctx.player.getX(), 0, S - C));
         game.ctx.player.setY(MathUtils.clamp(game.ctx.player.getY(), 0, S - C));
 
-        // Exit Logic
         if (exitRoom != null) {
             float exitSize = 104f;
             Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
@@ -275,7 +271,9 @@ public class ExploringScreen extends BaseScreen {
 
             if (pRect.overlaps(exitRect)) {
                 if (!atExit) { showingExitPrompt = true; atExit = true; }
-            } else atExit = false;
+            } else {
+                atExit = false;
+            }
         }
 
         if (showingExitPrompt) {
@@ -303,7 +301,6 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        // Enemy collision
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
@@ -311,11 +308,11 @@ public class ExploringScreen extends BaseScreen {
             if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
+                game.ctx.player.setInCombat(true);
                 game.ctx.currentEnemy = e;
-                game.ctx.noteHandler.noteCount    = 0;
+                game.ctx.noteHandler.noteCount = 0;
 
-                // ORIGINAL COMBAT SCREEN ROUTING
-                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
             }
@@ -330,32 +327,34 @@ public class ExploringScreen extends BaseScreen {
         return false;
     }
 
-    // ── Camera ────────────────────────────────────────────────────────────────
-
     private void updateCamera() {
-        float halfW = Main.WORLD_WIDTH  / 2f;
+        float halfW = Main.WORLD_WIDTH / 2f;
         float halfH = Main.WORLD_HEIGHT / 2f;
-        float S     = game.ctx.MAP_SIZE;
-        float C     = GameContext.CHAR_SIZE;
-        float camX  = MathUtils.clamp(game.ctx.player.getX() + C / 2f, halfW, S - halfW);
-        float camY  = MathUtils.clamp(game.ctx.player.getY() + C / 2f, halfH, S - halfH);
+        float S = game.ctx.MAP_SIZE;
+        float C = GameContext.CHAR_SIZE;
+        float camX = MathUtils.clamp(game.ctx.player.getX() + C / 2f, halfW, S - halfW);
+        float camY = MathUtils.clamp(game.ctx.player.getY() + C / 2f, halfH, S - halfH);
         game.gameCamera.position.set(camX, camY, 0);
         game.gameCamera.update();
     }
 
-    // ── Player sprite ─────────────────────────────────────────────────────────
-
     private void drawPlayerSprite() {
         switch (game.ctx.selectedCharacter) {
-            case SONARA:   drawCharacter(
-                game.assets.sonaraIdleRight,  game.assets.sonaraIdleLeft,
-                game.assets.sonaraIdleRight,  game.assets.sonaraIdleLeft); break;
-            case AURELIUS: drawCharacter(
-                game.assets.aureliusIdleRight, game.assets.aureliusIdleLeft,
-                game.assets.aureliusWalkRight, game.assets.aureliusWalkLeft); break;
-            case LYRON:    drawCharacter(
-                game.assets.lyronIdleRight,   game.assets.lyronIdleLeft,
-                game.assets.lyronWalkRight,   game.assets.lyronWalkLeft); break;
+            case SONARA:
+                drawCharacter(
+                    game.assets.sonaraIdleRight, game.assets.sonaraIdleLeft,
+                    game.assets.sonaraIdleRight, game.assets.sonaraIdleLeft);
+                break;
+            case AURELIUS:
+                drawCharacter(
+                    game.assets.aureliusIdleRight, game.assets.aureliusIdleLeft,
+                    game.assets.aureliusWalkRight, game.assets.aureliusWalkLeft);
+                break;
+            case LYRON:
+                drawCharacter(
+                    game.assets.lyronIdleRight, game.assets.lyronIdleLeft,
+                    game.assets.lyronWalkRight, game.assets.lyronWalkLeft);
+                break;
         }
     }
 
@@ -367,27 +366,33 @@ public class ExploringScreen extends BaseScreen {
 
         float t = game.ctx.stateTime;
         GameContext.PlayerState ps = game.ctx.playerState;
-        GameContext.Facing      f  = game.ctx.facing;
+        GameContext.Facing f = game.ctx.facing;
         TextureRegion frame;
 
         switch (ps) {
-            case WALK_LEFT:  frame = walkL.getKeyFrame(t, true); break;
-            case WALK_RIGHT: frame = walkR.getKeyFrame(t, true); break;
-            case WALK_UP: case WALK_DOWN:
+            case WALK_LEFT:
+                frame = walkL.getKeyFrame(t, true);
+                break;
+            case WALK_RIGHT:
+                frame = walkR.getKeyFrame(t, true);
+                break;
+            case WALK_UP:
+            case WALK_DOWN:
                 frame = f == GameContext.Facing.LEFT
                     ? walkL.getKeyFrame(t, true)
-                    : walkR.getKeyFrame(t, true); break;
+                    : walkR.getKeyFrame(t, true);
+                break;
             default:
                 frame = f == GameContext.Facing.LEFT
                     ? idleL.getKeyFrame(t, true)
-                    : idleR.getKeyFrame(t, true); break;
+                    : idleR.getKeyFrame(t, true);
+                break;
         }
         game.batch.draw(frame,
             game.ctx.player.getX(), game.ctx.player.getY(),
             GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
     }
 
-    // ── Darkness overlay ──────────────────────────────────────────────────────
     private void drawDarknessOverlay() {
         float drawSize = 1100f;
         float cx = game.ctx.player.getX() + GameContext.CHAR_SIZE / 2f;
@@ -405,7 +410,6 @@ public class ExploringScreen extends BaseScreen {
         game.batch.draw(blackPixel, left, top, drawSize, pad);
     }
 
-    // ── HUD ───────────────────────────────────────────────────────────────────
     private void drawHUD() {
         Character c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
@@ -436,7 +440,6 @@ public class ExploringScreen extends BaseScreen {
 
         game.batch.begin();
         game.assets.font.draw(game.batch, "LIVES: " + game.ctx.lives, 20, Main.WORLD_HEIGHT - 85);
-        // show kill progress (can remove later)
         if (getRequiredKills() > 0) {
             String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
             game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
@@ -456,11 +459,15 @@ public class ExploringScreen extends BaseScreen {
         game.batch.end();
     }
 
-    @Override public void resize(int w, int h) {
+    @Override
+    public void resize(int w, int h) {
         game.gameViewport.update(w, h, true);
         game.uiViewport.update(w, h, true);
     }
-    @Override public void hide()    {}
+
+    @Override
+    public void hide() {}
+
     @Override
     public void dispose() {
         // Do not dispose of global assets here
