@@ -21,9 +21,12 @@ public class CrimsonChorus implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — set enemy vulnerability flag for 2-3 turns
-        System.out.println("[CrimsonChorus] Effect applied: enemy takes 5-10% more damage for 2-3 turns.");
+        // Temporary safe effect until enemy debuff state is implemented.
+        player.setDamageBuff(player.getDamageBuff() + 0.10);
+        System.out.println("[CrimsonChorus] Effect applied: " + player.getName()
+            + " gains +10% damage temporarily.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.crimsonChorusInvTex;

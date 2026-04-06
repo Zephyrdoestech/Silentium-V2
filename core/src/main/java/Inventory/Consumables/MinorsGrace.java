@@ -21,10 +21,12 @@ public class MinorsGrace implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — increment freeMinorChordUses on combat state
+        // Temporary safe fallback effect.
+        player.heal(15);
         System.out.println("[MinorsGrace] Effect applied: " + player.getName()
-            + " starts the next battle with +1 free Minor chord use.");
+            + " recovers 15 HP.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.minorsGraceInvTex;

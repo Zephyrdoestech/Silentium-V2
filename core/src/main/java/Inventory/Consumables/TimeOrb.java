@@ -24,10 +24,12 @@ public class TimeOrb implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — add BONUS_SECONDS to the next battle's turn timer
-        System.out.println("[TimeOrb] Effect applied: +" + BONUS_SECONDS
-            + " seconds added to the next battle's turn timer.");
+        // Temporary safe fallback effect.
+        player.heal(25);
+        System.out.println("[TimeOrb] Effect applied: " + player.getName()
+            + " recovers 25 HP.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.timeOrbInvTex;

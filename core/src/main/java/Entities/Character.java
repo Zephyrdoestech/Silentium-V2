@@ -1,7 +1,13 @@
 package Entities;
 
+import Inventory.Item;
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Character {
 
@@ -17,7 +23,7 @@ public class Character {
         }
 
         public String getPsName(){return psName;}
-         public String getPsDescription(){return psDescription;}
+        public String getPsDescription(){return psDescription;}
     }
 
     public static class ActiveSkill {
@@ -33,6 +39,32 @@ public class Character {
 
         public String getAsName(){return asName;}
         public String getAsDescription(){return asDescription;}
+    }
+
+    public static class InventoryEntry {
+        private final Item item;
+        private int quantity;
+
+        public InventoryEntry(Item item, int quantity) {
+            this.item = item;
+            this.quantity = Math.max(0, quantity);
+        }
+
+        public Item getItem() {
+            return item;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void addQuantity(int amount) {
+            quantity = Math.max(0, quantity + amount);
+        }
+
+        public void removeQuantity(int amount) {
+            quantity = Math.max(0, quantity - amount);
+        }
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
@@ -53,6 +85,8 @@ public class Character {
     private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
     private boolean inCombat; // Track combat state
 
+    private final Map<String, InventoryEntry> consumableInventory;
+
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
 
     private static final int[] SONARA_HP   = { 150, 175, 225, 300, 400 };
@@ -72,6 +106,7 @@ public class Character {
         this.monstersDefeated = 0;
         this.damageBuff    = 0.0;
         this.inCombat      = false;   // Initialize combat state
+        this.consumableInventory = new LinkedHashMap<>();
         setPassiveSkill(name);
         setActiveSkill(name);
     }
@@ -92,6 +127,21 @@ public class Character {
 
     public PassiveSkill getPassiveSkill() { return passiveSkill; }
     public ActiveSkill  getActiveSkill()  { return activeSkill; }
+
+    public List<InventoryEntry> getConsumableInventoryEntries() {
+        List<InventoryEntry> entries = new ArrayList<>();
+        for (InventoryEntry entry : consumableInventory.values()) {
+            if (entry != null && entry.getQuantity() > 0) {
+                entries.add(entry);
+            }
+        }
+        return entries;
+    }
+
+    public int getItemQuantity(String itemName) {
+        InventoryEntry entry = consumableInventory.get(itemName);
+        return entry == null ? 0 : entry.getQuantity();
+    }
 
     // ── Setters ───────────────────────────────────────────────────────────────
 
@@ -158,6 +208,53 @@ public class Character {
                 this.activeSkill = new ActiveSkill("", "");
                 break;
         }
+    }
+
+    // ── Inventory Methods ─────────────────────────────────────────────────────
+
+    public void addItem(Item item) {
+        addItem(item, 1);
+    }
+
+    public void addItem(Item item, int quantity) {
+        if (item == null || quantity <= 0) return;
+
+        InventoryEntry entry = consumableInventory.get(item.getName());
+        if (entry == null) {
+            consumableInventory.put(item.getName(), new InventoryEntry(item, quantity));
+        } else {
+            entry.addQuantity(quantity);
+        }
+    }
+
+    public boolean removeItem(String itemName) {
+        return removeItem(itemName, 1);
+    }
+
+    public boolean removeItem(String itemName, int quantity) {
+        if (itemName == null || quantity <= 0) return false;
+
+        InventoryEntry entry = consumableInventory.get(itemName);
+        if (entry == null || entry.getQuantity() < quantity) return false;
+
+        entry.removeQuantity(quantity);
+        if (entry.getQuantity() <= 0) {
+            consumableInventory.remove(itemName);
+        }
+        return true;
+    }
+
+    public boolean useItem(String itemName) {
+        InventoryEntry entry = consumableInventory.get(itemName);
+        if (entry == null || entry.getQuantity() <= 0) return false;
+
+        entry.getItem().applyEffect(this);
+        return removeItem(itemName, 1);
+    }
+
+    public Item getItemByName(String itemName) {
+        InventoryEntry entry = consumableInventory.get(itemName);
+        return entry == null ? null : entry.getItem();
     }
 
     // ── Combat Utilities ──────────────────────────────────────────────────────

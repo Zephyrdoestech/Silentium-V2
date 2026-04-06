@@ -21,10 +21,11 @@ public class SilentBarrier implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — set player immunity flag for 1 turn
+        player.setShield(player.getMaxShield());
         System.out.println("[SilentBarrier] Effect applied: " + player.getName()
-            + " is immune to damage and debuffs for 1 turn.");
+            + " gains full shield.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.silentBarrierInvTex;

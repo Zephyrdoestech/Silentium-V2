@@ -11,9 +11,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import Entities.Character;
 import Entities.Enemy;
+import Inventory.Item;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 /**
  * Turn-based combat screen.
@@ -46,6 +49,7 @@ public class CombatScreen extends BaseScreen {
     private boolean activeSkillUsed = false;
     private boolean enemyAttacked          = false;
     private String  chordUsedThisTurn      = null;
+    private String  lastUsedItemName       = null;
 
     // ── Timers ────────────────────────────────────────────────────────────────
 
@@ -71,8 +75,7 @@ public class CombatScreen extends BaseScreen {
     private int           turnMenuSelection = 0;
     private final String[] turnMenuOptions  = { "Attack", "Skill", "Inventory" };
 
-    private int           confirmSelection = 0;
-    private final String[] confirmOptions  = { "Use", "Cancel" };
+    private int inventorySelection = 0;
 
     // ── Entity References ─────────────────────────────────────────────────────
 
@@ -140,18 +143,19 @@ public class CombatScreen extends BaseScreen {
         game.ctx.metronome.reset();
         game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
 
-        animTimer             = 0f;
-        splashTimer           = 0f;
-        turnTime              = 0f;
-        turnMenuSelection     = 0;
-        confirmSelection      = 0;
-        notesRolledThisTurn   = false;
+        animTimer               = 0f;
+        splashTimer             = 0f;
+        turnTime                = 0f;
+        turnMenuSelection       = 0;
+        inventorySelection      = 0;
+        notesRolledThisTurn     = false;
         activeSkillUsedThisTurn = false;
-        enemyAttacked         = false;
-        chordUsedThisTurn     = null;
-        initialDamage         = 0;
-        finalDamage           = 0;
-        metronomeActivated    = false;
+        enemyAttacked           = false;
+        chordUsedThisTurn       = null;
+        lastUsedItemName        = null;
+        initialDamage           = 0;
+        finalDamage             = 0;
+        metronomeActivated      = false;
 
         // First enemy encountered gets 30% health (tutorial difficulty reduction)
         if (player.getMonstersDefeated() == 0) {
@@ -629,7 +633,6 @@ public class CombatScreen extends BaseScreen {
                 renderInventoryMenu();
                 break;
             case USE_ITEM:
-                break;
             case SKILL_USED:
             case SKILL_CONFIRMED:
             case MISSED_TURN:
@@ -707,7 +710,11 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
                 return activeSkillDesription();
             case SKILL_USED:
-                return (activeSkillUsedThisTurn ? "Skill currently in use." : "Skill already used.") ;
+                return (activeSkillUsedThisTurn ? "Skill currently in use." : "Skill already used.");
+            case USE_ITEM:
+                return game.ctx.combatLog == null || game.ctx.combatLog.isEmpty()
+                    ? "Item used."
+                    : game.ctx.combatLog;
             case DISPLAY_CHORD_EFFECT:
                 return chordUsedThisTurn != null
                     ? "[" + game.ctx.chordSystem.getChordName(chordUsedThisTurn) + "] "
@@ -736,6 +743,7 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
             case DISPLAY_PLAYER_DAMAGE:
             case DISPLAY_FINAL_DAMAGE:   return Color.GREEN;
+            case USE_ITEM:               return Color.CYAN;
             case ENEMY_ATTACK:
             case MISSED_TURN:
             case DISPLAY_ENEMY_DAMAGE:   return Color.RED;
@@ -754,6 +762,13 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
                 break;
+
+            case USE_ITEM:
+                game.ctx.combatState = enemy.isDefeated()
+                    ? GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE
+                    : GameContext.CombatState.ENEMY_ATTACK;
+                break;
+
             case DISPLAY_CHORD_EFFECT:
                 // If there was no chord, skip straight past; otherwise show player damage
                 game.ctx.combatState = GameContext.CombatState.DISPLAY_PLAYER_DAMAGE;
@@ -816,9 +831,11 @@ public class CombatScreen extends BaseScreen {
                     }else{
                         game.ctx.combatState = GameContext.CombatState.USE_SKILL;
                     }
-                    confirmSelection = 0;                                           break;
-                case 2: game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
-                    confirmSelection = 0;                                           break;
+                    break;
+                case 2:
+                    inventorySelection = 0;
+                    game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
+                    break;
             }
             return;
         }
@@ -986,57 +1003,32 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderSkillMenu() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
-            || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
-            || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            if (confirmSelection == 0) {
-                player.useActiveSkill(game.ctx.noteHandler, game.ctx);
-                activeSkillUsedThisTurn = true;
-                activeSkillUsed = true;
-                game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
-            }else{
-                game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-            }
+            player.useActiveSkill(game.ctx.noteHandler, game.ctx);
+            activeSkillUsedThisTurn = true;
+            activeSkillUsed = true;
+            game.ctx.resultTimer = 0f;
+            game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
             return;
         }
 
-        // ── Measure at correct scales before drawing ──────────────────────────────
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+            game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+            return;
+        }
 
         game.assets.font.getData().setScale(1.2f);
         String skillDescription = activeSkillDesription();
         float descW      = textWidth(skillDescription);
         float descHeight = game.assets.font.getCapHeight();
 
-        game.assets.font.getData().setScale(1.6f);
-        float useW      = textWidth("> " + confirmOptions[0]);
-        float cancelW   = textWidth(confirmOptions[1]);
-        float optionGap = px(3f);
-        float totalOptionsW  = useW + optionGap + cancelW;
-        float optionHeight   = game.assets.font.getCapHeight();
-
-        // ── Vertical block centred in the action panel ────────────────────────────
-
         float lineGap     = px(1.5f);
-        float blockHeight = descHeight + lineGap + optionHeight;
+        float blockHeight = descHeight;
         float blockStartY = actionPanelBottom + (actionPanelHeight / 2f) + (blockHeight / 2f);
 
-        float descY   = blockStartY;
-        float optionY = blockStartY - descHeight - lineGap;
-
-        // ── Horizontal centering ──────────────────────────────────────────────────
-
-        float descX         = actionPanelLeft + ((actionPanelWidth - descW)          / 2f);
-        float optionsStartX = actionPanelLeft + ((actionPanelWidth - totalOptionsW)  / 2f);
-        float cancelX       = optionsStartX + useW + optionGap;
-
-        // ── Draw ──────────────────────────────────────────────────────────────────
+        float descY = blockStartY;
+        float hintY = descY - px(1.2f);
+        float descX = actionPanelLeft + ((actionPanelWidth - descW) / 2f);
 
         beginUiBatch();
 
@@ -1044,17 +1036,13 @@ public class CombatScreen extends BaseScreen {
         game.assets.font.setColor(Color.WHITE);
         game.assets.font.draw(game.batch, skillDescription, descX, descY);
 
-        game.assets.font.getData().setScale(1.6f);
-
-        game.assets.font.setColor(confirmSelection == 0 ? Color.YELLOW : Color.WHITE);
+        game.assets.font.getData().setScale(0.9f);
+        game.assets.font.setColor(Color.LIGHT_GRAY);
+        String hint = "[ENTER] Use   [ESC] Back";
         game.assets.font.draw(game.batch,
-            confirmSelection == 0 ? "> " + confirmOptions[0] : confirmOptions[0],
-            optionsStartX, optionY);
-
-        game.assets.font.setColor(confirmSelection == 1 ? Color.YELLOW : Color.WHITE);
-        game.assets.font.draw(game.batch,
-            confirmSelection == 1 ? "> " + confirmOptions[1] : confirmOptions[1],
-            cancelX, optionY);
+            hint,
+            actionPanelLeft + ((actionPanelWidth - textWidth(hint)) / 2f),
+            hintY);
 
         game.assets.font.getData().setScale(1.0f);
         game.batch.end();
@@ -1065,76 +1053,116 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderInventoryMenu() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
-            || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
-            || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
+        List<Character.InventoryEntry> entries = player.getConsumableInventoryEntries();
+
+        if (entries.isEmpty()) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+                || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+                game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+                return;
+            }
+
+            beginUiBatch();
+            game.assets.font.getData().setScale(1.2f);
+            game.assets.font.setColor(Color.WHITE);
+            String noItems = "No items in inventory.";
+            game.assets.font.draw(game.batch,
+                noItems,
+                actionPanelLeft + ((actionPanelWidth - textWidth(noItems)) / 2f),
+                actionPanelBottom + (actionPanelHeight / 2f) + px(0.4f));
+
+            game.assets.font.getData().setScale(0.9f);
+            game.assets.font.setColor(Color.LIGHT_GRAY);
+            String hint = "[ENTER/ESC] Back";
+            game.assets.font.draw(game.batch,
+                hint,
+                actionPanelLeft + ((actionPanelWidth - textWidth(hint)) / 2f),
+                actionPanelBottom + (actionPanelHeight / 2f) - px(0.6f));
+            game.assets.font.getData().setScale(1.0f);
+            game.batch.end();
+            return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            if (confirmSelection == 0) {
-                game.ctx.combatLog = "Item used!"; // Placeholder
-            }
+        if (inventorySelection < 0) inventorySelection = 0;
+        if (inventorySelection >= entries.size()) inventorySelection = entries.size() - 1;
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            inventorySelection = (inventorySelection - 1 + entries.size()) % entries.size();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            inventorySelection = (inventorySelection + 1) % entries.size();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
             game.ctx.combatState = GameContext.CombatState.TURN_MENU;
             return;
         }
 
-        // ── Measure at correct scales before drawing ──────────────────────────────
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Character.InventoryEntry selectedEntry = entries.get(inventorySelection);
+            Item selectedItem = selectedEntry.getItem();
 
-        String inventoryPrompt = "No items in inventory."; // Placeholder
-        game.assets.font.getData().setScale(1.2f);
-        float descW      = textWidth(inventoryPrompt);
-        float descHeight = game.assets.font.getCapHeight();
+            if (selectedItem != null && player.useItem(selectedItem.getName())) {
+                lastUsedItemName = selectedItem.getName();
+                game.ctx.combatLog = player.getName() + " used " + lastUsedItemName + ".";
+                game.ctx.resultTimer = 0f;
+                game.ctx.combatState = GameContext.CombatState.USE_ITEM;
+            }
+            return;
+        }
 
-        game.assets.font.getData().setScale(1.6f);
-        float useW         = textWidth("> " + confirmOptions[0]);
-        float cancelW      = textWidth(confirmOptions[1]);
-        float optionGap    = px(3f);
-        float totalOptionsW = useW + optionGap + cancelW;
-        float optionHeight  = game.assets.font.getCapHeight();
+        float titleX = actionPanelLeft + px(0.8f);
+        float titleY = actionPanelTop - px(0.8f);
 
-        // ── Vertical block centred in the action panel ────────────────────────────
-
-        float lineGap     = px(1.5f);
-        float blockHeight = descHeight + lineGap + optionHeight;
-        float blockStartY = actionPanelBottom + (actionPanelHeight / 2f) + (blockHeight / 2f);
-
-        float descY   = blockStartY;
-        float optionY = blockStartY - descHeight - lineGap;
-
-        // ── Horizontal centering ──────────────────────────────────────────────────
-
-        float descX         = actionPanelLeft + ((actionPanelWidth - descW)         / 2f);
-        float optionsStartX = actionPanelLeft + ((actionPanelWidth - totalOptionsW) / 2f);
-        float cancelX       = optionsStartX + useW + optionGap;
-
-        // ── Draw ──────────────────────────────────────────────────────────────────
+        float startY = titleY - px(0.9f);
+        float rowGap = px(0.72f);
+        float iconSize = 26f;
+        float iconX = actionPanelLeft + px(0.9f);
+        float textX = iconX + iconSize + 12f;
 
         beginUiBatch();
 
         game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch, inventoryPrompt, descX, descY);
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
 
-        game.assets.font.getData().setScale(1.6f);
+        game.assets.font.getData().setScale(0.9f);
+        for (int i = 0; i < entries.size(); i++) {
+            Character.InventoryEntry entry = entries.get(i);
+            Item item = entry.getItem();
+            float rowY = startY - (i * rowGap);
 
-        game.assets.font.setColor(confirmSelection == 0 ? Color.YELLOW : Color.WHITE);
+            if (item != null) {
+                TextureRegion icon = item.getInventoryIcon(game.assets);
+                if (icon != null) {
+                    game.batch.draw(icon, iconX, rowY - 20f, iconSize, iconSize);
+                }
+            }
+
+            String prefix = i == inventorySelection ? "> " : "";
+            String label = prefix + entry.getItem().getName() + " x" + entry.getQuantity();
+
+            game.assets.font.setColor(i == inventorySelection ? Color.YELLOW : Color.WHITE);
+            game.assets.font.draw(game.batch, label, textX, rowY);
+        }
+
+        Character.InventoryEntry selectedEntry = entries.get(inventorySelection);
+        String description = selectedEntry.getItem().getDescription();
+
+        game.assets.font.getData().setScale(0.8f);
+        game.assets.font.setColor(Color.LIGHT_GRAY);
+        game.assets.font.draw(game.batch, description, actionPanelLeft + px(0.8f), actionPanelBottom + px(1.0f));
+
+        game.assets.font.getData().setScale(0.75f);
+        String hint = "[W/S] Select   [ENTER] Use   [ESC] Back";
         game.assets.font.draw(game.batch,
-            confirmSelection == 0 ? "> " + confirmOptions[0] : confirmOptions[0],
-            optionsStartX, optionY);
-
-        game.assets.font.setColor(confirmSelection == 1 ? Color.YELLOW : Color.WHITE);
-        game.assets.font.draw(game.batch,
-            confirmSelection == 1 ? "> " + confirmOptions[1] : confirmOptions[1],
-            cancelX, optionY);
+            hint,
+            actionPanelLeft + px(0.8f),
+            actionPanelBottom + px(0.45f));
 
         game.assets.font.getData().setScale(1.0f);
         game.batch.end();
     }
-
 
     // =========================================================================
     // Combat Logic — Attack Resolution
@@ -1221,6 +1249,7 @@ public class CombatScreen extends BaseScreen {
         finalDamage                    = 0;
         noteDisplayTimer               = 0f;
         enemyAttacked                  = false;
+        lastUsedItemName               = null;
     }
 
     // =========================================================================
@@ -1325,14 +1354,13 @@ public class CombatScreen extends BaseScreen {
         String description = "";
         switch(game.ctx.selectedCharacter){
             case SONARA:
-                description = (activeSkillUsed ? "Initial Damage + (1) Point.": "Add (1) point to initial note damage.");
+                description = (activeSkillUsed ? "Initial Damage + (1) Point." : "Add (1) point to initial note damage.");
                 break;
             case AURELIUS:
-                description = (activeSkillUsed ? "Damage Preserved.": "Preserve notes' current damage for next turn.");
+                description = (activeSkillUsed ? "Damage Preserved." : "Preserve notes' current damage for next turn.");
                 break;
             case LYRON:
-                description = (activeSkillUsed ? "Damage Rerolled.": "Reroll notes' current damage.");
-                description = "";
+                description = (activeSkillUsed ? "Damage Rerolled." : "Reroll notes' current damage.");
                 break;
         }
 

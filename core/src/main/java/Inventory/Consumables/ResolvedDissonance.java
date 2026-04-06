@@ -21,10 +21,12 @@ public class ResolvedDissonance implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — set resolvedDissonance flag on player or combat state
+        // Temporary safe fallback effect.
+        player.heal(10);
         System.out.println("[ResolvedDissonance] Effect applied: " + player.getName()
-            + "'s next B Diminished chord will not cost HP.");
+            + " recovers 10 HP.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.resolvedDissonanceInvTex;

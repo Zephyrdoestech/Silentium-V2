@@ -21,10 +21,12 @@ public class MajorsBlessing implements Item {
 
     @Override
     public void applyEffect(Character player) {
-        // TODO: hook into combat system — increment freeMajorChordUses on combat state
+        // Temporary safe fallback effect.
+        player.heal(20);
         System.out.println("[MajorsBlessing] Effect applied: " + player.getName()
-            + " starts the next battle with +1 free Major chord use.");
+            + " recovers 20 HP.");
     }
+
     @Override
     public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
         return assets.majorsBlessingInvTex;
