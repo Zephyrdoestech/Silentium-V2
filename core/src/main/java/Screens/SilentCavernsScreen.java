@@ -98,10 +98,18 @@ public class SilentCavernsScreen extends ExploringScreen {
     }
 
     @Override
+    protected void restoreInstanceFields() {
+        game.ctx.MAP_SIZE = 2048f; // Silent Caverns size
+        this.mapTexture  = game.assets.silentCavernsTex;
+        this.mapDecor    = null;
+        this.exitTexture = game.assets.townExitTex;
+    }
+
+    @Override
     public void render(float delta) {
         // darker tint for cave
-        game.batch.setColor(Color.SLATE);
+//        game.batch.setColor(Color.SLATE);
         super.render(delta);
-        game.batch.setColor(Color.WHITE);
+//        game.batch.setColor(Color.WHITE);
     }
 }

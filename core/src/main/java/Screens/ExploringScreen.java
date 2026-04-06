@@ -76,6 +76,7 @@ public class ExploringScreen extends BaseScreen {
         walkableZones.clear();
         for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
     }
+    protected void restoreInstanceFields() { }
     protected void spawnEnemies() { game.ctx.mapEnemies.clear(); }
 
 
@@ -103,6 +104,7 @@ public class ExploringScreen extends BaseScreen {
             initMapData();
             initWalkable();
         } else {
+            restoreInstanceFields();
             initWalkable();
         }
 

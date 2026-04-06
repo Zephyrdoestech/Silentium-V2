@@ -108,6 +108,14 @@ public class TownOfEchoesScreen extends ExploringScreen {
     }
 
     @Override
+    protected void restoreInstanceFields() {
+        game.ctx.MAP_SIZE = 2048f; // Town's actual map size — set yours correctly
+        this.mapTexture  = game.assets.townTex;
+        this.mapDecor    = game.assets.townDecorationsTex;
+        this.exitTexture = game.assets.townExitTex;
+    }
+
+    @Override
     protected ExploringScreen getNextScreen() {
         return new SilentCavernsScreen(game);
     }
