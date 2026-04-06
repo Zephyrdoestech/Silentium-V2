@@ -25,3 +25,4 @@ Thumbs.db
 
 # Aider AI
 .aider*
+.env
