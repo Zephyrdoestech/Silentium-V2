@@ -55,6 +55,8 @@ public class GameContext {
     public Facing         facing       = Facing.RIGHT;
     public float          stateTime    = 0f;     // drives animation clock
 
+    public boolean useWasd = true;
+
     // ── Map state ─────────────────────────────────────────────────────────────
 
     public List<Enemy> mapEnemies = new ArrayList<>();

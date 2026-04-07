@@ -37,6 +37,7 @@ public class Character {
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
+    public Map<String, Integer> inventory = new java.util.HashMap<>();
 
     private String name;
     private String instrument;

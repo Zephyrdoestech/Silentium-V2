@@ -21,25 +21,34 @@ public class SilentCavernsScreen extends ExploringScreen {
         game.ctx.MAP_SIZE = 2048f;
         game.ctx.rooms = new ArrayList<>();
 
-        //will change this once map is complete
-
-        // Grid Settings: 4 Columns x 5 Rows = 20 Rooms
-        float roomSize = 150f;
-        float spacingX = 450f; // Distance between room starts horizontally
-        float spacingY = 400f; // Distance between room starts vertically
-        float startX = 200f;
-        float startY = 200f;
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 4; col++) {
-                float x = startX + (col * spacingX);
-                float y = startY + (row * spacingY);
-                game.ctx.rooms.add(new Room(x, y, roomSize, roomSize));
-            }
-        }
+        // 2nd row
+        game.ctx.rooms.add(new Room(50f,   1370f, 150f, 150f));
+        game.ctx.rooms.add(new Room(500f,  1370f, 150f, 150f));
+        game.ctx.rooms.add(new Room(950f, 1370f, 150f, 150f));
+        game.ctx.rooms.add(new Room(1400f, 1370f, 150f, 150f));
+        game.ctx.rooms.add(new Room(1850f, 1370f, 150f, 150f));
+        // 3rd row
+        game.ctx.rooms.add(new Room(50f,   925f,  150f, 150f));
+        game.ctx.rooms.add(new Room(500f,  925f,  150f, 150f));
+        game.ctx.rooms.add(new Room(950f, 925f,  150f, 150f));
+        game.ctx.rooms.add(new Room(1400f, 925f,  150f, 150f));
+        game.ctx.rooms.add(new Room(1850f, 925f,  150f, 150f));
+        // 4th row
+        game.ctx.rooms.add(new Room(50f,   480f,   150f, 150f));
+        game.ctx.rooms.add(new Room(500f,  480f,   150f, 150f));
+        game.ctx.rooms.add(new Room(950f, 480f,   150f, 150f));
+        game.ctx.rooms.add(new Room(1400f, 480f,   150f, 150f));
+        game.ctx.rooms.add(new Room(1850f, 480f,   150f, 150f));
+        // 1st row
+        game.ctx.rooms.add(new Room(50f,   1820f, 150f, 150f));
+        game.ctx.rooms.add(new Room(500f,  1820f, 150f, 150f));
+        game.ctx.rooms.add(new Room(950f,  1820f, 150f, 150f));
+        game.ctx.rooms.add(new Room(1400f, 1820f, 150f, 150f));
+        game.ctx.rooms.add(new Room(1850f, 1820f, 150f, 150f));
 
         this.mapTexture  = game.assets.silentCavernsTex;
         this.mapDecor    = null;
-        this.exitTexture = game.assets.townExitTex;
+        this.exitTexture = game.assets.cavernsExitTex;
 
         // Exit spawns in one of the rooms in the top-most row (indices 16-19)
         if (game.ctx.exitRoom == null) {
@@ -54,16 +63,16 @@ public class SilentCavernsScreen extends ExploringScreen {
             walkableZones.add(r.getBounds());
         }
 
-        walkableZones.add(new Rectangle(200f, 265f,  1500f, 20f)); // Row 0
-        walkableZones.add(new Rectangle(200f, 665f,  1500f, 20f)); // Row 1
-        walkableZones.add(new Rectangle(200f, 1065f, 1500f, 20f)); // Row 2
-        walkableZones.add(new Rectangle(200f, 1465f, 1500f, 20f)); // Row 3
-        walkableZones.add(new Rectangle(200f, 1865f, 1500f, 20f)); // Row 4
+        walkableZones.add(new Rectangle(70f,  1886f, 1900f, 0.1f));
+        walkableZones.add(new Rectangle(70f,  1439f, 1900f, 0.1f));
+        walkableZones.add(new Rectangle(70f,  991f, 1900f, 0.1f));
+        walkableZones.add(new Rectangle(70f,  547f, 1900f, 0.1f));
 
-        walkableZones.add(new Rectangle(265f,  200f, 20f, 1750f)); // Col 0
-        walkableZones.add(new Rectangle(715f,  200f, 20f, 1750f)); // Col 1
-        walkableZones.add(new Rectangle(1165f, 200f, 20f, 1750f)); // Col 2
-        walkableZones.add(new Rectangle(1615f, 200f, 20f, 1750f)); // Col 3
+        walkableZones.add(new Rectangle(126f,  530f, 0.1f, 1400f));
+        walkableZones.add(new Rectangle(575f,  530f, 0.1f, 1400f));
+        walkableZones.add(new Rectangle(1024f, 530f, 0.1f, 1400f));
+        walkableZones.add(new Rectangle(1473f, 530f, 0.1f, 1400f));
+        walkableZones.add(new Rectangle(1922f, 530f, 0.1f, 1400f));
     }
 
     @Override
@@ -106,7 +115,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         game.ctx.MAP_SIZE = 2048f; // Silent Caverns size
         this.mapTexture  = game.assets.silentCavernsTex;
         this.mapDecor    = null;
-        this.exitTexture = game.assets.townExitTex;
+        this.exitTexture = game.assets.cavernsExitTex;
     }
 
     @Override

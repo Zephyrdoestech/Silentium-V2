@@ -59,6 +59,7 @@ public class Assets implements Disposable {
     public final TextureRegion townTex;
     public final TextureRegion townExitTex;
     public final TextureRegion silentCavernsTex;
+    public final TextureRegion cavernsExitTex;
     public final TextureRegion abyssOfDissonanceTex;
     public final TextureRegion townDecorationsTex;
 
@@ -204,9 +205,13 @@ public class Assets implements Disposable {
         if (townExitFile != null) townExitTex = new TextureRegion(townExitFile);
         else townExitTex = null;
 
-        Texture silentCavernsFile = safeLoadTexture("Background/Map/Dungeon.png");
+        Texture silentCavernsFile = safeLoadTexture("Background/Map/Silent_Caverns.png");
         if (silentCavernsFile != null) silentCavernsTex = new TextureRegion(silentCavernsFile);
         else silentCavernsTex = null;
+
+        Texture cavernsExitFile = safeLoadTexture("Background/Map/Caverns_Exit.png");
+        if (cavernsExitFile != null) cavernsExitTex = new TextureRegion(cavernsExitFile);
+        else cavernsExitTex = null;
 
         Texture abyssFile = safeLoadTexture("Background/Map/Abyss_Of_Dissonance.png");
         if (abyssFile != null) abyssOfDissonanceTex = new TextureRegion(abyssFile);

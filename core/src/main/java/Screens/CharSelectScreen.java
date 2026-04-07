@@ -25,6 +25,8 @@ public class CharSelectScreen extends BaseScreen {
     private int   index        = 0;
     private float stateTime    = 0f;
 
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
+
     private static final String[] NAMES   = {"1: Sonara",   "2: Aurelius", "3: Lyron"};
     private static final String[] WEAPONS = {"Banjo",        "Flute",       "Harp"};
     private static final String[] HP_VALS = {"HP: 150",      "HP: 150",     "HP: 250"};
@@ -75,6 +77,15 @@ public class CharSelectScreen extends BaseScreen {
 
         Texture[] staticTexs = {game.assets.sonaraTex, game.assets.aureliusTex, game.assets.lyronTex};
 
+        int[] drawOrder = new int[3];
+        int sortIndex = 0;
+        for (int i = 0; i < 3; i++) {
+            if (i != index) {
+                drawOrder[sortIndex++] = i;
+            }
+        }
+        drawOrder[2] = index;
+
         for (int i = 0; i < 3; i++) {
             boolean sel = (i == index);
 
@@ -123,16 +134,48 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+        // --- 1. KEYBOARD INPUT ---
+        int leftKey  = game.ctx.useWasd ? Input.Keys.A : Input.Keys.LEFT;
+        int rightKey = game.ctx.useWasd ? Input.Keys.D : Input.Keys.RIGHT;
+
+        if (Gdx.input.isKeyJustPressed(leftKey)) {
             index = index > 0 ? index - 1 : 2;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyJustPressed(rightKey)) {
             index = index < 2 ? index + 1 : 0;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) confirmSelection();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            confirmSelection();
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            // Removed stopTheme() from here
             game.setScreen(new MainMenuScreen(game));
+        }
+
+        // --- 2. MOUSE INPUT ---
+        // Get the mouse coordinates and translate them to the game's UI viewport
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.uiViewport.unproject(mousePos);
+
+        // Loop through our 3 character slots
+        for (int i = 0; i < 3; i++) {
+            // Create an invisible "hitbox" over their original starting positions
+            float hitX = PX[i] - 20f;
+            float hitY = 140f;
+            float hitW = 120f;
+            float hitH = 180f;
+
+            // Check if the mouse is currently inside this hitbox
+            if (mousePos.x >= hitX && mousePos.x <= hitX + hitW &&
+                mousePos.y >= hitY && mousePos.y <= hitY + hitH) {
+
+                // Set the selected index to the hovered character!
+                index = i;
+
+                // If they click the left mouse button while hovering, lock it in
+                if (Gdx.input.justTouched()) {
+                    confirmSelection();
+                }
+            }
         }
     }
 
