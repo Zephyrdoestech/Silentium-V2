@@ -2,7 +2,6 @@ package Screens;
 
 import Entities.Enemy;
 import Entities.MapCharacter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import io.github.Zephyrdoestech.Main;
 import io.github.Zephyrdoestech.GameContext;
@@ -44,7 +43,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
         this.mapDecor = game.assets.townDecorationsTex;
         this.exitTexture = game.assets.townExitTex;
 
-        this.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
+        if (game.ctx.exitRoom == null) {
+            game.ctx.exitRoom = game.ctx.rooms.get(RNG.nextInt(4));
+        }
     }
 
     @Override
@@ -67,7 +68,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
         game.ctx.mapEnemies.clear();
 
         List<Room> eligibleRooms = new ArrayList<>(game.ctx.rooms);
-        eligibleRooms.remove(exitRoom); // not exit room and room with enemy
+        eligibleRooms.remove(game.ctx.exitRoom); // not exit room and room with enemy
         Collections.shuffle(eligibleRooms, RNG);
 
         int count = Math.min(getEnemyCount(), eligibleRooms.size());
@@ -97,7 +98,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
-            if (r.getEnemies().isEmpty() && r != exitRoom)  // ← exclude exit room
+            if (r.getEnemies().isEmpty() && r != game.ctx.exitRoom)  // ← exclude exit room
                 emptyRooms.add(r);
 
         Room spawnRoom = emptyRooms.isEmpty() ? game.ctx.rooms.get(0) : emptyRooms.get(RNG.nextInt(emptyRooms.size()));
@@ -109,7 +110,39 @@ public class TownOfEchoesScreen extends ExploringScreen {
     }
 
     @Override
+    protected void restoreInstanceFields() {
+        game.ctx.MAP_SIZE = 2048f; // Town's actual map size — set yours correctly
+        this.mapTexture  = game.assets.townTex;
+        this.mapDecor    = game.assets.townDecorationsTex;
+        this.exitTexture = game.assets.townExitTex;
+    }
+
+    @Override
     protected ExploringScreen getNextScreen() {
         return new SilentCavernsScreen(game);
+    }
+
+    @Override
+    public void show() {
+        super.show(); // This is critical! It runs the map-loading logic in ExploringScreen.
+
+        // Start the town music when the screen is shown
+        if (game.assets.townOfEchoesBGM != null) {
+            game.assets.townOfEchoesBGM.setLooping(true);
+            game.assets.townOfEchoesBGM.setVolume(0.5f); // Set this to whatever volume feels right!
+            game.assets.townOfEchoesBGM.play();
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+
+        // Stop the town music when leaving (e.g., entering Combat or Main Menu)
+        if (game.assets.townOfEchoesBGM != null) {
+            game.assets.townOfEchoesBGM.stop();
+            // Note: You can change .stop() to .pause() if you want the song
+            // to resume from the same spot after a battle!
+        }
     }
 }

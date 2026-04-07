@@ -4,7 +4,6 @@ import Entities.Enemy;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +40,9 @@ public class SilentCavernsScreen extends ExploringScreen {
         this.exitTexture = game.assets.townExitTex;
 
         // Exit spawns in one of the rooms in the top-most row (indices 16-19)
-        this.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));
+        if (game.ctx.exitRoom == null) {
+            game.ctx.exitRoom = game.ctx.rooms.get(16 + RNG.nextInt(4));
+        }
     }
 
     @Override
@@ -78,7 +79,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         game.ctx.mapEnemies.clear();
 
         List<Room> eligibleRooms = new ArrayList<>(game.ctx.rooms);
-        eligibleRooms.remove(exitRoom);
+        eligibleRooms.remove(game.ctx.exitRoom);
         Collections.shuffle(eligibleRooms, RNG);
 
         int count = Math.min(getEnemyCount(), eligibleRooms.size());
@@ -99,10 +100,18 @@ public class SilentCavernsScreen extends ExploringScreen {
     }
 
     @Override
+    protected void restoreInstanceFields() {
+        game.ctx.MAP_SIZE = 2048f; // Silent Caverns size
+        this.mapTexture  = game.assets.silentCavernsTex;
+        this.mapDecor    = null;
+        this.exitTexture = game.assets.townExitTex;
+    }
+
+    @Override
     public void render(float delta) {
         // darker tint for cave
-        game.batch.setColor(Color.SLATE);
+//        game.batch.setColor(Color.SLATE);
         super.render(delta);
-        game.batch.setColor(Color.WHITE);
+//        game.batch.setColor(Color.WHITE);
     }
 }

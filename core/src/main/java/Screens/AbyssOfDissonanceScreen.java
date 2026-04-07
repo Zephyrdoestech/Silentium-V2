@@ -3,7 +3,6 @@ package Screens;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 
@@ -22,11 +21,11 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         //final room
         game.ctx.rooms.add(new Room(726f, 135f, 227f, 250f));
 
-        this.mapTexture = new TextureRegion(game.assets.abyssOfDissonanceTex);
+        this.mapTexture = game.assets.abyssOfDissonanceTex;
         this.mapDecor = null;
         this.exitTexture = null;
 
-        this.exitRoom = null;
+        game.ctx.exitRoom = null;
     }
 
     @Override

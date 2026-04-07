@@ -1,11 +1,9 @@
 .gitkeep
 Audio/BGM_BATTLE_abyss.wav
 Audio/BGM_BATTLE_boss.wav
-Audio/BGM_BATTLE_silentcaverns.wav
-Audio/BGM_BATTLE_townofechoes.wav
-Audio/BGM_Title.wav
-Audio/BGM_intro_story.wav
-Audio/title_music.wav
+Audio/background_music/Story.mp3
+Audio/background_music/TownOfEchoes.mp3
+Audio/background_music/title_music.wav
 Aurelius/Select/aureliusSelect1.png
 Aurelius/Select/aureliusSelect10.png
 Aurelius/Select/aureliusSelect11.png
@@ -40,6 +38,27 @@ Background/Story/story_panel_2.png
 Background/Story/story_panel_3.png
 Background/Story/story_panel_4.png
 Background/Title_Screen/Title_Screen_Placeholder.png
+Enemies/Darryllion/DARRYLLION .png
+Enemies/Darryllion/DARRYLLION _attack01.gif
+Enemies/Darryllion/DARRYLLION _attack02.gif
+Enemies/Darryllion/Idle/darryllionIdle1.png
+Enemies/Darryllion/Idle/darryllionIdle2.png
+Enemies/Darryllion/Idle/darryllionIdle3.png
+Enemies/Darryllion/Idle/darryllionIdle4.png
+Enemies/Darryllion/Idle/darryllionIdle5.png
+Enemies/Darryllion/Idle/darryllionIdle6.png
+Enemies/Darryllion/Idle/darryllionIdle7.png
+Enemies/Darryllion/Idle/darryllionIdle8.png
+Lyron/Select/lyronSelect1.png
+Lyron/Select/lyronSelect10.png
+Lyron/Select/lyronSelect2.png
+Lyron/Select/lyronSelect3.png
+Lyron/Select/lyronSelect4.png
+Lyron/Select/lyronSelect5.png
+Lyron/Select/lyronSelect6.png
+Lyron/Select/lyronSelect7.png
+Lyron/Select/lyronSelect8.png
+Lyron/Select/lyronSelect9.png
 Sonara/Select/sonaraSelect1.png
 Sonara/Select/sonaraSelect10.png
 Sonara/Select/sonaraSelect11.png
@@ -297,7 +316,6 @@ UI/Items/Battle/resolved_dissonance_battle.png
 UI/Items/Battle/silent_barrier_battle.png
 UI/Items/Battle/time_orb_battle.png
 UI/Items/Inventory/CrimsonChorus.png
-UI/Items/Inventory/InventoryBG.png
 UI/Items/Inventory/MajorsBlessing.png
 UI/Items/Inventory/MinorsGrace.png
 UI/Items/Inventory/ResolvedDissonance.png

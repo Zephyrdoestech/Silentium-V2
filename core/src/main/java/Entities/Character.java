@@ -2,6 +2,7 @@ package Entities;
 
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
+import java.util.Map;
 
 public class Character {
 
@@ -36,6 +37,7 @@ public class Character {
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
+    public Map<String, Integer> inventory = new java.util.HashMap<>();
 
     private String name;
     private String instrument;

@@ -34,6 +34,7 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     public void show() {
+        game.gameCamera.zoom = 1.0f;
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
         startFadeIn();
@@ -159,20 +160,37 @@ public class MainMenuScreen extends BaseScreen {
 
     private void handleSelection() {
         switch (selection) {
-            case 0:
-                game.assets.titleBgm.stop();
-                game.setScreen(new CharSelectScreen(game));
+            case 0: // START GAME
+                game.assets.stopAllMusic(); // This kills EVERYTHING currently playing
+                game.setScreen(new LoreScreen(game));
                 break;
-            case 1: game.setScreen(new HowToPlayScreen(game));   break;
-            case 2: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Story
-            case 3: game.setScreen(new HowToPlayScreen(game));   break; // Temporary: use HowToPlay for Credits
-            case 4: Gdx.app.exit();                              break;
+
+            case 1: // HOW TO PLAY
+                game.setScreen(new HowToPlayScreen(game));
+                break;
+
+            case 2: // STORY (If separate from Lore)
+                game.setScreen(new LoreScreen(game));
+                break;
+
+            case 3: // CREDITS
+                game.setScreen(new HowToPlayScreen(game));
+                break;
+
+            case 4: // EXIT
+                Gdx.app.exit();
+                break;
         }
     }
 
     @Override public void resize(int w, int h) {
         game.gameViewport.update(w, h, true);
     }
-    @Override public void hide()    { clearNotes(); }
+    @Override public void hide()    {
+        if (game.assets.titleBGM != null) {
+            game.assets.titleBGM.stop();
+        }
+        clearNotes();
+    }
     @Override public void dispose() {}
 }
