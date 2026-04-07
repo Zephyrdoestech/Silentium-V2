@@ -49,6 +49,12 @@ public class Assets implements Disposable {
 
     public final Texture titleScreenTex;
 
+    // Story Slideshow
+    public Texture storyPanel1;
+    public Texture storyPanel2;
+    public Texture storyPanel3;
+    public Texture storyPanel4;
+
     // Maps and Decorations (These must be TextureRegions!)
     public final TextureRegion townTex;
     public final TextureRegion townExitTex;
@@ -62,13 +68,18 @@ public class Assets implements Disposable {
     public final Texture darknessOverlay;
     public final Texture[] noteTextures;
 
+    public Music titleBGM;
+    public Music storyBGM;
+    public Music townOfEchoesBGM;
+    public Music battleAbyssBGM;
+    public Music battleBossBGM;
+
     public final Texture story1Tex;
     public final Texture story2Tex;
     public final Texture story3Tex;
     public final Texture story4Tex;
 
-    public Animation<TextureRegion> darryllionIdle;
-    public Music titleBGM; // Added as per request
+    public Animation<TextureRegion> darryllionIdle;// Added as per request
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -129,7 +140,6 @@ public class Assets implements Disposable {
     public final Texture resolvedDissonanceSlotItem;
     public  final Texture timeOrbSlotItem;
 
-
     // ── Combat Animations ─────────────────────────────────────────────────────
 
     public final Animation<TextureRegion> battleIntroAnim;
@@ -157,7 +167,7 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> syozanCombatIdle;
     public final Animation<TextureRegion> syozanCombatAttack;
 
-    // ── Music ─────────────────────────────────────────────────────────────────
+    public Animation<TextureRegion> lyronSelectAnim;
 
 //    public final Music sonaraTheme;
 //    public final Music aureliusTheme;
@@ -178,6 +188,12 @@ public class Assets implements Disposable {
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
+
+        // Load the Story Panels
+        storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
+        storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
+        storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
+        storyPanel4 = new Texture(Gdx.files.internal("Background/Story/story_panel_4.png"));
 
         // Map Textures
         Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
@@ -221,6 +237,7 @@ public class Assets implements Disposable {
         // Load the 11-frame selection animations!
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
+        lyronSelectAnim = loadAnim("Lyron/Select", "lyronSelect", 10, 0.1f);
 
         darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
@@ -333,15 +350,21 @@ public class Assets implements Disposable {
 
         // ── Audio ─────────────────────────────────────────────────────────────
 
-//        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-//        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-//        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
-        titleBgm      = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
+        // Load Background Music
+        storyBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/Story.mp3"));
+        townOfEchoesBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/TownOfEchoes.mp3"));
 
-//        sonaraTheme.setLooping(true);
-//        aureliusTheme.setLooping(true);
-//        lyronTheme.setLooping(true);
+        // Update this to match your "title_music.wav" file
+        titleBgm = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
+
+        // Load Battle Music
+        battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_abyss.wav"));
+        battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_boss.wav"));
+
+        // Set Loops
         titleBgm.setLooping(true);
+        storyBGM.setLooping(true);
+        townOfEchoesBGM.setLooping(true);
     }
 
     // ── Private Helpers ───────────────────────────────────────────────────────
@@ -358,7 +381,6 @@ public class Assets implements Disposable {
         TextureRegion[] frames = new TextureRegion[count];
         for (int i = 0; i < count; i++) {
             String path = folder + "/" + base + (i + 1) + ".png";
-
             // Safety Check: If the file is missing, print a warning and cancel the animation!
             if (!Gdx.files.internal(path).exists()) {
                 System.out.println("Missing Anim Frame: " + path);
@@ -449,6 +471,13 @@ public class Assets implements Disposable {
         p.setColor(1f, 1f, 1f, 0f);
         p.fill();
         return p;
+    }
+
+    public void stopAllMusic() {
+        if (titleBgm != null) titleBgm.stop();
+        if (townOfEchoesBGM != null) townOfEchoesBGM.stop();
+        if (battleAbyssBGM != null) battleAbyssBGM.stop();
+        if (battleBossBGM != null) battleBossBGM.stop();
     }
 
     // ── Dispose ───────────────────────────────────────────────────────────────

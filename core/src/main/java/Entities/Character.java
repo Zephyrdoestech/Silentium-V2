@@ -2,6 +2,7 @@ package Entities;
 
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
+import java.util.Map;
 
 public class Character {
 

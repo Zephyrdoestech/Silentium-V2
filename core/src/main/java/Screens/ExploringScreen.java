@@ -14,7 +14,6 @@ import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
@@ -40,31 +39,12 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
-//    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showingExitPrompt = false;
 
     public ExploringScreen(Main game) {
         super(game);
-//        if (game.ctx.mapName == null) {
-//            game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES; // Default to Town
-//        }
-//        // Set the map texture based on the map name
-//        switch (game.ctx.mapName) {
-//            case TOWN_OF_ECHOES:
-//                mapTexture = game.assets.townTex;
-//                break;
-//            case SILENT_CAVERNS:
-//                mapTexture = game.assets.silentCavernsTex;
-//                break;
-//            case ABYSS_OF_DISSONANCE:
-//                mapTexture = game.assets.abyssOfDissonanceTex;
-//                break;
-//            default:
-//                mapTexture = game.assets.townTex; // Default to Town
-//                break;
-//        }
     }
 
     //overriden by map classes
@@ -81,7 +61,9 @@ public class ExploringScreen extends BaseScreen {
 
 
     protected void initPlayerPosition() {
-        spawnEnemies();
+        if (game.ctx.mapEnemies.isEmpty()) {
+            spawnEnemies();
+        }
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
@@ -188,14 +170,14 @@ public class ExploringScreen extends BaseScreen {
 
 
         // Debug room outlines + enemy rects (ShapeRenderer)
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-        game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : walkableZones)
-            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-        game.shapeRenderer.end();
+//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        game.shapeRenderer.setColor(Color.GREEN);
+//        for (Room r : game.ctx.rooms)
+//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+//        game.shapeRenderer.setColor(Color.YELLOW);
+//        for (Rectangle h : walkableZones)
+//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+//        game.shapeRenderer.end();
 
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -499,8 +481,5 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override
-    public void dispose() {
-        // Do not dispose of global assets here
-    }
+    @Override public void dispose() { }
 }

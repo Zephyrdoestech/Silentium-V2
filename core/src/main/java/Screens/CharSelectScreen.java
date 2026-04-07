@@ -39,6 +39,7 @@ public class CharSelectScreen extends BaseScreen {
 
     @Override
     public void show() {
+        game.gameCamera.zoom = 1.0f;
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
         startFadeIn();
@@ -89,7 +90,10 @@ public class CharSelectScreen extends BaseScreen {
                 animFrame = game.assets.sonaraSelectAnim.getKeyFrame(stateTime, true);
             } else if (i == 1 && game.assets.aureliusSelectAnim != null) {
                 animFrame = game.assets.aureliusSelectAnim.getKeyFrame(stateTime, true);
+            } else if (i == 2 && game.assets.lyronSelectAnim != null) {
+                animFrame = game.assets.lyronSelectAnim.getKeyFrame(stateTime, true);
             } else {
+                // Fallback to the square textures if animation is missing
                 staticFrame = staticTexs[i];
             }
 
@@ -137,9 +141,6 @@ public class CharSelectScreen extends BaseScreen {
         if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
             game.assets.titleBGM.stop();
         }
-
-        // Removed stopTheme() from here
-        game.assets.titleBgm.stop();
         game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {

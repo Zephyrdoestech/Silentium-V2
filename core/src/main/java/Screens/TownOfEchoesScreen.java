@@ -65,8 +65,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     protected void spawnEnemies() {
-        game.ctx.mapEnemies.clear();
+        if (!game.ctx.mapEnemies.isEmpty()) return;
 
+        game.ctx.mapEnemies.clear();
         List<Room> eligibleRooms = new ArrayList<>(game.ctx.rooms);
         eligibleRooms.remove(game.ctx.exitRoom); // not exit room and room with enemy
         Collections.shuffle(eligibleRooms, RNG);
