@@ -348,8 +348,8 @@ public class CombatScreen extends BaseScreen {
                     : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
             case "Darrylion":
                 return isAttacking
-                    ? game.assets.darrylionCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.darrylionCombatIdle.getKeyFrame(animTimer, true);
+                    ? game.assets.darryllionCombatAttack.getKeyFrame(animTimer, true)
+                    : game.assets.darryllionCombatIdle.getKeyFrame(animTimer, true);
             case "Aryzachnid":
                 return isAttacking
                     ? game.assets.gobninilCombatAttack.getKeyFrame(animTimer, true)

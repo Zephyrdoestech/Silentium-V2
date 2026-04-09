@@ -115,8 +115,8 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
-    public final Animation<TextureRegion> darrylionCombatIdle;
-    public final Animation<TextureRegion> darrylionCombatAttack;
+    public final Animation<TextureRegion> darryllionCombatIdle;
+    public final Animation<TextureRegion> darryllionCombatAttack;
     public final Animation<TextureRegion> gobninilCombatIdle;
     public final Animation<TextureRegion> gobninilCombatAttack;
     public final Animation<TextureRegion> chimericksCombatIdle;
@@ -241,8 +241,8 @@ public class Assets implements Disposable {
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "Idle",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "Attack", 6, 0.2f));
-        darrylionCombatIdle      = flipped(loadAnim("Sprites/Combat/Monster/Darrylion/Idle",      "Idle",   4, 0.2f));
-        darrylionCombatAttack    = flipped(loadAnim("Sprites/Combat/Monster/Darrylion/Attack",    "Attack", 6, 0.2f));
+        darryllionCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "Idle",   4, 0.2f));
+        darryllionCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack",    "Attack", 6, 0.2f));
         gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "Idle",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "Idle",   4, 0.2f));
