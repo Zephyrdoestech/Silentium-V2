@@ -70,7 +70,7 @@ public class GameContext {
     // Map dimensions — match your Dungeon.png pixel size
     public float MAP_SIZE  = 2048f;
     public static final float CHAR_SIZE = 32f;
-    public static final float SPEED     = 150f;
+    public static final float SPEED     = 200f;
 
     public com.badlogic.gdx.Screen lastMapScreen;
 
