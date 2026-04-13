@@ -168,25 +168,25 @@ public class Chord {
         switch (chord) {
             case "CMAJOR": {
                 int h = (int)(c.getMaxHp() * 0.20f);
-                return "C Major! Healed " + h + " HP.";
+                return "Healed " + h + " HP.";
             }
             case "DMINOR":
-                return "D Minor! +20% damage buff.";
+                return "20% damage buff.";
             case "EMINOR": {
                 int h = (int)(c.getMaxHp() * 0.10f);
-                return "E Minor! Healed " + h + " HP + 10% buff.";
+                return "Healed " + h + " HP + 10% buff.";
             }
             case "FMAJOR":
-                return "F Major! +25 shield.";
+                return "Gain 25 shield.";
             case "GMAJOR": {
                 int h = (int)(c.getMaxHp() * 0.15f);
-                return "G Major! Healed " + h + " HP + 15 shield.";
+                return "Healed " + h + " HP + 15 shield.";
             }
             case "AMINOR":
-                return "A Minor! +35 shield.";
+                return "Gained 35 shield.";
             case "BDIM": {
                 int sd = (int)(c.getMaxHp() * 0.10f);
-                return "B Diminished! +30% dmg, lost " + sd + " HP.";
+                return "30% damage buff, lost " + sd + " HP.";
             }
             default:
                 return "";

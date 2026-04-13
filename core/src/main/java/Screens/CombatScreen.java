@@ -13,7 +13,6 @@ import Entities.Character;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
-import org.w3c.dom.Text;
 
 /**
  * Turn-based combat screen.
@@ -367,10 +366,10 @@ public class CombatScreen extends BaseScreen {
                 return isAttacking
                     ? game.assets.fleshfeederCombatAttack.getKeyFrame(animTimer, true)
                     : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
-            case "Darrylion":
+            case "Darryllion":
                 return isAttacking
-                    ? game.assets.darrylionCombatAttack.getKeyFrame(animTimer, true)
-                    : game.assets.darrylionCombatIdle.getKeyFrame(animTimer, true);
+                    ? game.assets.darryllionCombatAttack1.getKeyFrame(animTimer, true)
+                    : game.assets.darryllionCombatIdle.getKeyFrame(animTimer, true);
             case "Aryzachnid":
                 return isAttacking
                     ? game.assets.gobninilCombatAttack.getKeyFrame(animTimer, true)
@@ -579,6 +578,7 @@ public class CombatScreen extends BaseScreen {
                         activeSkillUsed = false;}
                     turnTime = 0f;
                     game.ctx.resultTimer = 0f;
+                    game.ctx.metronome.reset();
                     game.ctx.combatState = GameContext.CombatState.MISSED_TURN;
                 }
                 break;
@@ -677,6 +677,7 @@ public class CombatScreen extends BaseScreen {
             case SKILL_USED:
             case SKILL_CONFIRMED:
             case MISSED_TURN:
+            case DISPLAY_CHORD:
             case DISPLAY_CHORD_EFFECT:
             case DISPLAY_PLAYER_DAMAGE:
             case DISPLAY_FINAL_DAMAGE:
@@ -734,7 +735,8 @@ public class CombatScreen extends BaseScreen {
         String  message    = resolveBattleLogMessage();
         Color   color      = resolveBattleLogColor();
 
-        if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT
+        if((game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD ||
+            game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT)
             && message.equalsIgnoreCase("null")){
             advanceBattleLogState();}
 
@@ -756,10 +758,13 @@ public class CombatScreen extends BaseScreen {
                 return activeSkillDesription();
             case SKILL_USED:
                 return (activeSkillUsedThisTurn ? "Skill currently in use." : "Skill already used.") ;
+            case DISPLAY_CHORD:
+                return chordUsedThisTurn != null
+                    ? game.ctx.chordSystem.getChordName(chordUsedThisTurn) + " activated!"
+                    : "null";
             case DISPLAY_CHORD_EFFECT:
                 return chordUsedThisTurn != null
-                    ? "[" + game.ctx.chordSystem.getChordName(chordUsedThisTurn) + "] "
-                    + game.ctx.chordSystem.getChordMessage(chordUsedThisTurn, player)
+                    ? game.ctx.chordSystem.getChordMessage(chordUsedThisTurn, player)
                     : "null";
             case DISPLAY_PLAYER_DAMAGE:
                 return (metronomeActivated ? "Initial" : "Total")
@@ -787,6 +792,7 @@ public class CombatScreen extends BaseScreen {
             case ENEMY_ATTACK:
             case MISSED_TURN:
             case DISPLAY_ENEMY_DAMAGE:   return Color.RED;
+            case DISPLAY_CHORD:
             case SKILL_USED:             return Color.YELLOW;
             default:                     return Color.WHITE;
         }
@@ -802,8 +808,10 @@ public class CombatScreen extends BaseScreen {
             case SKILL_CONFIRMED:
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
                 break;
-            case DISPLAY_CHORD_EFFECT:
+            case DISPLAY_CHORD:
                 // If there was no chord, skip straight past; otherwise show player damage
+                game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+            case DISPLAY_CHORD_EFFECT:
                 game.ctx.combatState = GameContext.CombatState.DISPLAY_PLAYER_DAMAGE;
                 break;
 
@@ -1041,7 +1049,7 @@ public class CombatScreen extends BaseScreen {
                 noteRevealTimer   = 0f;
                 revealedNoteCount = 0;
                 game.ctx.resultTimer = 0f;
-                game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD_EFFECT;
+                game.ctx.combatState = GameContext.CombatState.DISPLAY_CHORD;
             }
         }
     }
