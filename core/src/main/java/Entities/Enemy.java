@@ -51,12 +51,11 @@ public class Enemy {
         this.attacks  = attacks;
     }
 
-    // ── Setters ───────────────────────────────────────────────────────────────
-
     public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
-        currentHp = maxHp;
+        this.currentHp = maxHp;
     }
+
     // ── Getters ───────────────────────────────────────────────────────────────
 
     public String   getName()      { return name; }
@@ -103,7 +102,7 @@ public class Enemy {
     }
 
     public static Enemy darrylion(float x, float y) {
-        return new Enemy("Darrylion", 350, x, y,
+        return new Enemy("Darryllion", 350, x, y,
             new Attack("Luminous Gaze",     10, 20),
             new Attack("Deafening Screech", 15, 25),
             new Attack("Shatter Cry",       20, 35)

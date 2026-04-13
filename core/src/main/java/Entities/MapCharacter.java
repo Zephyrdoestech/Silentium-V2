@@ -3,10 +3,12 @@ package Entities;
 public class MapCharacter {
     private float x;
     private float y;
+    private boolean inCombat = false;
 
     public MapCharacter(float startX, float startY) {
         this.x = startX;
         this.y = startY;
+        resetMovementState();
     }
 
     public void setX(float x) { this.x = x; }
@@ -29,5 +31,12 @@ public class MapCharacter {
 
     public void right(float amount) {
         x += amount;
+    }
+
+    public void setInCombat(boolean inCombat) { this.inCombat = inCombat; }
+    public boolean isInCombat() { return inCombat; }
+
+    public void resetMovementState() {
+        inCombat = false;
     }
 }

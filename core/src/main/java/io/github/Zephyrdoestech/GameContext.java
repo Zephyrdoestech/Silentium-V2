@@ -7,6 +7,7 @@ import Mechanics.CombatSystem.Note;
 import Mechanics.CombatSystem.Chord;
 import Mechanics.CombatSystem.Metronome;
 import Mechanics.MapTraversalSystem.Room;
+import Screens.ExploringScreen;
 import com.badlogic.gdx.audio.Music;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +38,6 @@ public class GameContext {
         VICTORY, DEFEAT, EXIT
     }
 
-
-
     public enum MapName{
         TOWN_OF_ECHOES, SILENT_CAVERNS, ABYSS_OF_DISSONANCE
     }
@@ -56,15 +55,24 @@ public class GameContext {
     public Facing         facing       = Facing.RIGHT;
     public float          stateTime    = 0f;     // drives animation clock
 
+    public boolean useWasd = true;
+
     // ── Map state ─────────────────────────────────────────────────────────────
 
     public List<Enemy> mapEnemies = new ArrayList<>();
     public List<Room>  rooms      = new ArrayList<>();
+    public int lives = 3;
+    public int enemiesDefeatedInCurrentMap = 0;
+    public Room exitRoom = null;
+    public ExploringScreen currentMapScreen = null;
+
 
     // Map dimensions — match your Dungeon.png pixel size
-    public static final float MAP_SIZE  = 2048f;
+    public float MAP_SIZE  = 2048f;
     public static final float CHAR_SIZE = 32f;
     public static final float SPEED     = 150f;
+
+    public com.badlogic.gdx.Screen lastMapScreen;
 
     // ── Combat state ──────────────────────────────────────────────────────────
 
@@ -90,20 +98,20 @@ public class GameContext {
      * Switches character-select theme safely.
      * Passing -1 stops everything without starting a new track.
      */
-    public void playTheme(int index, Assets assets) {
-        if (index == lastThemeIndex) return;
-        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
-        lastThemeIndex = index;
-        if (index < 0) return;
-        switch (index) {
-            case 0: currentTheme = assets.sonaraTheme;   break;
-            case 1: currentTheme = assets.aureliusTheme; break;
-            case 2: currentTheme = assets.lyronTheme;    break;
-            default: return;
-        }
-        currentTheme.setVolume(0.75f);
-        currentTheme.play();
-    }
+//    public void playTheme(int index, Assets assets) {
+//        if (index == lastThemeIndex) return;
+//        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
+//        lastThemeIndex = index;
+//        if (index < 0) return;
+//        switch (index) {
+//            case 0: currentTheme = assets.sonaraTheme;   break;
+//            case 1: currentTheme = assets.aureliusTheme; break;
+//            case 2: currentTheme = assets.lyronTheme;    break;
+//            default: return;
+//        }
+//        currentTheme.setVolume(0.75f);
+//        currentTheme.play();
+//    }
 
     /** Stops all character-select music immediately. */
     public void stopTheme() {

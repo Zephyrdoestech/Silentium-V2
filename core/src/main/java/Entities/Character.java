@@ -2,6 +2,7 @@ package Entities;
 
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
+import java.util.Map;
 
 public class Character {
 
@@ -17,7 +18,7 @@ public class Character {
         }
 
         public String getPsName(){return psName;}
-         public String getPsDescription(){return psDescription;}
+        public String getPsDescription(){return psDescription;}
     }
 
     public static class ActiveSkill {
@@ -36,6 +37,7 @@ public class Character {
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
+    public Map<String, Integer> inventory = new java.util.HashMap<>();
 
     private String name;
     private String instrument;
@@ -294,5 +296,10 @@ public class Character {
             default:
                 break;
         }
+    }
+
+    public void resetStats() {
+        this.setHp(this.getMaxHp());
+        this.setShield(0);
     }
 }

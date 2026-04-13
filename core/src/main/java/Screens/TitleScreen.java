@@ -40,14 +40,17 @@ public class TitleScreen extends BaseScreen {
 
         drawFloatingNotes(delta);
 
-        // Prompt
         game.assets.font.setColor(new Color(0.85f, 0.85f, 0.85f, 0.9f));
-        game.assets.font.draw(game.batch, "Press SPACE to continue",290, 60);
+        game.assets.font.draw(game.batch, "Press SPACE to continue",
+            290, 60);
         game.assets.font.setColor(Color.WHITE);
 
         game.batch.end();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) ||
+            Gdx.input.isKeyJustPressed(Input.Keys.ENTER) ||
+            Gdx.input.justTouched()) {
+
             game.setScreen(new MainMenuScreen(game));
         }
     }

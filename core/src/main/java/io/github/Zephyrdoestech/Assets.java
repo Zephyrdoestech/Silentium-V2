@@ -12,13 +12,16 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Owns and manages the lifetime of every shared asset in the game.
- * Create once in Main.create(), dispose in Main.dispose().
- *
- * Screens read assets via game.assets.* — they never load or dispose shared assets themselves.
- */
 public class Assets implements Disposable {
+    //Buttons
+    public final Texture startBtnTex;
+    public final Texture tutorialBtnTex;
+    public final Texture storyBtnTex;
+    public final Texture creditsBtnTex;
+    public final Texture exitBtnTex;
+
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
+    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
 
     // ── Fonts ─────────────────────────────────────────────────────────────────
 
@@ -26,20 +29,41 @@ public class Assets implements Disposable {
     public final BitmapFont titleFont;  // headings   (scale 2.2)
     public final BitmapFont bigFont;    // victory/defeat (scale 3.0)
 
-    // ── UI / Map Textures ─────────────────────────────────────────────────────
 
     public final Texture titleScreenTex;
-    public final Texture townTex;
+
+    // Story Slideshow
+    public Texture storyPanel1;
+    public Texture storyPanel2;
+    public Texture storyPanel3;
+    public Texture storyPanel4;
+
+    // Maps and Decorations (These must be TextureRegions!)
+    public final TextureRegion townTex;
+    public final TextureRegion townExitTex;
+    public final TextureRegion silentCavernsTex;
+    public final TextureRegion cavernsExitTex;
+    public final TextureRegion abyssOfDissonanceTex;
+    public final TextureRegion townDecorationsTex;
+
     public final Texture sonaraTex;
     public final Texture lyronTex;
     public final Texture aureliusTex;
     public final Texture darknessOverlay;
     public final Texture[] noteTextures;
 
+    public Music titleBGM;
+    public Music storyBGM;
+    public Music townOfEchoesBGM;
+    public Music battleAbyssBGM;
+    public Music battleBossBGM;
+
     public final Texture story1Tex;
     public final Texture story2Tex;
     public final Texture story3Tex;
     public final Texture story4Tex;
+
+    public Animation<TextureRegion> darryllionIdle;// Added as per request
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -90,6 +114,15 @@ public class Assets implements Disposable {
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
 
+    // ── Item Textures ─────────────────────────────────────────────────────────
+
+    public final Texture crimsonChorusBattleTex;
+    public final Texture majorsBlessingBattleTex;
+    public final Texture minorsGraceBattleTex;
+    public final Texture resolvedDissonanceBattleTex;
+    public final Texture silentBarrierBattleTex;
+    public final Texture timeOrbBattleTex;
+
     public final Texture inventoryBackground;
     public final Texture crimsonChorusSlotItem;
     public final Texture majorsBlessingSlotItem;
@@ -97,7 +130,6 @@ public class Assets implements Disposable {
     public final Texture silentBarrierSlotItem;
     public final Texture resolvedDissonanceSlotItem;
     public  final Texture timeOrbSlotItem;
-
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -115,8 +147,8 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
-    public final Animation<TextureRegion> darryllionCombatIdle;
-    public final Animation<TextureRegion> darryllionCombatAttack;
+    public final Animation<TextureRegion> darrylionCombatIdle;
+    public final Animation<TextureRegion> darrylionCombatAttack;
     public final Animation<TextureRegion> gobninilCombatIdle;
     public final Animation<TextureRegion> gobninilCombatAttack;
     public final Animation<TextureRegion> chimericksCombatIdle;
@@ -126,11 +158,11 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> syozanCombatIdle;
     public final Animation<TextureRegion> syozanCombatAttack;
 
-    // ── Music ─────────────────────────────────────────────────────────────────
+    public Animation<TextureRegion> lyronSelectAnim;
 
-    public final Music sonaraTheme;
-    public final Music aureliusTheme;
-    public final Music lyronTheme;
+//    public final Music sonaraTheme;
+//    public final Music aureliusTheme;
+//    public final Music lyronTheme;
     public final Music titleBgm;
 
     // Internal list so dispose() can clean up animation textures
@@ -146,23 +178,67 @@ public class Assets implements Disposable {
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
 
         // Static textures
-        titleScreenTex = new Texture("Background/Title_Screen/Title_Screen_Placeholder.png");
-        townTex        = new Texture("Background/Map/Town_Of_Echoes.png");
-        townTex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        sonaraTex   = new Texture("sonara.png");
-        lyronTex    = new Texture("lyron.png");
+        titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
+
+        // Load the Story Panels
+        storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
+        storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
+        storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
+        storyPanel4 = new Texture(Gdx.files.internal("Background/Story/story_panel_4.png"));
+
+        // Map Textures
+        Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
+        if (townFile != null) townTex = new TextureRegion(townFile);
+        else townTex = null;
+
+        Texture townExitFile = safeLoadTexture("Background/Map/Town_Exit.png");
+        if (townExitFile != null) townExitTex = new TextureRegion(townExitFile);
+        else townExitTex = null;
+
+        Texture silentCavernsFile = safeLoadTexture("Background/Map/Silent_Caverns.png");
+        if (silentCavernsFile != null) silentCavernsTex = new TextureRegion(silentCavernsFile);
+        else silentCavernsTex = null;
+
+        Texture cavernsExitFile = safeLoadTexture("Background/Map/Caverns_Exit.png");
+        if (cavernsExitFile != null) cavernsExitTex = new TextureRegion(cavernsExitFile);
+        else cavernsExitTex = null;
+
+        Texture abyssFile = safeLoadTexture("Background/Map/Abyss_Of_Dissonance.png");
+        if (abyssFile != null) abyssOfDissonanceTex = new TextureRegion(abyssFile);
+        else abyssOfDissonanceTex = null;
+
+        Texture townDecorFull = safeLoadTexture("Background/Map/Town_Decorations.png");
+        if (townDecorFull != null) townDecorationsTex = new TextureRegion(townDecorFull);
+        else townDecorationsTex = null;
+
+//        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
+//        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
+
+        sonaraTex = new Texture("sonara.png");
+        lyronTex = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
 
-        story1Tex = new Texture("Background/Story/story_panel_1.png");
-        story2Tex = new Texture("Background/Story/story_panel_2.png");
-        story3Tex = new Texture("Background/Story/story_panel_3.png");
-        story4Tex = new Texture("Background/Story/story_panel_4.png");
+        this.startBtnTex = new Texture("UI/start_btn.png");
+        this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
+        this.storyBtnTex = new Texture("UI/story_btn.png");
+        this.creditsBtnTex = new Texture("UI/credits_btn.png");
+        this.exitBtnTex = new Texture("UI/exit_btn.png");
+
+        story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
+        story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
+        story3Tex = safeLoadTexture("Background/Story/story_panel_3.png");
+        story4Tex = safeLoadTexture("Background/Story/story_panel_4.png");
+
+        // Load the 11-frame selection animations!
+        sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
+        aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
+        lyronSelectAnim = loadAnim("Lyron/Select", "lyronSelect", 10, 0.1f);
+
+        darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
-        noteTextures    = buildNoteTextures();
-
-        // ── Exploration Animations ────────────────────────────────────────────
+        noteTextures = buildNoteTextures();
 
         aureliusIdleRight = loadAnim("Sprites/Characters/Aurelius/Idle",   "Idle",      4, 0.2f);
         aureliusIdleLeft  = flipped(aureliusIdleRight);
@@ -217,13 +293,22 @@ public class Assets implements Disposable {
         aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
         bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
 
+        // ── Item Textures ─────────────────────────────────────────────────────
+
+        crimsonChorusBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
+        majorsBlessingBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
+        minorsGraceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MinorsGrace.png");
+        resolvedDissonanceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/ResolvedDissonance.png");
+        silentBarrierBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/SilentBarrier.png");
+        timeOrbBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/TimeOrb.png");
+
         inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
-        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png");
-        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MajorsBlessing.png");
-        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MinorsGrace.png");
-        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SilentBarrier.png");
-        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/ResolvedDissonance.png");
-        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/TimeOrb.png");
+        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/CrimsonChorus.png");
+        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MajorsBlessing.png");
+        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png");
+        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
+        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
+        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -241,8 +326,8 @@ public class Assets implements Disposable {
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "Idle",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "Attack", 6, 0.2f));
-        darryllionCombatIdle = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "Idle",   4, 0.2f));
-        darryllionCombatAttack = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack",    "Attack", 6, 0.2f));
+        darrylionCombatIdle      = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "Idle",   4, 0.2f));
+        darrylionCombatAttack    = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack",    "Attack", 6, 0.2f));
         gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "Idle",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "Idle",   4, 0.2f));
@@ -254,24 +339,44 @@ public class Assets implements Disposable {
 
         // ── Audio ─────────────────────────────────────────────────────────────
 
-        sonaraTheme   = Gdx.audio.newMusic(Gdx.files.internal("Audio/banjo.wav"));
-        aureliusTheme = Gdx.audio.newMusic(Gdx.files.internal("Audio/flute.wav"));
-        lyronTheme    = Gdx.audio.newMusic(Gdx.files.internal("Audio/harp.wav"));
-        titleBgm      = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_Title.wav"));
+        // Load Background Music
+        storyBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/Story.wav"));
+        townOfEchoesBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/TownOfEchoes.wav"));
 
-        sonaraTheme.setLooping(true);
-        aureliusTheme.setLooping(true);
-        lyronTheme.setLooping(true);
+        // Update this to match your "title_music.wav" file
+        titleBgm = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
+
+        // Load Battle Music
+        battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_abyss.wav"));
+        battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_boss.wav"));
+
+        // Set Loops
         titleBgm.setLooping(true);
+        storyBGM.setLooping(true);
+        townOfEchoesBGM.setLooping(true);
     }
 
     // ── Private Helpers ───────────────────────────────────────────────────────
 
-    private Animation<TextureRegion> loadAnim(String folder, String base,
-                                              int count, float duration) {
+    private Texture safeLoadTexture(String path) {
+        if (Gdx.files.internal(path).exists()) {
+            return new Texture(path);
+        }
+        System.out.println("Missing Art: " + path);
+        return null;
+    }
+
+    private Animation<TextureRegion> loadAnim(String folder, String base, int count, float duration) {
         TextureRegion[] frames = new TextureRegion[count];
         for (int i = 0; i < count; i++) {
-            Texture tex = new Texture(folder + "/" + base + (i + 1) + ".png");
+            String path = folder + "/" + base + (i + 1) + ".png";
+            // Safety Check: If the file is missing, print a warning and cancel the animation!
+            if (!Gdx.files.internal(path).exists()) {
+                System.out.println("Missing Anim Frame: " + path);
+                return null;
+            }
+
+            Texture tex = new Texture(path);
             animationTextures.add(tex);
             frames[i] = new TextureRegion(tex);
         }
@@ -279,6 +384,7 @@ public class Assets implements Disposable {
     }
 
     private Animation<TextureRegion> flipped(Animation<TextureRegion> src) {
+        if (src == null) return null;
         TextureRegion[] orig    = src.getKeyFrames();
         TextureRegion[] flipped = new TextureRegion[orig.length];
         for (int i = 0; i < orig.length; i++) {
@@ -356,6 +462,13 @@ public class Assets implements Disposable {
         return p;
     }
 
+    public void stopAllMusic() {
+        if (titleBgm != null) titleBgm.stop();
+        if (townOfEchoesBGM != null) townOfEchoesBGM.stop();
+        if (battleAbyssBGM != null) battleAbyssBGM.stop();
+        if (battleBossBGM != null) battleBossBGM.stop();
+    }
+
     // ── Dispose ───────────────────────────────────────────────────────────────
 
     @Override
@@ -365,38 +478,81 @@ public class Assets implements Disposable {
         bigFont.dispose();
 
         titleScreenTex.dispose();
-        townTex.dispose();
-        sonaraTex.dispose();
-        lyronTex.dispose();
-        aureliusTex.dispose();
-        darknessOverlay.dispose();
+        if (townTex != null && townTex.getTexture() != null) {
+            townTex.getTexture().dispose();
+        }
+        if (sonaraTex != null) {
+            sonaraTex.dispose();
+        }
+        if (lyronTex != null) {
+            lyronTex.dispose();
+        }
+        if (aureliusTex != null) {
+            aureliusTex.dispose();
+        }
+        if (darknessOverlay != null) {
+            darknessOverlay.dispose();
+        }
 
         story1Tex.dispose();
         story2Tex.dispose();
         story3Tex.dispose();
         story4Tex.dispose();
 
-        for (Texture t : noteTextures)      t.dispose();
-        for (Texture t : animationTextures) t.dispose();
+        for (Texture t : noteTextures) {
+            if (t != null) {
+                t.dispose();
+            }
+        }
+        for (Texture t : animationTextures) {
+            if (t != null) {
+                t.dispose();
+            }
+        }
 
-        townCombatBackground.dispose();
-        cavernsCombatBackground.dispose();
-        abyssCombatBackground.dispose();
+        if (townCombatBackground != null) {
+            townCombatBackground.dispose();
+        }
+        if (cavernsCombatBackground != null) {
+            cavernsCombatBackground.dispose();
+        }
+        if (abyssCombatBackground != null) {
+            abyssCombatBackground.dispose();
+        }
 
-        healthBar.dispose();
-        shieldBar.dispose();
-        staticHudBackground.dispose();
-        timerBackground.dispose();
-        dynamicHudBackground.dispose();
-        noteContainer.dispose();
-        turnMenuHud.dispose();
-        attackHud.dispose();
-        skillHud.dispose();
-        inventoryHud.dispose();
+        if (healthBar != null) {
+            healthBar.dispose();
+        }
+        if (shieldBar != null) {
+            shieldBar.dispose();
+        }
+        if (staticHudBackground != null) {
+            staticHudBackground.dispose();
+        }
+        if (timerBackground != null) {
+            timerBackground.dispose();
+        }
+        if (dynamicHudBackground != null) {
+            dynamicHudBackground.dispose();
+        }
+        if (noteContainer != null) {
+            noteContainer.dispose();
+        }
+        if (turnMenuHud != null) {
+            turnMenuHud.dispose();
+        }
+        if (attackHud != null) {
+            attackHud.dispose();
+        }
+        if (skillHud != null) {
+            skillHud.dispose();
+        }
+        if (inventoryHud != null) {
+            inventoryHud.dispose();
+        }
 
-        sonaraTheme.dispose();
-        aureliusTheme.dispose();
-        lyronTheme.dispose();
-        titleBgm.dispose();
+        if (titleBgm != null) {
+            titleBgm.dispose();
+        }
     }
 }
