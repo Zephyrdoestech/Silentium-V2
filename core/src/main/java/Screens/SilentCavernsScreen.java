@@ -22,29 +22,29 @@ public class SilentCavernsScreen extends ExploringScreen {
         game.ctx.rooms = new ArrayList<>();
 
         // 2nd row
-        game.ctx.rooms.add(new Room(50f,   1370f, 150f, 150f));
-        game.ctx.rooms.add(new Room(500f,  1370f, 150f, 150f));
-        game.ctx.rooms.add(new Room(950f, 1370f, 150f, 150f));
-        game.ctx.rooms.add(new Room(1400f, 1370f, 150f, 150f));
-        game.ctx.rooms.add(new Room(1850f, 1370f, 150f, 150f));
+        game.ctx.rooms.add(new Room(47f,   1370f, 158f, 158f));
+        game.ctx.rooms.add(new Room(496f,  1370f, 158f, 158f));
+        game.ctx.rooms.add(new Room(946f, 1370f, 158f, 158f));
+        game.ctx.rooms.add(new Room(1395f, 1370f, 158f, 158f));
+        game.ctx.rooms.add(new Room(1843f, 1370f, 158f, 158f));
         // 3rd row
-        game.ctx.rooms.add(new Room(50f,   925f,  150f, 150f));
-        game.ctx.rooms.add(new Room(500f,  925f,  150f, 150f));
-        game.ctx.rooms.add(new Room(950f, 925f,  150f, 150f));
-        game.ctx.rooms.add(new Room(1400f, 925f,  150f, 150f));
-        game.ctx.rooms.add(new Room(1850f, 925f,  150f, 150f));
+        game.ctx.rooms.add(new Room(47f,   914f,  158f, 158f));
+        game.ctx.rooms.add(new Room(496f,  914f,  158f, 158f));
+        game.ctx.rooms.add(new Room(946f, 914f,  158f, 158f));
+        game.ctx.rooms.add(new Room(1395f, 914f,  158f, 158f));
+        game.ctx.rooms.add(new Room(1843f, 914f,  158f, 158f));
         // 4th row
-        game.ctx.rooms.add(new Room(50f,   480f,   150f, 150f));
-        game.ctx.rooms.add(new Room(500f,  480f,   150f, 150f));
-        game.ctx.rooms.add(new Room(950f, 480f,   150f, 150f));
-        game.ctx.rooms.add(new Room(1400f, 480f,   150f, 150f));
-        game.ctx.rooms.add(new Room(1850f, 480f,   150f, 150f));
+        game.ctx.rooms.add(new Room(47f,   465f,   158f, 158f));
+        game.ctx.rooms.add(new Room(496f,  465f,   158f, 158f));
+        game.ctx.rooms.add(new Room(946f, 465f,   158f, 158f));
+        game.ctx.rooms.add(new Room(1395f, 465f,   158f, 158f));
+        game.ctx.rooms.add(new Room(1843f, 465f,   158f, 158f));
         // 1st row
-        game.ctx.rooms.add(new Room(50f,   1820f, 150f, 150f));
-        game.ctx.rooms.add(new Room(500f,  1820f, 150f, 150f));
-        game.ctx.rooms.add(new Room(950f,  1820f, 150f, 150f));
-        game.ctx.rooms.add(new Room(1400f, 1820f, 150f, 150f));
-        game.ctx.rooms.add(new Room(1850f, 1820f, 150f, 150f));
+        game.ctx.rooms.add(new Room(47f,   1815f, 158f, 158f));
+        game.ctx.rooms.add(new Room(496f,  1815f, 158f, 158f));
+        game.ctx.rooms.add(new Room(946f,  1815f, 158f, 158f));
+        game.ctx.rooms.add(new Room(1395f, 1815f, 158f, 158f));
+        game.ctx.rooms.add(new Room(1843f, 1815f, 158f, 158f));
 
         this.mapTexture  = game.assets.silentCavernsTex;
         this.mapDecor    = null;
@@ -63,10 +63,10 @@ public class SilentCavernsScreen extends ExploringScreen {
             walkableZones.add(r.getBounds());
         }
 
-        walkableZones.add(new Rectangle(70f,  1886f, 1900f, 0.1f));
-        walkableZones.add(new Rectangle(70f,  1439f, 1900f, 0.1f));
-        walkableZones.add(new Rectangle(70f,  991f, 1900f, 0.1f));
-        walkableZones.add(new Rectangle(70f,  547f, 1900f, 0.1f));
+        walkableZones.add(new Rectangle(70f,  1886f, 1900f, 10f));
+        walkableZones.add(new Rectangle(70f,  1437f, 1900f, 10f));
+        walkableZones.add(new Rectangle(70f,  988f, 1900f, 10f));
+        walkableZones.add(new Rectangle(70f,  541f, 1900f, 10f));
 
         walkableZones.add(new Rectangle(126f,  530f, 0.1f, 1400f));
         walkableZones.add(new Rectangle(575f,  530f, 0.1f, 1400f));
@@ -112,7 +112,7 @@ public class SilentCavernsScreen extends ExploringScreen {
 
     @Override
     protected void restoreInstanceFields() {
-        game.ctx.MAP_SIZE = 2048f; // Silent Caverns size
+        game.ctx.MAP_SIZE = 2048f;
         this.mapTexture  = game.assets.silentCavernsTex;
         this.mapDecor    = null;
         this.exitTexture = game.assets.cavernsExitTex;
@@ -121,8 +121,8 @@ public class SilentCavernsScreen extends ExploringScreen {
     @Override
     public void render(float delta) {
         // darker tint for cave
-//        game.batch.setColor(Color.SLATE);
+        game.batch.setColor(Color.SLATE);
         super.render(delta);
-//        game.batch.setColor(Color.WHITE);
+        game.batch.setColor(Color.WHITE);
     }
 }
