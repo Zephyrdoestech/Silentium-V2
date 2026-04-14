@@ -154,6 +154,14 @@ public class Character {
         }
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setMonstersDefeated(int count) {
+        this.monstersDefeated = count;
+    }
+
     // ── Combat Utilities ──────────────────────────────────────────────────────
 
     /**

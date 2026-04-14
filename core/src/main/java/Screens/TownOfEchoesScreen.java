@@ -133,6 +133,8 @@ public class TownOfEchoesScreen extends ExploringScreen {
             game.assets.townOfEchoesBGM.setVolume(0.5f); // Set this to whatever volume feels right!
             game.assets.townOfEchoesBGM.play();
         }
+
+        game.ctx.saveGame("TownOfEchoes", game.ctx.player.getX(), game.ctx.player.getY());
     }
 
     @Override
