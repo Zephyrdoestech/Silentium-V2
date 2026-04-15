@@ -203,7 +203,9 @@ public class CombatScreen extends BaseScreen {
         }
 
         game.assets.font.setColor(Color.WHITE);
+        game.assets.font.getData().setScale(1.0f);
         game.assets.titleFont.setColor(Color.WHITE);
+        game.assets.titleFont.getData().setScale(1.0f);
     }
 
     // =========================================================================
@@ -468,6 +470,12 @@ public class CombatScreen extends BaseScreen {
     // Name Header
     // =========================================================================
 
+    public enum MapName { //idk how to implement yet -syos
+        TOWN_OF_ECHOES      { @Override public String toString() { return "Town of Echoes"; } },
+        SILENT_CAVERNS      { @Override public String toString() { return "Silent Caverns"; } },
+        ABYSS_OF_DISSONANCE { @Override public String toString() { return "Abyss of Dissonance"; } }
+    }
+
     private void renderNameHeader() {
         float bgHeight  = px(4.0f);
         float bgY       = screenTop - px(2.0f);
@@ -488,6 +496,13 @@ public class CombatScreen extends BaseScreen {
             screenLeft + px(1.0f), screenTop - px(1.0f));
         game.assets.font.draw(game.batch, enemy.getName(),
             screenRight - px(1.0f) - textWidth(enemy.getName()), screenTop - px(1.0f));
+
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.GOLD);
+        String name = game.ctx.mapName != null ? game.ctx.mapName.toString() : "";
+        game.assets.font.draw(game.batch, name,
+            (Main.WORLD_WIDTH - textWidth(name)) / 2f, screenTop - px(1.0f));
+
         game.batch.end();
         game.assets.font.getData().setScale(1.0f);
     }
