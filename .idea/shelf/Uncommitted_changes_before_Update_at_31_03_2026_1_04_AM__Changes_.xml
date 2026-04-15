@@ -1,0 +1,24 @@
+<changelist name="Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]" date="1774890277427" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 31/03/2026 1:04 AM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]/previous-compilation-data.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="AFTER_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]/core-1.0.0.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/ExploringScreen$1.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/ExploringScreen$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]/ExploringScreen$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lwjgl3/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="lwjgl3/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_31_03_2026_1_04_AM_[Changes]/previous-compilation-data1.bin" />
+  </binary>
+</changelist>
