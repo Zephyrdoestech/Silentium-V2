@@ -85,9 +85,7 @@ public class ExploringScreen extends BaseScreen {
 
 
     protected void initPlayerPosition() {
-        if (game.ctx.mapEnemies.isEmpty()) {
-            spawnEnemies();
-        }
+        spawnEnemies();
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
@@ -108,19 +106,42 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.getData().setScale(1.0f);       // ← add this
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
-        initMapData();
 
+        // 1. Initialize or restore the map
         if (game.ctx.rooms.isEmpty()) {
+            initMapData();
             initWalkable();
         } else {
             restoreInstanceFields();
             initWalkable();
         }
 
-        if (game.ctx.player == null || game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0) {
+        // --- 2. PLAYER POSITIONING LOGIC ---
+
+        // SCENARIO A: We just clicked "Continue" and have specific saved coordinates!
+        if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
+
+            // If the player object doesn't exist yet, create it using your init method
+            if (game.ctx.player == null) {
+                initPlayerPosition();
+            }
+
+            // Override their location with the exact saved coordinates
+            game.ctx.player.setX(game.ctx.savedPlayerX);
+            game.ctx.player.setY(game.ctx.savedPlayerY);
+
+            // Reset the saved coordinates so we don't accidentally teleport here later!
+            game.ctx.savedPlayerX = -1f;
+            game.ctx.savedPlayerY = -1f;
+
+        }
+        // SCENARIO B: Brand new game / First time walking into this map
+        else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
-        } else {
+        }
+        // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
+        else {
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -136,6 +157,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
         }
+
         game.ctx.stateTime = 0f;
         updateCamera(); // Initialize camera position after player position is set
     }
@@ -184,31 +206,15 @@ public class ExploringScreen extends BaseScreen {
         }
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
-            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
-            // - offset if we are in Silent Caverns
-            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
-
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                exitY,
+                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
                 exitSize, exitSize);
         }
         game.batch.end();
 
         // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-
-
-        // Debug room outlines + enemy rects (ShapeRenderer)
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-        game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : walkableZones)
-            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-        game.shapeRenderer.end();
-
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
@@ -244,9 +250,13 @@ public class ExploringScreen extends BaseScreen {
             drawInventoryOverlay();
         }
 
-        // ESC → main menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        // ESC → Save Game and return to main menu
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            // Save exactly where they are standing right now!
+            game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
             game.setScreen(new MainMenuScreen(game));
+        }
     }
 
     // ── Movement ──────────────────────────────────────────────────────────────
@@ -311,35 +321,26 @@ public class ExploringScreen extends BaseScreen {
         }
 
         if (showingExitPrompt) {
-            com.badlogic.gdx.math.Vector3 touch = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            game.uiCamera.unproject(touch);
-
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
-
-                if (canExit) {
-                    if (yesButtonRect.contains(touch.x, touch.y)) {
-                        ExploringScreen next = getNextScreen();
-                        if (next != null) {
-                            game.ctx.player = null;
-                            game.ctx.enemiesDefeatedInCurrentMap = 0;
-                            game.ctx.rooms.clear();
-                            game.ctx.mapEnemies.clear();
-                            game.ctx.exitRoom = null;
-                            game.setScreen(next);
-                        }
-                        showingExitPrompt = false;
-                    } else if (noButtonRect.contains(touch.x, touch.y)) {
-                        showingExitPrompt = false;
-                        atExit = false;
-                        game.ctx.player.setY(game.ctx.player.getY() - 15f);
+            boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
+            if (canExit) {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+                    ExploringScreen next = getNextScreen();
+                    if (next != null) {
+                        game.ctx.player = null;
+                        game.ctx.enemiesDefeatedInCurrentMap = 0;
+                        game.ctx.rooms.clear();
+                        game.ctx.mapEnemies.clear();
+                        game.ctx.exitRoom = null;
+                        game.setScreen(next);
                     }
-                } else {
-                    if (okButtonRect.contains(touch.x, touch.y)) {
-                        showingExitPrompt = false;
-                        atExit = false;
-                        game.ctx.player.setY(game.ctx.player.getY() - 30f);
-                    }
+                    showingExitPrompt = false;
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+                    showingExitPrompt = false;
+                }
+            } else {
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                    showingExitPrompt = false;
+                    game.ctx.player.setY(game.ctx.player.getY() - 15f);
                 }
             }
             return;
@@ -460,7 +461,7 @@ public class ExploringScreen extends BaseScreen {
         switch (game.ctx.selectedCharacter) {
             case SONARA:   drawCharacter(
                 game.assets.sonaraIdleRight,  game.assets.sonaraIdleLeft,
-                game.assets.sonaraIdleRight,  game.assets.sonaraIdleLeft); break;
+                game.assets.sonaraWalkRight,  game.assets.sonaraWalkLeft); break;
             case AURELIUS: drawCharacter(
                 game.assets.aureliusIdleRight, game.assets.aureliusIdleLeft,
                 game.assets.aureliusWalkRight, game.assets.aureliusWalkLeft); break;
@@ -618,60 +619,13 @@ public class ExploringScreen extends BaseScreen {
         game.batch.end();
     }
 
-    // ── Inventory Overlay ─────────────────────────────────────────────────────
-    private void drawInventoryOverlay() {
-        float overlayX = Main.WORLD_WIDTH * 0.2f;
-        float overlayY = Main.WORLD_HEIGHT * 0.18f;
-        float overlayW = Main.WORLD_WIDTH * 0.6f;
-        float overlayH = Main.WORLD_HEIGHT * 0.64f;
-
-        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0f, 0f, 0f, 0.75f);
-        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
-        game.shapeRenderer.setColor(0.1f, 0.12f, 0.18f, 0.95f);
-        game.shapeRenderer.rect(overlayX, overlayY, overlayW, overlayH);
-        game.shapeRenderer.end();
-
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-
-        float titleX = overlayX + 24f;
-        float titleY = overlayY + overlayH - 24f;
-        game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(Color.YELLOW);
-        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
-
-        game.assets.font.getData().setScale(0.9f);
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        game.assets.font.draw(game.batch, "[I] Close", overlayX + overlayW - 90f, titleY);
-
-        float itemY = titleY - 36f;
-        float lineGap = 26f;
-
-        java.util.Map<String, Integer> inventory = game.ctx.activeCharacterStats.inventory;
-        if (inventory == null || inventory.isEmpty()) {
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Inventory is empty", titleX, itemY);
-        } else {
-            game.assets.font.setColor(Color.WHITE);
-            for (java.util.Map.Entry<String, Integer> entry : inventory.entrySet()) {
-                String line = "- " + entry.getKey() + " x" + entry.getValue();
-                game.assets.font.draw(game.batch, line, titleX, itemY);
-                itemY -= lineGap;
-                if (itemY < overlayY + 24f) break;
-            }
-        }
-
-        game.assets.font.getData().setScale(1.0f);
-        game.assets.font.setColor(Color.WHITE);
-        game.batch.end();
-    }
-
     @Override public void resize(int w, int h) {
         game.gameViewport.update(w, h, true);
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override public void dispose() { }
+    @Override
+    public void dispose() {
+        // Do not dispose of global assets here
+    }
 }

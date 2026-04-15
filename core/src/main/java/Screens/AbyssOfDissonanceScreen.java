@@ -62,4 +62,14 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         finalBossRoom.addEnemy(maestroSyozan);
         game.ctx.mapEnemies.add(maestroSyozan);
     }
+
+    @Override
+    public void show() {
+        super.show();
+
+        // 2. Auto-Save the game!
+        if (game.ctx != null) {
+            game.ctx.saveGame("AbyssOfDissonance", game.ctx.player.getX(), game.ctx.player.getY());
+        }
+    }
 }

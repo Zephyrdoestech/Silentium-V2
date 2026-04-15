@@ -2,7 +2,8 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.Zephyrdoestech.Assets;
 
 /**
  * Resolved Dissonance
@@ -29,12 +30,12 @@ public class ResolvedDissonance implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.resolvedDissonanceInvTex;
+    public Texture getInventoryIcon(Assets assets) {
+        return assets.resolvedDissonanceSlotItem;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+    public Texture getBattleIcon(Assets assets) {
         return assets.resolvedDissonanceBattleTex;
     }
 }

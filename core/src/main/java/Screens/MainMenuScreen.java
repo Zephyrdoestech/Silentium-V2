@@ -21,7 +21,7 @@ public class MainMenuScreen extends BaseScreen {
     private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     private static final String[] OPTIONS = {
-        "START GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
+        "START GAME", "CONTINUE", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
     };
 
     private int   selection  = 0;
@@ -67,6 +67,7 @@ public class MainMenuScreen extends BaseScreen {
 
         Texture[] buttons = {
             game.assets.startBtnTex,
+            game.assets.continueBtnTex,
             game.assets.tutorialBtnTex,
             game.assets.storyBtnTex,
             game.assets.creditsBtnTex,
@@ -182,24 +183,51 @@ public class MainMenuScreen extends BaseScreen {
 
     private void handleSelection() {
         switch (selection) {
-            case 0: // START GAME
-                game.assets.stopAllMusic(); // This kills EVERYTHING currently playing
+            case 0: // START GAME (New Game)
+                game.assets.stopAllMusic();
                 game.setScreen(new LoreScreen(game));
                 break;
 
-            case 1: // HOW TO PLAY
+            case 1: // CONTINUE
+                String savedMapId = game.ctx.loadGame();
+                if (savedMapId != null) {
+                    game.assets.stopAllMusic();
+
+                    // Load the correct map based on the save file!
+                    switch (savedMapId) {
+                        case "TownOfEchoes":
+                            game.setScreen(new TownOfEchoesScreen(game));
+                            break;
+                        case "SilentCaverns":
+                            game.setScreen(new SilentCavernsScreen(game));
+                            break;
+                        case "AbyssOfDissonance":
+                            game.setScreen(new AbyssOfDissonanceScreen(game));
+                            break;
+                        default:
+                            game.setScreen(new TownOfEchoesScreen(game));
+                            break;
+                    }
+                } else {
+                    // No save file exists!
+                    // You could add a buzz sound effect here later.
+                    System.out.println("No save file found! Please hit Start Game.");
+                }
+                break;
+
+            case 2: // HOW TO PLAY
                 game.setScreen(new HowToPlayScreen(game));
                 break;
 
-            case 2: // STORY (If separate from Lore)
+            case 3: // STORY
                 game.setScreen(new LoreScreen(game));
                 break;
 
-            case 3: // CREDITS
+            case 4: // CREDITS
                 game.setScreen(new CreditsScreen(game));
                 break;
 
-            case 4: // EXIT
+            case 5: // EXIT
                 Gdx.app.exit();
                 break;
         }

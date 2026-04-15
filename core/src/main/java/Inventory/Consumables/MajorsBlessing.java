@@ -2,7 +2,8 @@ package Inventory.Consumables;
 
 import Entities.Character;
 import Inventory.Item;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.Zephyrdoestech.Assets;
 
 /**
  * Major's Blessing
@@ -29,12 +30,12 @@ public class MajorsBlessing implements Item {
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets) {
-        return assets.majorsBlessingInvTex;
+    public Texture getInventoryIcon(Assets assets) {
+        return assets.majorsBlessingSlotItem;
     }
 
     @Override
-    public com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets) {
+    public Texture getBattleIcon(Assets assets) {
         return assets.majorsBlessingBattleTex;
     }
 }

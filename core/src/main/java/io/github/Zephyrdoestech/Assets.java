@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,8 +22,6 @@ public class Assets implements Disposable {
 
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
-    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraWalkRight;
-    public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraWalkLeft;
 
     // ── Fonts ─────────────────────────────────────────────────────────────────
 
@@ -32,20 +29,6 @@ public class Assets implements Disposable {
     public final BitmapFont titleFont;  // headings   (scale 2.2)
     public final BitmapFont bigFont;    // victory/defeat (scale 3.0)
 
-    // ── Item Textures ─────────────────────────────────────────────────────────
-
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion crimsonChorusInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion crimsonChorusBattleTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion majorsBlessingInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion majorsBlessingBattleTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion minorsGraceInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion minorsGraceBattleTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion resolvedDissonanceInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion resolvedDissonanceBattleTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion silentBarrierInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion silentBarrierBattleTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion timeOrbInvTex;
-    public final com.badlogic.gdx.graphics.g2d.TextureRegion timeOrbBattleTex;
 
     public final Texture titleScreenTex;
 
@@ -88,9 +71,7 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> aureliusWalkRight, aureliusWalkLeft;
 
     public final Animation<TextureRegion> sonaraIdleRight, sonaraIdleLeft;
-    // sonaraWalk animations can be uncommented when assets are ready
-//    public final Animation<TextureRegion> sonaraWalkRight;
-//    public final Animation<TextureRegion> sonaraWalkLeft;
+    public final Animation<TextureRegion> sonaraWalkRight, sonaraWalkLeft;
 
     public final Animation<TextureRegion> lyronIdleRight, lyronIdleLeft;
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
@@ -133,6 +114,17 @@ public class Assets implements Disposable {
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
 
+    public final Texture continueBtnTex;
+
+    // ── Item Textures ─────────────────────────────────────────────────────────
+
+    public final Texture crimsonChorusBattleTex;
+    public final Texture majorsBlessingBattleTex;
+    public final Texture minorsGraceBattleTex;
+    public final Texture resolvedDissonanceBattleTex;
+    public final Texture silentBarrierBattleTex;
+    public final Texture timeOrbBattleTex;
+
     public final Texture inventoryBackground;
     public final Texture crimsonChorusSlotItem;
     public final Texture majorsBlessingSlotItem;
@@ -157,8 +149,9 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
-    public final Animation<TextureRegion> darrylionCombatIdle;
-    public final Animation<TextureRegion> darrylionCombatAttack;
+    public final Animation<TextureRegion> darryllionCombatIdle;
+    public final Animation<TextureRegion> darryllionCombatAttack1;
+    public final Animation<TextureRegion> darryllionCombatAttack2;
     public final Animation<TextureRegion> gobninilCombatIdle;
     public final Animation<TextureRegion> gobninilCombatAttack;
     public final Animation<TextureRegion> chimericksCombatIdle;
@@ -225,6 +218,7 @@ public class Assets implements Disposable {
         aureliusTex = new Texture("aurelius.png");
 
         this.startBtnTex = new Texture("UI/start_btn.png");
+        continueBtnTex = new Texture("UI/continue_btn.png");
         this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
@@ -240,26 +234,10 @@ public class Assets implements Disposable {
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
         lyronSelectAnim = loadAnim("Lyron/Select", "lyronSelect", 10, 0.1f);
 
-        darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
         noteTextures = buildNoteTextures();
-
-        // ── Item Textures ─────────────────────────────────────────────────────
-
-        crimsonChorusInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/CrimsonChorus.png"));
-        crimsonChorusBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/crimson_chorus_battle.png"));
-        majorsBlessingInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/MajorsBlessing.png"));
-        majorsBlessingBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/majors_blessing_battle.png"));
-        minorsGraceInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/MinorsGrace.png"));
-        minorsGraceBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/minors_grace_battle.png"));
-        resolvedDissonanceInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/ResolvedDissonance.png"));
-        resolvedDissonanceBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/resolved_dissonance_battle.png"));
-        silentBarrierInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/SilentBarrier.png"));
-        silentBarrierBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/silent_barrier_battle.png"));
-        timeOrbInvTex = new TextureRegion(safeLoadTexture("UI/Items/Inventory/TimeOrb.png"));
-        timeOrbBattleTex = new TextureRegion(safeLoadTexture("UI/Items/Battle/time_orb_battle.png"));
 
         aureliusIdleRight = loadAnim("Sprites/Characters/Aurelius/Idle",   "Idle",      4, 0.2f);
         aureliusIdleLeft  = flipped(aureliusIdleRight);
@@ -314,13 +292,22 @@ public class Assets implements Disposable {
         aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
         bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
 
+        // ── Item Textures ─────────────────────────────────────────────────────
+
+        crimsonChorusBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
+        majorsBlessingBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
+        minorsGraceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MinorsGrace.png");
+        resolvedDissonanceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/ResolvedDissonance.png");
+        silentBarrierBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/SilentBarrier.png");
+        timeOrbBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/TimeOrb.png");
+
         inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
-        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/CrimsonChorus.png");
-        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MajorsBlessing.png");
-        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/MinorsGrace.png");
-        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SilentBarrier.png");
-        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/ResolvedDissonance.png");
-        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/TimeOrb.png");
+        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/CrimsonChorus.png");
+        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MajorsBlessing.png");
+        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png");
+        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
+        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
+        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -336,19 +323,21 @@ public class Assets implements Disposable {
         lyronCombatIdle      = loadAnim("Sprites/Combat/Character/Lyron/Idle",      "Idle",   4, 0.2f);
         lyronCombatAttack    = loadAnim("Sprites/Combat/Character/Lyron/Attack",    "Attack", 6, 0.1f);
 
-        fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "Idle",   4, 0.2f));
-        fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "Attack", 6, 0.2f));
-        darrylionCombatIdle      = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "Idle",   4, 0.2f));
-        darrylionCombatAttack    = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack",    "Attack", 6, 0.2f));
-        gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "Idle",   4, 0.2f));
+        fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
+        fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 11, 0.12f));
+        darryllionCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "",   8, 0.2f));
+        darryllionCombatAttack1 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
+        darryllionCombatAttack2 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
+        gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
-        chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "Idle",   4, 0.2f));
+        chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
         chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "Attack", 6, 0.2f));
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "Idle",   4, 0.2f));
         labagoliathCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "Attack", 6, 0.2f));
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
         syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
 
+//        darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
         // ── Audio ─────────────────────────────────────────────────────────────
 
         // Load Background Music

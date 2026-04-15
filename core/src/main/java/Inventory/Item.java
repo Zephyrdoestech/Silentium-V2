@@ -1,6 +1,8 @@
 package Inventory;
 
 import Entities.Character;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.Zephyrdoestech.Assets;
 
 /**
  * Item — contract every inventory item must fulfill.
@@ -25,6 +27,6 @@ public interface Item {
      * @param player the active player {@link Character}
      */
     void applyEffect(Character player);
-    com.badlogic.gdx.graphics.g2d.TextureRegion getInventoryIcon(io.github.Zephyrdoestech.Assets assets);
-    com.badlogic.gdx.graphics.g2d.TextureRegion getBattleIcon(io.github.Zephyrdoestech.Assets assets);
+    Texture getInventoryIcon(Assets assets);
+    Texture getBattleIcon(Assets assets);
 }

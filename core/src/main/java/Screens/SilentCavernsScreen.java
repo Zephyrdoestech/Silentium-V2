@@ -4,7 +4,6 @@ import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,5 +123,15 @@ public class SilentCavernsScreen extends ExploringScreen {
 //        game.batch.setColor(Color.SLATE);
         super.render(delta);
 //        game.batch.setColor(Color.WHITE);
+    }
+
+    @Override
+    public void show() {
+        super.show();
+
+        // 2. Auto-Save the game!
+        if (game.ctx != null) {
+            game.ctx.saveGame("SilentCaverns", game.ctx.player.getX(), game.ctx.player.getY());
+        }
     }
 }
