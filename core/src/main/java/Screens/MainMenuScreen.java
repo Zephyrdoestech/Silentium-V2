@@ -193,24 +193,29 @@ public class MainMenuScreen extends BaseScreen {
                 if (savedMapId != null) {
                     game.assets.stopAllMusic();
 
-                    // Load the correct map based on the save file!
+                    // We stack the cases so it works perfectly whether the save file has spaces or not!
                     switch (savedMapId) {
+                        case "Town of Echoes":
                         case "TownOfEchoes":
                             game.setScreen(new TownOfEchoesScreen(game));
                             break;
+
+                        case "Silent Caverns":
                         case "SilentCaverns":
                             game.setScreen(new SilentCavernsScreen(game));
                             break;
+
+                        case "Abyss of Dissonance":
                         case "AbyssOfDissonance":
                             game.setScreen(new AbyssOfDissonanceScreen(game));
                             break;
+
                         default:
+                            System.out.println("Unknown map string saved: " + savedMapId);
                             game.setScreen(new TownOfEchoesScreen(game));
                             break;
                     }
                 } else {
-                    // No save file exists!
-                    // You could add a buzz sound effect here later.
                     System.out.println("No save file found! Please hit Start Game.");
                 }
                 break;

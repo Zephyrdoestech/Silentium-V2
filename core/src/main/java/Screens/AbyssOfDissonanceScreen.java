@@ -1,6 +1,7 @@
 package Screens;
 
 import Entities.Enemy;
+import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
 import com.badlogic.gdx.math.Rectangle;
@@ -61,6 +62,17 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         Enemy maestroSyozan = Enemy.maestroSyozan(fbX, fbY);
         finalBossRoom.addEnemy(maestroSyozan);
         game.ctx.mapEnemies.add(maestroSyozan);
+    }
+
+    @Override
+    protected void restoreInstanceFields() {
+        this.mapName = "Abyss of Dissonance";
+        game.ctx.mapName = GameContext.MapName.ABYSS_OF_DISSONANCE;
+
+        game.ctx.MAP_SIZE = 1800f;
+        this.mapTexture = game.assets.abyssOfDissonanceTex;
+        this.mapDecor = null;
+        this.exitTexture = null;
     }
 
     @Override

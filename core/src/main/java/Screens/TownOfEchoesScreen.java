@@ -50,17 +50,16 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     protected void initWalkable() {
-        walkableZones.clear();
-        for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
+        super.initWalkable();
 
-        walkableZones.add(new Rectangle(65f,  138f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  717f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1292f,1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1867f,1900f, 30f));
-        walkableZones.add(new Rectangle(155f,  65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(730f,  65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(1305f, 65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(1880f, 65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(65f,  138f, 1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  717f, 1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  1292f,1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  1867f,1900f, 30f));
+        corridorZones.add(new Rectangle(155f,  65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(730f,  65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(1305f, 65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(1880f, 65f, 15f, 1900f));
     }
 
     @Override
@@ -108,6 +107,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     protected void restoreInstanceFields() {
+        this.mapName = "TownOfEchoes";
+        game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES;
+
         game.ctx.MAP_SIZE = 2048f; // Town's actual map size — set yours correctly
         this.mapTexture  = game.assets.townTex;
         this.mapDecor    = game.assets.townDecorationsTex;
@@ -130,7 +132,9 @@ public class TownOfEchoesScreen extends ExploringScreen {
             game.assets.townOfEchoesBGM.play();
         }
 
-        game.ctx.saveGame("TownOfEchoes", game.ctx.player.getX(), game.ctx.player.getY());
+        if(game.ctx != null){
+            game.ctx.saveGame("TownOfEchoes", game.ctx.player.getX(), game.ctx.player.getY());
+        }
     }
 
     @Override
@@ -140,8 +144,6 @@ public class TownOfEchoesScreen extends ExploringScreen {
         // Stop the town music when leaving (e.g., entering Combat or Main Menu)
         if (game.assets.townOfEchoesBGM != null) {
             game.assets.townOfEchoesBGM.stop();
-            // Note: You can change .stop() to .pause() if you want the song
-            // to resume from the same spot after a battle!
         }
     }
 }

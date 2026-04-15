@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,14 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
 
     // ── Combat Background Textures ────────────────────────────────────────────
+
+    public final Texture[] tutorials;
+
+    public final Texture noteTutorial;
+    public final Texture metronomeTutorial;
+    public final Texture chordTutorial;
+
+    // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
     public final Texture cavernsCombatBackground;
@@ -259,6 +269,13 @@ public class Assets implements Disposable {
         lyronWalkLeft     = flipped(lyronWalkRight);
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
+
+        noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
+        metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
+        chordTutorial = new Texture("Sprites/Combat/Tutorial/ChordTutorial.png");
+        tutorials = new Texture[] {noteTutorial, metronomeTutorial, chordTutorial};
+
+        // ── Tutorial Screens ────────────────────────────────────────────────
 
         townCombatBackground    = new Texture("Background/Combat/Town.png");
         cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
