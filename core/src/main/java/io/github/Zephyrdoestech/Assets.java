@@ -84,6 +84,10 @@ public class Assets implements Disposable {
 
     // ── Combat HUD Textures ───────────────────────────────────────────────────
 
+    public final Texture mapHeaderTownOfEchoes;
+    public final Texture mapHeaderSilentCaverns;
+    public final Texture mapHeaderAbyssOfDissonance;
+
     public final Texture healthBar;
     public final Texture shieldBar;
     public final Texture staticHudBackground;
@@ -253,11 +257,15 @@ public class Assets implements Disposable {
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
 
-        townCombatBackground    = new Texture("Background/Combat/Town.jpg");
-        cavernsCombatBackground = new Texture("Background/Combat/Cavern.jpg");
-        abyssCombatBackground   = new Texture("Background/Combat/Abyss.jpg");
+        townCombatBackground    = new Texture("Background/Combat/Town.png");
+        cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
+        abyssCombatBackground   = new Texture("Background/Combat/Abyss.png");
 
         // ── Combat HUD ────────────────────────────────────────────────────────
+
+        mapHeaderTownOfEchoes          = new Texture("Sprites/Combat/Interface/MapHeader/TownOfEchoes.png");
+        mapHeaderSilentCaverns          = new Texture("Sprites/Combat/Interface/MapHeader/SilentCaverns.png");
+        mapHeaderAbyssOfDissonance          = new Texture("Sprites/Combat/Interface/MapHeader/AbyssOfDissonance.png");
 
         healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
         shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
