@@ -1,6 +1,7 @@
 package Screens;
 
 import Entities.Enemy;
+import com.badlogic.gdx.graphics.Color;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
