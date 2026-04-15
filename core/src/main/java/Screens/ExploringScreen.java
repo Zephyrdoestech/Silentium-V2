@@ -36,6 +36,8 @@ public class ExploringScreen extends BaseScreen {
 
     protected static final Random RNG = new Random();
     protected final List<Rectangle> walkableZones = new ArrayList<>();
+    protected final List<Rectangle> corridorZones = new ArrayList<>();
+    protected Room lockedRoom = null;
 
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
@@ -100,6 +102,40 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player = new MapCharacter(x, y);
     }
 
+    protected List<Rectangle> getActiveWalkableZones() {
+        if (isInEnemyRoom() && lockedRoom != null) {
+            List<Rectangle> lockdown = new ArrayList<>();
+            lockdown.add(lockedRoom.getBounds());
+            return lockdown;
+        }
+        List<Rectangle> all = new ArrayList<>(walkableZones);
+        all.addAll(corridorZones);
+        return all;
+    }
+
+    protected boolean isInEnemyRoom() {
+        if (game.ctx.player == null) return false;
+
+        float cx = game.ctx.player.getX() + GameContext.CHAR_SIZE / 2f;
+        float cy = game.ctx.player.getY() + GameContext.CHAR_SIZE / 2f;
+
+        if (lockedRoom != null) {
+            if (lockedRoom.getEnemies().isEmpty()) {
+                lockedRoom = null;
+                return false;
+            }
+            return true;
+        }
+
+        for (Room r : game.ctx.rooms) {
+            if (r.getBounds().contains(cx, cy) && !r.getEnemies().isEmpty()) {
+                lockedRoom = r;
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void show() {
@@ -159,6 +195,10 @@ public class ExploringScreen extends BaseScreen {
         }
 
         game.ctx.stateTime = 0f;
+
+        this.lockedRoom = null;
+        isInEnemyRoom();
+
         updateCamera(); // Initialize camera position after player position is set
     }
 
@@ -215,6 +255,18 @@ public class ExploringScreen extends BaseScreen {
 
         // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
+
+
+        // Debug room outlines + enemy rects (ShapeRenderer)
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        game.shapeRenderer.setColor(Color.GREEN);
+        for (Room r : game.ctx.rooms)
+            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+        game.shapeRenderer.setColor(Color.YELLOW);
+        for (Rectangle h : getActiveWalkableZones())
+            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+        game.shapeRenderer.end();
+
 
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
@@ -439,7 +491,7 @@ public class ExploringScreen extends BaseScreen {
 
     private boolean isInWalkableZone(float x, float y) {
         Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        for (Rectangle zone : walkableZones)
+        for (Rectangle zone : getActiveWalkableZones())
             if (zone.overlaps(playerRect))
                 return true;
         return false;

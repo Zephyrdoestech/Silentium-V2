@@ -58,21 +58,18 @@ public class SilentCavernsScreen extends ExploringScreen {
 
     @Override
     protected void initWalkable() {
-        walkableZones.clear();
-        for (Room r : game.ctx.rooms) {
-            walkableZones.add(r.getBounds());
-        }
+        super.initWalkable();
 
-        walkableZones.add(new Rectangle(70f,  1886f, 1900f, 10f));
-        walkableZones.add(new Rectangle(70f,  1437f, 1900f, 10f));
-        walkableZones.add(new Rectangle(70f,  988f, 1900f, 10f));
-        walkableZones.add(new Rectangle(70f,  541f, 1900f, 10f));
+        corridorZones.add(new Rectangle(70f,  1886f, 1900f, 10f));
+        corridorZones.add(new Rectangle(70f,  1437f, 1900f, 10f));
+        corridorZones.add(new Rectangle(70f,  988f, 1900f, 10f));
+        corridorZones.add(new Rectangle(70f,  541f, 1900f, 10f));
 
-        walkableZones.add(new Rectangle(126f,  530f, 0.1f, 1400f));
-        walkableZones.add(new Rectangle(575f,  530f, 0.1f, 1400f));
-        walkableZones.add(new Rectangle(1024f, 530f, 0.1f, 1400f));
-        walkableZones.add(new Rectangle(1473f, 530f, 0.1f, 1400f));
-        walkableZones.add(new Rectangle(1922f, 530f, 0.1f, 1400f));
+        corridorZones.add(new Rectangle(126f,  530f, 0.1f, 1400f));
+        corridorZones.add(new Rectangle(575f,  530f, 0.1f, 1400f));
+        corridorZones.add(new Rectangle(1024f, 530f, 0.1f, 1400f));
+        corridorZones.add(new Rectangle(1473f, 530f, 0.1f, 1400f));
+        corridorZones.add(new Rectangle(1922f, 530f, 0.1f, 1400f));
     }
 
     @Override
