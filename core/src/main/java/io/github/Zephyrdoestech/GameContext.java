@@ -75,13 +75,13 @@ public class GameContext {
     // Map dimensions — match your Dungeon.png pixel size
     public float MAP_SIZE = 2048f;
     public static final float CHAR_SIZE = 32f;
-    public static final float SPEED = 150f;
+    public static final float SPEED     = 200f;
 
     public com.badlogic.gdx.Screen lastMapScreen;
 
     // ── Combat state ──────────────────────────────────────────────────────────
 
-    public Enemy currentEnemy;
+    public Enemy       currentEnemy;
     public CombatState combatState;
     public MapName mapName = MapName.TOWN_OF_ECHOES; // Set default map name
 
@@ -129,7 +129,6 @@ public class GameContext {
         lastThemeIndex = -1;
     }
 
-    // --- SAVE LOGIC ---
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
         com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrSave");
