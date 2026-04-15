@@ -352,32 +352,6 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.noteHandler.noteCount    = 0;
 
 
-
-                // TEST TRAVERSAL
-                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-                if (game.ctx.rooms != null) {
-                    for (Room r : game.ctx.rooms) {
-                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-                            break;
-                        }
-                    }
-                }
-                game.ctx.enemiesDefeatedInCurrentMap++;
-                // Level up the player after victory
-                game.ctx.activeCharacterStats.defeatedMonster();
-                int monstersDefeated = game.ctx.activeCharacterStats.getMonstersDefeated();
-
-                // Level up logic: level 2 at 1 kill, 3 at 2, 4 at 4, 5 at 7 (adjusted progression)
-                int newLevel = 1;
-                if (monstersDefeated >= 7) newLevel = 5;
-                else if (monstersDefeated >= 4) newLevel = 4;
-                else if (monstersDefeated >= 2) newLevel = 3;
-                else if (monstersDefeated >= 1) newLevel = 2;
-                if (newLevel > game.ctx.activeCharacterStats.getLevel()) {
-                    game.ctx.activeCharacterStats.levelUp(newLevel);
-                }
-
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
