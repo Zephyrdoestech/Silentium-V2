@@ -101,6 +101,8 @@ public class ExploringScreen extends BaseScreen {
     @Override
     public void show() {
         game.ctx.currentMapScreen = this;
+
+        // 1. Initialize or restore the map
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
             initWalkable();
@@ -109,10 +111,32 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-        if (game.ctx.player == null || game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0) {
+        // --- 2. PLAYER POSITIONING LOGIC ---
+
+        // SCENARIO A: We just clicked "Continue" and have specific saved coordinates!
+        if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
+
+            // If the player object doesn't exist yet, create it using your init method
+            if (game.ctx.player == null) {
+                initPlayerPosition();
+            }
+
+            // Override their location with the exact saved coordinates
+            game.ctx.player.setX(game.ctx.savedPlayerX);
+            game.ctx.player.setY(game.ctx.savedPlayerY);
+
+            // Reset the saved coordinates so we don't accidentally teleport here later!
+            game.ctx.savedPlayerX = -1f;
+            game.ctx.savedPlayerY = -1f;
+
+        }
+        // SCENARIO B: Brand new game / First time walking into this map
+        else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
-        } else {
+        }
+        // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
+        else {
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -128,6 +152,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
         }
+
         game.ctx.stateTime = 0f;
         updateCamera(); // Initialize camera position after player position is set
     }
@@ -186,19 +211,6 @@ public class ExploringScreen extends BaseScreen {
         // Debug room outlines (ShapeRenderer)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
 
-
-        // Debug room outlines + enemy rects (ShapeRenderer)
-
-//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        game.shapeRenderer.setColor(Color.GREEN);
-//        for (Room r : game.ctx.rooms)
-//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-//        game.shapeRenderer.setColor(Color.YELLOW);
-//        for (Rectangle h : walkableZones)
-//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-//        game.shapeRenderer.end();
-
-
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
         for (Enemy e : game.ctx.mapEnemies) {
@@ -233,9 +245,13 @@ public class ExploringScreen extends BaseScreen {
             drawInventoryOverlay();
         }
 
-        // ESC → main menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        // ESC → Save Game and return to main menu
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            // Save exactly where they are standing right now!
+            game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
             game.setScreen(new MainMenuScreen(game));
+        }
     }
 
     // ── Movement ──────────────────────────────────────────────────────────────

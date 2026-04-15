@@ -118,6 +118,8 @@ public class Assets implements Disposable {
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
 
+    public final Texture continueBtnTex;
+
     // ── Item Textures ─────────────────────────────────────────────────────────
 
     public final Texture crimsonChorusBattleTex;
@@ -220,6 +222,7 @@ public class Assets implements Disposable {
         aureliusTex = new Texture("aurelius.png");
 
         this.startBtnTex = new Texture("UI/start_btn.png");
+        continueBtnTex = new Texture("UI/continue_btn.png");
         this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");

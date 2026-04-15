@@ -387,6 +387,7 @@ UI/Items/Inventory/MinorsGrace.png
 UI/Items/Inventory/ResolvedDissonance.png
 UI/Items/Inventory/SilentBarrier.png
 UI/Items/Inventory/TimeOrb.png
+UI/continue_btn.png
 UI/credits_btn.png
 UI/exit_btn.png
 UI/start_btn.png
