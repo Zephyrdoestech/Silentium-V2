@@ -142,6 +142,11 @@ public class ExploringScreen extends BaseScreen {
         }
         // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
         else {
+            if(game.ctx.playerDefeated){
+                // CHECKPOINT SYSTEM HERE
+                return;
+            }
+
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
