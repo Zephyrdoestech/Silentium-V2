@@ -121,8 +121,8 @@ public class SilentCavernsScreen extends ExploringScreen {
     @Override
     public void render(float delta) {
         // darker tint for cave
-        game.batch.setColor(Color.SLATE);
+//        game.batch.setColor(Color.SLATE);
         super.render(delta);
-        game.batch.setColor(Color.WHITE);
+//        game.batch.setColor(Color.WHITE);
     }
 }

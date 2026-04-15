@@ -170,9 +170,6 @@ public class Assets implements Disposable {
 
     public Animation<TextureRegion> lyronSelectAnim;
 
-//    public final Music sonaraTheme;
-//    public final Music aureliusTheme;
-//    public final Music lyronTheme;
     public final Music titleBgm;
 
     // Internal list so dispose() can clean up animation textures
@@ -181,7 +178,6 @@ public class Assets implements Disposable {
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public Assets() {
-
         // Fonts
         font      = new BitmapFont(); font.getData().setScale(1.5f);
         titleFont = new BitmapFont(); titleFont.getData().setScale(2.2f);
@@ -480,6 +476,7 @@ public class Assets implements Disposable {
 
     public void stopAllMusic() {
         if (titleBgm != null) titleBgm.stop();
+        if (storyBGM != null) storyBGM.stop();
         if (townOfEchoesBGM != null) townOfEchoesBGM.stop();
         if (battleAbyssBGM != null) battleAbyssBGM.stop();
         if (battleBossBGM != null) battleBossBGM.stop();

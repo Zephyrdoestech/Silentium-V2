@@ -118,4 +118,28 @@ public class TownOfEchoesScreen extends ExploringScreen {
     protected ExploringScreen getNextScreen() {
         return new SilentCavernsScreen(game);
     }
+
+    @Override
+    public void show() {
+        super.show(); // This is critical! It runs the map-loading logic in ExploringScreen.
+
+        // Start the town music when the screen is shown
+        if (game.assets.townOfEchoesBGM != null) {
+            game.assets.townOfEchoesBGM.setLooping(true);
+            game.assets.townOfEchoesBGM.setVolume(0.5f); // Set this to whatever volume feels right!
+            game.assets.townOfEchoesBGM.play();
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+
+        // Stop the town music when leaving (e.g., entering Combat or Main Menu)
+        if (game.assets.townOfEchoesBGM != null) {
+            game.assets.townOfEchoesBGM.stop();
+            // Note: You can change .stop() to .pause() if you want the song
+            // to resume from the same spot after a battle!
+        }
+    }
 }

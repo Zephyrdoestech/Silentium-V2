@@ -40,6 +40,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
+    //    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
@@ -344,7 +345,6 @@ public class ExploringScreen extends BaseScreen {
             return;
         }
 
-
         // Enemy collision
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {
@@ -566,6 +566,56 @@ public class ExploringScreen extends BaseScreen {
     private float getMapNameWidth() {
         game.glyphLayout.setText(game.assets.font, mapName);
         return game.glyphLayout.width;
+    }
+
+    // ── Inventory Overlay ─────────────────────────────────────────────────────
+    private void drawInventoryOverlay() {
+        float overlayX = Main.WORLD_WIDTH * 0.2f;
+        float overlayY = Main.WORLD_HEIGHT * 0.18f;
+        float overlayW = Main.WORLD_WIDTH * 0.6f;
+        float overlayH = Main.WORLD_HEIGHT * 0.64f;
+
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.75f);
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        game.shapeRenderer.setColor(0.1f, 0.12f, 0.18f, 0.95f);
+        game.shapeRenderer.rect(overlayX, overlayY, overlayW, overlayH);
+        game.shapeRenderer.end();
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+
+        float titleX = overlayX + 24f;
+        float titleY = overlayY + overlayH - 24f;
+        game.assets.font.getData().setScale(1.2f);
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
+
+        game.assets.font.getData().setScale(0.9f);
+        game.assets.font.setColor(Color.LIGHT_GRAY);
+        game.assets.font.draw(game.batch, "[I] Close", overlayX + overlayW - 90f, titleY);
+
+        float itemY = titleY - 36f;
+        float lineGap = 26f;
+
+        java.util.Map<String, Integer> inventory = game.ctx.activeCharacterStats.inventory;
+        if (inventory == null || inventory.isEmpty()) {
+            game.assets.font.setColor(Color.WHITE);
+            game.assets.font.draw(game.batch, "Inventory is empty", titleX, itemY);
+        } else {
+            game.assets.font.setColor(Color.WHITE);
+            for (java.util.Map.Entry<String, Integer> entry : inventory.entrySet()) {
+                String line = "- " + entry.getKey() + " x" + entry.getValue();
+                game.assets.font.draw(game.batch, line, titleX, itemY);
+                itemY -= lineGap;
+                if (itemY < overlayY + 24f) break;
+            }
+        }
+
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.WHITE);
+        game.batch.end();
     }
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
