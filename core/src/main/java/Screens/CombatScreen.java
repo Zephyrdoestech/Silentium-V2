@@ -57,6 +57,7 @@ public class CombatScreen extends BaseScreen {
     private float splashTimer = 0f;
     /** Counts down the player's turn time limit. */
     private float turnTime    = 0f;
+    private boolean turnComplete = false;
     /** Maximum seconds the player has per turn (set per map). */
     private float maxTurnTime = 0f;
 
@@ -70,6 +71,8 @@ public class CombatScreen extends BaseScreen {
     private int     initialDamage      = 0;
     private int     finalDamage        = 0;
     private boolean metronomeActivated = false;
+
+    private int     enemyDamage         = 0;
 
     // ── Menu State ────────────────────────────────────────────────────────────
 
@@ -157,6 +160,7 @@ public class CombatScreen extends BaseScreen {
         confirmSelection      = 0;
         notesRolledThisTurn   = false;
         activeSkillUsedThisTurn = false;
+        turnComplete            = false;
         enemyAttacked         = false;
         chordUsedThisTurn     = null;
         initialDamage         = 0;
@@ -420,7 +424,7 @@ public class CombatScreen extends BaseScreen {
         drawBar(game.shapeRenderer,
             playerHpBarX, playerHpBarY, barWidth, barHeight,
             (float) player.getHp() / player.getMaxHp(),
-            Color.DARK_GRAY, Color.RED);
+            Color.DARK_GRAY, Color.GREEN);
 
         drawBar(game.shapeRenderer,
             playerShieldBarX, playerShieldBarY, barWidth, barHeight,
@@ -570,7 +574,7 @@ public class CombatScreen extends BaseScreen {
     private void renderTimerPanel(float delta) {
         beginUiBatch();
         game.batch.draw(game.assets.timerBackground,
-            timerPanelLeft, timerPanelBottom, timerPanelWidth, timerPanelHeight);
+            timerPanelLeft, timerPanelBottom, timerPanelWidth + px(0.1f), timerPanelHeight);
         game.batch.end();
 
         // Advance or reset the turn timer
@@ -583,7 +587,9 @@ public class CombatScreen extends BaseScreen {
             case SKILL_USED:
             case OPEN_INVENTORY:
             case USE_ITEM:
-                turnTime += delta;
+                if(turnComplete == false){
+                    turnTime += delta;
+                }
                 displayTime = (int) Math.ceil(maxTurnTime - turnTime);
                 if (turnTime >= maxTurnTime) {
                     if(game.ctx.selectedCharacter == GameContext.CharacterType.SONARA){
@@ -604,7 +610,7 @@ public class CombatScreen extends BaseScreen {
         // Countdown number
         beginUiBatch();
         game.assets.font.getData().setScale(2.0f);
-        game.assets.font.setColor(displayTime <= 3 ? Color.RED : Color.WHITE);
+        game.assets.font.setColor(displayTime <= 3 ? Color.RED : (turnComplete? Color.GREEN : Color.WHITE));
         float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
         float numY = timerPanelBottom + px(2.4f);
 
@@ -789,7 +795,7 @@ public class CombatScreen extends BaseScreen {
                 if (!enemyAttacked) { executeEnemyAttack(); enemyAttacked = true; }
                 return enemy.getName() + " used " + enemy.getLastAttackName();
             case DISPLAY_ENEMY_DAMAGE:
-                return "You received " + game.ctx.enemyDamageDealt + " damage!";
+                return "You received " + enemyDamage + " damage!";
             default:
                 return "";
         }
@@ -975,6 +981,7 @@ public class CombatScreen extends BaseScreen {
         game.batch.end();
 
         if (notesComplete) {
+            turnComplete = true;
             noteDisplayTimer += delta;
 
             String confirmMsg = "Notes locked in! Attacking...";
@@ -1371,7 +1378,7 @@ public class CombatScreen extends BaseScreen {
         int dmg = enemy.performAttack();
         player.takeDamage(dmg);
         player.onDamageReceived(enemy, dmg); // Sonara passive handled inside Character
-        game.ctx.enemyDamageDealt = dmg;
+        enemyDamage = dmg;
     }
 
     // =========================================================================
@@ -1386,6 +1393,7 @@ public class CombatScreen extends BaseScreen {
         activeSkillUsedThisTurn        = false;
         chordUsedThisTurn              = null;
         metronomeActivated             = false;
+        turnComplete                   = false;
         revealedNoteCount              = 0;
         noteRevealTimer                = 0f;
         initialDamage                  = 0;
@@ -1401,21 +1409,43 @@ public class CombatScreen extends BaseScreen {
     private void endCombat() {
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT) {
             // Defeat exit — to be implemented (return to menu / respawn)
+            game.ctx.playerDefeated = true;
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:
+                    game.setScreen(new TownOfEchoesScreen(game));
+                    break;
+                case SILENT_CAVERNS:
+                    game.setScreen(new SilentCavernsScreen(game));
+                    break;
+                case ABYSS_OF_DISSONANCE:
+                    game.setScreen(new AbyssOfDissonanceScreen(game));
+                    break;
+                default:
+                    game.setScreen(game.ctx.currentMapScreen); // Default to Town
+                    break;
+            }
             return;
         }
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
         // Remove defeated enemy from the world
-        game.ctx.mapEnemies.remove(enemy);
+        game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
         if (game.ctx.rooms != null) {
             for (Room r : game.ctx.rooms) {
-                if (r.getEnemies().remove(enemy)) {
+                if (r.getEnemies().remove(game.ctx.currentEnemy)) {
                     if (r.getEnemies().isEmpty()) r.setCleared(true);
                     break;
                 }
             }
         }
+
+        // Reset shared context before leaving
+        game.ctx.activeCharacterStats.resetDamageBuff();
+        game.ctx.currentEnemy              = null;
+        game.ctx.noteHandler.noteCount     = 0;
+        game.ctx.combatLog                 = "";
+        game.ctx.combatState               = GameContext.CombatState.NONE;
 
         // Level-up progression
         player.defeatedMonster();
@@ -1427,13 +1457,6 @@ public class CombatScreen extends BaseScreen {
         else if (kills >= 1) newLevel = 2;
 
         if (newLevel > player.getLevel()) player.levelUp(newLevel);
-
-        // Reset shared context before leaving
-        game.ctx.activeCharacterStats.resetDamageBuff();
-        game.ctx.currentEnemy              = null;
-        game.ctx.noteHandler.noteCount     = 0;
-        game.ctx.combatLog                 = "";
-        game.ctx.combatState               = GameContext.CombatState.NONE;
 
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:

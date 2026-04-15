@@ -90,9 +90,9 @@ public class GameContext {
     public final Metronome metronome = new Metronome();
 
     public float resultTimer = 0f;
-    public int playerDamageDealt = 0;
-    public int enemyDamageDealt = 0;
     public String combatLog = "";
+
+    public boolean playerDefeated = false;
 
     // ── Character-select audio ─────────────────────────────────────────────────
 
