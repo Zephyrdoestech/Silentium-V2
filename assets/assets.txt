@@ -39,6 +39,10 @@ Background/Map/Town_Decorations.png
 Background/Map/Town_Exit.png
 Background/Map/Town_Of_Echoes.png
 Background/Map/asdads.png
+Background/Map/asdasd.png
+Background/Map/asdfg.png
+Background/Map/silentcaverns.png
+Background/Map/townexit.png
 Background/Story/story_panel_1.png
 Background/Story/story_panel_2.png
 Background/Story/story_panel_3.png
