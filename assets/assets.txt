@@ -25,9 +25,12 @@ Aurelius/left3.png
 Aurelius/rIght1.png
 Aurelius/right2.png
 Aurelius/right3.png
-Background/Combat/Abyss.jpg
-Background/Combat/Cavern.jpg
-Background/Combat/Town.jpg
+Background/Combat/Abyss.png
+Background/Combat/Cavern.png
+Background/Combat/Town.png
+Background/Combat/asd.jpg
+Background/Combat/asdads.jpg
+Background/Combat/asdas.jpg
 Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Caverns_Exit.png
 Background/Map/Dungeon.png
@@ -35,6 +38,7 @@ Background/Map/Silent_Caverns.png
 Background/Map/Town_Decorations.png
 Background/Map/Town_Exit.png
 Background/Map/Town_Of_Echoes.png
+Background/Map/asdads.png
 Background/Story/story_panel_1.png
 Background/Story/story_panel_2.png
 Background/Story/story_panel_3.png
@@ -187,6 +191,9 @@ Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png
 Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png
 Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png
 Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png
+Sprites/Combat/Interface/MapHeader/AbyssOfDissonance.png
+Sprites/Combat/Interface/MapHeader/SilentCaverns.png
+Sprites/Combat/Interface/MapHeader/TownOfEchoes.png
 Sprites/Combat/Interface/ShieldBar.png
 Sprites/Combat/Interface/StaticHUD/HUDBackground.png
 Sprites/Combat/Interface/Timer/HUDBackground.png

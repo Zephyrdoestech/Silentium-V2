@@ -42,7 +42,6 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
-    //    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
@@ -178,6 +177,11 @@ public class ExploringScreen extends BaseScreen {
         }
         // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
         else {
+            if(game.ctx.playerDefeated){
+                // CHECKPOINT SYSTEM HERE
+                return;
+            }
+
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -246,9 +250,13 @@ public class ExploringScreen extends BaseScreen {
         }
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
+            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
+            // - offset if we are in Silent Caverns
+            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
+
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
+                exitY,
                 exitSize, exitSize);
         }
         game.batch.end();
@@ -685,8 +693,5 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override
-    public void dispose() {
-        // Do not dispose of global assets here
-    }
+    @Override public void dispose() { }
 }

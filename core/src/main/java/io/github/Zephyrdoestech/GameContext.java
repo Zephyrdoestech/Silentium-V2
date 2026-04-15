@@ -81,7 +81,7 @@ public class GameContext {
 
     // ── Combat state ──────────────────────────────────────────────────────────
 
-    public Enemy currentEnemy;
+    public Enemy       currentEnemy;
     public CombatState combatState;
     public MapName mapName = MapName.TOWN_OF_ECHOES; // Set default map name
 
@@ -90,9 +90,9 @@ public class GameContext {
     public final Metronome metronome = new Metronome();
 
     public float resultTimer = 0f;
-    public int playerDamageDealt = 0;
-    public int enemyDamageDealt = 0;
     public String combatLog = "";
+
+    public boolean playerDefeated = false;
 
     // ── Character-select audio ─────────────────────────────────────────────────
 
@@ -129,7 +129,6 @@ public class GameContext {
         lastThemeIndex = -1;
     }
 
-    // --- SAVE LOGIC ---
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
         com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrSave");
