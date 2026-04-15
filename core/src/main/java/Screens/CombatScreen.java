@@ -274,7 +274,7 @@ public class CombatScreen extends BaseScreen {
         renderBackground();
         renderEntities();
         renderStats();
-        renderNameHeader();
+        renderCombatHeader();
         renderNotesPanel(delta);
         renderTimerPanel(delta);
         renderChords();
@@ -322,7 +322,7 @@ public class CombatScreen extends BaseScreen {
         float enemyWidth   = 160f;
         float enemyHeight  = 160f;
 
-        playerSpriteX = screenLeft  + px(4.0f);
+        playerSpriteX = screenLeft  + px(5.0f);
         playerSpriteY = screenTop   - px(6.4f);
         enemySpriteX  = screenRight - px(4.0f) - enemyWidth;
         enemySpriteY  = screenTop   - px(6.4f);
@@ -470,13 +470,7 @@ public class CombatScreen extends BaseScreen {
     // Name Header
     // =========================================================================
 
-    public enum MapName { //idk how to implement yet -syos
-        TOWN_OF_ECHOES      { @Override public String toString() { return "Town of Echoes"; } },
-        SILENT_CAVERNS      { @Override public String toString() { return "Silent Caverns"; } },
-        ABYSS_OF_DISSONANCE { @Override public String toString() { return "Abyss of Dissonance"; } }
-    }
-
-    private void renderNameHeader() {
+    private void renderCombatHeader() {
         float bgHeight  = px(4.0f);
         float bgY       = screenTop - px(2.0f);
         float playerBgW = px(4.0f) + textWidth(player.getName());
@@ -505,6 +499,19 @@ public class CombatScreen extends BaseScreen {
 
         game.batch.end();
         game.assets.font.getData().setScale(1.0f);
+
+        Texture mapHeader = null;
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES -> mapHeader = game.assets.mapHeaderTownOfEchoes;
+            case SILENT_CAVERNS -> mapHeader = game.assets.mapHeaderSilentCaverns;
+            case ABYSS_OF_DISSONANCE -> mapHeader = game.assets.mapHeaderAbyssOfDissonance;
+        }
+        beginUiBatch();
+        game.batch.draw(mapHeader,
+            screenLeft + ((Main.WORLD_WIDTH - (mapHeader.getWidth()) * 2) / 2f),
+            screenTop - px(1.6f) - mapHeader.getHeight(),
+            mapHeader.getWidth() * 2, mapHeader.getHeight() * 2);
+        game.batch.end();
     }
 
     // =========================================================================
