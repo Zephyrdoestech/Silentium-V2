@@ -81,7 +81,7 @@ public class GameContext {
 
     // ── Combat state ──────────────────────────────────────────────────────────
 
-    public Enemy currentEnemy;
+    public Enemy       currentEnemy;
     public CombatState combatState;
     public MapName mapName = MapName.TOWN_OF_ECHOES; // Set default map name
 
@@ -129,7 +129,6 @@ public class GameContext {
         lastThemeIndex = -1;
     }
 
-    // --- SAVE LOGIC ---
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
         com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrSave");
