@@ -321,26 +321,35 @@ public class ExploringScreen extends BaseScreen {
         }
 
         if (showingExitPrompt) {
-            boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
-            if (canExit) {
-                if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
-                    ExploringScreen next = getNextScreen();
-                    if (next != null) {
-                        game.ctx.player = null;
-                        game.ctx.enemiesDefeatedInCurrentMap = 0;
-                        game.ctx.rooms.clear();
-                        game.ctx.mapEnemies.clear();
-                        game.ctx.exitRoom = null;
-                        game.setScreen(next);
+            com.badlogic.gdx.math.Vector3 touch = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            game.uiCamera.unproject(touch);
+
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
+
+                if (canExit) {
+                    if (yesButtonRect.contains(touch.x, touch.y)) {
+                        ExploringScreen next = getNextScreen();
+                        if (next != null) {
+                            game.ctx.player = null;
+                            game.ctx.enemiesDefeatedInCurrentMap = 0;
+                            game.ctx.rooms.clear();
+                            game.ctx.mapEnemies.clear();
+                            game.ctx.exitRoom = null;
+                            game.setScreen(next);
+                        }
+                        showingExitPrompt = false;
+                    } else if (noButtonRect.contains(touch.x, touch.y)) {
+                        showingExitPrompt = false;
+                        atExit = false;
+                        game.ctx.player.setY(game.ctx.player.getY() - 15f);
                     }
-                    showingExitPrompt = false;
-                } else if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-                    showingExitPrompt = false;
-                }
-            } else {
-                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                    showingExitPrompt = false;
-                    game.ctx.player.setY(game.ctx.player.getY() - 15f);
+                } else {
+                    if (okButtonRect.contains(touch.x, touch.y)) {
+                        showingExitPrompt = false;
+                        atExit = false;
+                        game.ctx.player.setY(game.ctx.player.getY() - 30f);
+                    }
                 }
             }
             return;
