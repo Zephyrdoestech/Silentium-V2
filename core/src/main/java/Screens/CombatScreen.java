@@ -49,6 +49,7 @@
         private boolean activeSkillUsedThisTurn = false;
         private boolean activeSkillUsed         = false;
         private boolean enemyAttacked           = false;
+        private boolean chordPlayed             = false;
         private String  chordUsedThisTurn       = null;
 
         // ── Timers ────────────────────────────────────────────────────────────────
@@ -228,7 +229,7 @@
             }
 
             if (combatBGM != null && !combatBGM.isPlaying()) {
-                combatBGM.setVolume(0.3f); // 0.0f to 1.0f
+                combatBGM.setVolume(0.1f); // 0.0f to 1.0f
                 combatBGM.play();
             }
 
@@ -296,6 +297,8 @@
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+            player.setHp(player.getMaxHp());
+            player.setShield(player.getMaxShield());
             animTimer += delta;
 
             switch (game.ctx.combatState) {
@@ -333,6 +336,7 @@
 
             switch (game.ctx.combatState) {
                 case BATTLE_SCREEN:
+                    combatBGM.pause();
                     if (game.assets.battleIntroAnim != null) {
                         frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false);
                     }
@@ -414,6 +418,7 @@
 
             // Proceed to combat proper
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                combatBGM.play();
                 game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
                 return;
             }
@@ -889,6 +894,7 @@
 
         /** Moves to the next state after a dialogue slide finishes. */
         private void advanceDialogueState() {
+            game.assets.stateTransition.play(1.0f);
             switch (game.ctx.combatState) {
                 case ENEMY_INTRODUCTION:        game.ctx.combatState = GameContext.CombatState.TURN_MENU; break;
                 case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatState = GameContext.CombatState.VICTORY;   break;
@@ -906,10 +912,40 @@
             String  message    = resolveBattleLogMessage();
             Color   color      = resolveBattleLogColor();
 
+
             if((game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD ||
                 game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT)
                 && message.equalsIgnoreCase("null")){
                 advanceBattleLogState();}
+            else if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD){
+                if(!chordPlayed){
+                    switch(chordUsedThisTurn){
+                        case "CMAJOR":
+                            chordCmaj.play(3.0f);
+                            break;
+                        case "DMINOR":
+                            chordDmin.play(3.0f);
+                            break;
+                        case "EMINOR":
+                            chordEmin.play(3.0f);
+                            break;
+                        case "FMAJOR":
+                            chordFmaj.play(3.0f);
+                            break;
+                        case "GMAJOR":
+                            chordGmaj.play(3.0f);
+                            break;
+                        case "AMINOR":
+                            chordAmin.play(3.0f);
+                            break;
+                        case "BDIM":
+                            chordBdim.play(3.0f);
+                            break;
+
+                    }
+                    chordPlayed = true;
+                }
+            }
 
             drawCenteredText(message, actionPanelLeft, actionPanelBottom  + px(0.8f), actionPanelWidth,
                 actionPanelHeight, color, 1.6f);
@@ -974,6 +1010,7 @@
          * Rendering only calls this; all flow logic lives here.
          */
         private void advanceBattleLogState() {
+            game.assets.stateTransition.play(1.0f);
             switch (game.ctx.combatState) {
                 case SKILL_USED:
                 case SKILL_CONFIRMED:
@@ -1036,15 +1073,20 @@
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 switch (turnMenuSelection) {
-                    case 0: game.ctx.combatState = GameContext.CombatState.ATTACK;         break;
+                    case 0:
+                        game.assets.stateTransition.play(0.2f);
+                        game.ctx.combatState = GameContext.CombatState.ATTACK;         break;
                     case 1:
+                        game.assets.stateTransition.play(0.2f);
                         if(activeSkillUsed){
                             game.ctx.combatState = GameContext.CombatState.SKILL_USED;
                         }else{
                             game.ctx.combatState = GameContext.CombatState.USE_SKILL;
                         }
                         confirmSelection = 0;                                           break;
-                    case 2: game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
+                    case 2:
+                        game.assets.stateTransition.play(0.2f);
+                        game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
                         confirmSelection = 0;                                           break;
                 }
                 return;
@@ -1567,6 +1609,7 @@
             chordUsedThisTurn              = null;
             metronomeActivated             = false;
             turnComplete                   = false;
+            chordPlayed                    = false;
             revealedNoteCount              = 0;
             noteRevealTimer                = 0f;
             initialDamage                  = 0;
@@ -1614,7 +1657,7 @@
             }
 
             // Reset shared context before leaving
-            game.ctx.activeCharacterStats.resetDamageBuff();
+            player.resetDamageBuff();
             game.ctx.currentEnemy              = null;
             game.ctx.noteHandler.noteCount     = 0;
             game.ctx.combatLog                 = "";
@@ -1630,6 +1673,8 @@
             else if (kills >= 1) newLevel = 2;
 
             if (newLevel > player.getLevel()) player.levelUp(newLevel);
+
+            game.assets.stopAllMusic();
 
             switch (game.ctx.mapName) {
                 case TOWN_OF_ECHOES:

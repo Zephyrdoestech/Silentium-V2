@@ -61,6 +61,10 @@ public class Assets implements Disposable {
     public Music battleAbyssBGM;
     public Music battleBossBGM;
 
+    public Sound victory;
+    public Sound defeat;
+    public Sound stateTransition;
+
     public Sound noteAttackBanjoA;
     public Sound noteAttackBanjoB;
     public Sound noteAttackBanjoC;
@@ -423,6 +427,11 @@ public class Assets implements Disposable {
         battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_boss.mp3"));
 
         // Battle SFX
+        // State Transition
+        stateTransition = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/state_transition.mp3"));
+        // Splash Screen
+        victory = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/victory.wav"));
+        defeat = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/defeat.wav"));
         // Notes
         // Banjo (Sonara)
         noteAttackBanjoA = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/A.wav"));

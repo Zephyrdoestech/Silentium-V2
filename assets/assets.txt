@@ -63,13 +63,14 @@ Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_03.wav
 Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_04.wav
 Audio/Combat/SFX/SFX_LYRON_Attack.wav
 Audio/Combat/SFX/SFX_SONARA_Attack.wav
-Audio/Combat/SFX/SFX_dead.wav
 Audio/Combat/SFX/SFX_encounter_enemy.wav
 Audio/Combat/SFX/SFX_levelup.wav
 Audio/Combat/SFX/SFX_skill_activated.wav
 Audio/Combat/SFX/SFX_use_item.wav
-Audio/Combat/SFX/SFX_win_fight.wav
+Audio/Combat/SFX/defeat.wav
 Audio/Combat/SFX/maybe the traversal sound_.mp3
+Audio/Combat/SFX/state_transition.mp3
+Audio/Combat/SFX/victory.wav
 Audio/background_music/BGM_BATTLE_abyss.wav
 Audio/background_music/BGM_BATTLE_boss.wav
 Audio/background_music/BGM_BATTLE_silentcaverns.wav
