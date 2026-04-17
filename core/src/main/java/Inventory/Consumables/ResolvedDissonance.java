@@ -1,7 +1,6 @@
 package Inventory.Consumables;
 
-import Entities.Character;
-import Inventory.Item;
+import Entities.CharacterHero;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.Zephyrdoestech.Assets;
 
@@ -9,33 +8,18 @@ import io.github.Zephyrdoestech.Assets;
  * Resolved Dissonance
  * The next time the player plays B Diminished, they don't lose HP.
  */
-public class ResolvedDissonance implements Item {
-
-    @Override
-    public String getName() {
-        return "Resolved Dissonance";
+public class ResolvedDissonance extends Item {
+    public ResolvedDissonance(Assets assets){
+        super("Resolved Dissonance",
+            "The next time the player plays B Diminished, they don't lose HP.",
+            assets.resolvedDissonanceBattleTex,
+            assets.resolvedDissonanceSlotItem);
     }
 
     @Override
-    public String getDescription() {
-        return "The next time you play B Diminished, you don't lose HP.";
-    }
-
-    @Override
-    public void applyEffect(Character player) {
-        // Temporary safe fallback effect.
+    public void applyEffect(CharacterHero player) {
+        // Temporary safe effect until enemy debuff state is implemented.
+        // For now, it will heal the player for 10 health.
         player.heal(10);
-        System.out.println("[ResolvedDissonance] Effect applied: " + player.getName()
-            + " recovers 10 HP.");
-    }
-
-    @Override
-    public Texture getInventoryIcon(Assets assets) {
-        return assets.resolvedDissonanceSlotItem;
-    }
-
-    @Override
-    public Texture getBattleIcon(Assets assets) {
-        return assets.resolvedDissonanceBattleTex;
     }
 }

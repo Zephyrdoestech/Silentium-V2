@@ -1,7 +1,6 @@
 package Inventory.Consumables;
 
-import Entities.Character;
-import Inventory.Item;
+import Entities.CharacterHero;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.Zephyrdoestech.Assets;
 
@@ -9,32 +8,18 @@ import io.github.Zephyrdoestech.Assets;
  * Silent Barrier
  * Grants 1 turn of full immunity to damage and debuffs.
  */
-public class SilentBarrier implements Item {
-
-    @Override
-    public String getName() {
-        return "Silent Barrier";
+public class SilentBarrier extends Item {
+    public SilentBarrier(Assets assets){
+        super("Silent Barrier",
+            "Grants 1 turn of full immunity to damage and debuffs.",
+            assets.silentBarrierBattleTex,
+            assets.silentBarrierSlotItem);
     }
 
     @Override
-    public String getDescription() {
-        return "Grants 1 turn of full immunity to damage and debuffs.";
-    }
-
-    @Override
-    public void applyEffect(Character player) {
-        player.setShield(player.getMaxShield());
-        System.out.println("[SilentBarrier] Effect applied: " + player.getName()
-            + " gains full shield.");
-    }
-
-    @Override
-    public Texture getInventoryIcon(Assets assets) {
-        return assets.silentBarrierSlotItem;
-    }
-
-    @Override
-    public Texture getBattleIcon(Assets assets) {
-        return assets.silentBarrierBattleTex;
+    public void applyEffect(CharacterHero player) {
+        // Temporary safe effect until enemy debuff state is implemented.
+        // For now, it will heal the player for 10 health.
+        player.heal(10);
     }
 }

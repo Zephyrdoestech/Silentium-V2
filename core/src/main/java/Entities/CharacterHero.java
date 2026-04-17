@@ -1,10 +1,11 @@
 package Entities;
 
+import Inventory.Inventory;
 import Mechanics.CombatSystem.Note;
 import io.github.Zephyrdoestech.GameContext;
 import java.util.Map;
 
-public class Character {
+public class CharacterHero {
 
     // ── Inner Classes ─────────────────────────────────────────────────────────
 
@@ -52,8 +53,9 @@ public class Character {
 
     private int    level;
     private int    monstersDefeated;
-    private double damageBuff; // Multiplier bonus from chords/skills (e.g. 0.20 = +20%)
+    private double damageBuff;
 
+    private Inventory playerInventory;
     // ── HP Tables (GDD values per level) ──────────────────────────────────────
 
     private static final int[] SONARA_HP   = { 150, 175, 225, 300, 400 };
@@ -62,7 +64,7 @@ public class Character {
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
-    public Character(String name, String instrument, int maxHp, int maxShield) {
+    public CharacterHero(String name, String instrument, int maxHp, int maxShield) {
         this.name          = name;
         this.instrument    = instrument;
         this.maxHp         = maxHp;
@@ -72,6 +74,7 @@ public class Character {
         this.level         = 1;
         this.monstersDefeated = 0;
         this.damageBuff    = 0.0;
+        playerInventory    = new Inventory();
         setPassiveSkill(name);
         setActiveSkill(name);
     }
@@ -92,6 +95,9 @@ public class Character {
 
     public PassiveSkill getPassiveSkill() { return passiveSkill; }
     public ActiveSkill  getActiveSkill()  { return activeSkill; }
+
+    public Inventory getPlayerInventory() { return playerInventory; }
+    public void setPlayerInventory(Inventory playerInventory) { this.playerInventory = playerInventory; }
 
     // ── Setters ───────────────────────────────────────────────────────────────
 
@@ -232,7 +238,7 @@ public class Character {
      * @param target the enemy that was hit
      * @param damage the damage that was dealt
      */
-    public void onDamageDealt(Character self, Enemy target, int damage) {
+    public void onDamageDealt(CharacterHero self, Enemy target, int damage) {
         if (name.equals("Lyron")) {
             int shieldAmount = (int)(damage * 0.25f);
             self.gainShield(shieldAmount);
@@ -259,7 +265,7 @@ public class Character {
      *
      * @param self the character whose turn just ended
      */
-    public void onTurnEnd(Character self) {
+    public void onTurnEnd(CharacterHero self) {
         if (name.equals("Aurelius")) {
             int healAmount = (int)(self.getMaxHp() * 0.05f);
             self.heal(healAmount);

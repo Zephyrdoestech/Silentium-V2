@@ -194,7 +194,8 @@ public class Assets implements Disposable {
     public final Texture minorsGraceSlotItem;
     public final Texture silentBarrierSlotItem;
     public final Texture resolvedDissonanceSlotItem;
-    public  final Texture timeOrbSlotItem;
+    public final Texture timeOrbSlotItem;
+    public final Texture emptySlotItem;
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -382,6 +383,7 @@ public class Assets implements Disposable {
         silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
         resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
         timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
+        emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -390,12 +392,12 @@ public class Assets implements Disposable {
         defeatAnim      = loadAnim("Sprites/Combat/SplashScreen/Defeat",  "",  30, 0.05f);
         timerAnim       = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
 
-        sonaraCombatIdle     = loadAnim("Sprites/Combat/Character/Sonara/Idle",     "Idle",   4, 0.2f);
-        sonaraCombatAttack   = loadAnim("Sprites/Combat/Character/Sonara/Attack",   "Attack", 6, 0.1f);
-        aureliusCombatIdle   = loadAnim("Sprites/Combat/Character/Aurelius/Idle",   "Idle",   4, 0.2f);
-        aureliusCombatAttack = loadAnim("Sprites/Combat/Character/Aurelius/Attack", "Attack", 6, 0.1f);
-        lyronCombatIdle      = loadAnim("Sprites/Combat/Character/Lyron/Idle",      "Idle",   4, 0.2f);
-        lyronCombatAttack    = loadAnim("Sprites/Combat/Character/Lyron/Attack",    "Attack", 6, 0.1f);
+        sonaraCombatIdle     = loadAnim("Sprites/Combat/CharacterHero/Sonara/Idle",     "Idle",   4, 0.2f);
+        sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "Attack", 6, 0.1f);
+        aureliusCombatIdle   = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Idle",   "Idle",   4, 0.2f);
+        aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "Attack", 6, 0.1f);
+        lyronCombatIdle      = loadAnim("Sprites/Combat/CharacterHero/Lyron/Idle",      "Idle",   4, 0.2f);
+        lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "Attack", 6, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 11, 0.12f));

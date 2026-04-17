@@ -1,5 +1,7 @@
     package Screens;
 
+    import Entities.CharacterHero;
+    import Inventory.Inventory;
     import Mechanics.MapTraversalSystem.Room;
     import com.badlogic.gdx.Gdx;
     import com.badlogic.gdx.Input;
@@ -11,10 +13,11 @@
     import com.badlogic.gdx.graphics.g2d.Animation;
     import com.badlogic.gdx.graphics.g2d.TextureRegion;
     import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-    import Entities.Character;
     import Entities.Enemy;
     import io.github.Zephyrdoestech.GameContext;
     import io.github.Zephyrdoestech.Main;
+
+    import java.util.HashMap;
 
     /**
      * Turn-based combat screen.
@@ -51,6 +54,7 @@
         private boolean enemyAttacked           = false;
         private boolean chordPlayed             = false;
         private String  chordUsedThisTurn       = null;
+        private boolean isPaused                = false;
 
         // ── Timers ────────────────────────────────────────────────────────────────
 
@@ -87,8 +91,13 @@
 
         // ── Entity References ─────────────────────────────────────────────────────
 
-        private Character player;
-        private Enemy     enemy;
+        private CharacterHero   player;
+        private Enemy           enemy;
+
+        // ── Inventory and Items ─────────────────────────────────────────────────────
+
+        private Inventory inventory;
+        private HashMap<String, Boolean> usedItems = new HashMap<>();
 
         // ── Tutorial Screen  ─────────────────────────────────────────────────────────
 
@@ -174,11 +183,11 @@
             game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
             game.gameCamera.update();
 
+            game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
             game.ctx.resultTimer  = 0f;
             game.ctx.combatLog    = "";
             game.ctx.chordSystem.resetChords();
             game.ctx.metronome.reset();
-            game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
 
             animTimer             = 0f;
             splashTimer           = 0f;
@@ -193,6 +202,14 @@
             initialDamage         = 0;
             finalDamage           = 0;
             metronomeActivated    = false;
+
+            inventory = player.getPlayerInventory();
+            usedItems.put("Crimson Chorus", false);
+            usedItems.put("Major's Blessing", false);
+            usedItems.put("Minor's Grace", false);
+            usedItems.put("Resolved Dissonance", false);
+            usedItems.put("Silent Barrier", false);
+            usedItems.put("Time Orb", false);
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
@@ -213,79 +230,8 @@
                 default:                    maxTurnTime = 15f; break;
             }
 
-            switch(game.ctx.mapName){
-                case TOWN_OF_ECHOES:
-                    combatBGM = game.assets.battleTownBGM;
-                    break;
-                case SILENT_CAVERNS:
-                    combatBGM = game.assets.battleCavernsBGM;
-                    break;
-                case ABYSS_OF_DISSONANCE:
-                    combatBGM = game.assets.battleAbyssBGM;
-                    break;
-                default:
-                    combatBGM = game.assets.battleBossBGM;
-                    break;
-            }
 
-            if (combatBGM != null && !combatBGM.isPlaying()) {
-                combatBGM.setVolume(0.1f); // 0.0f to 1.0f
-                combatBGM.play();
-            }
-
-            switch(game.ctx.selectedCharacter){
-                case SONARA:
-                    noteA = game.assets.noteAttackBanjoA;
-                    noteB = game.assets.noteAttackBanjoB;
-                    noteC = game.assets.noteAttackBanjoC;
-                    noteD = game.assets.noteAttackBanjoD;
-                    noteE = game.assets.noteAttackBanjoE;
-                    noteF = game.assets.noteAttackBanjoF;
-                    noteG = game.assets.noteAttackBanjoG;
-
-                    chordAmin = game.assets.chordAttackBanjoAmin;
-                    chordBdim = game.assets.chordAttackBanjoBdim;
-                    chordCmaj = game.assets.chordAttackBanjoCmaj;
-                    chordDmin = game.assets.chordAttackBanjoDmin;
-                    chordEmin = game.assets.chordAttackBanjoEmin;
-                    chordFmaj = game.assets.chordAttackBanjoFmaj;
-                    chordGmaj = game.assets.chordAttackBanjoGmaj;
-                    break;
-                case AURELIUS:
-                    noteA = game.assets.noteAttackFluteA;
-                    noteB = game.assets.noteAttackFluteB;
-                    noteC = game.assets.noteAttackFluteC;
-                    noteD = game.assets.noteAttackFluteD;
-                    noteE = game.assets.noteAttackFluteE;
-                    noteF = game.assets.noteAttackFluteF;
-                    noteG = game.assets.noteAttackFluteG;
-
-                    chordAmin = game.assets.chordAttackFluteAmin;
-                    chordBdim = game.assets.chordAttackFluteBdim;
-                    chordCmaj = game.assets.chordAttackFluteCmaj;
-                    chordDmin = game.assets.chordAttackFluteDmin;
-                    chordEmin = game.assets.chordAttackFluteEmin;
-                    chordFmaj = game.assets.chordAttackFluteFmaj;
-                    chordGmaj = game.assets.chordAttackFluteGmaj;
-                    break;
-                case LYRON:
-                    noteA = game.assets.noteAttackHarpA;
-                    noteB = game.assets.noteAttackHarpB;
-                    noteC = game.assets.noteAttackHarpC;
-                    noteD = game.assets.noteAttackHarpD;
-                    noteE = game.assets.noteAttackHarpE;
-                    noteF = game.assets.noteAttackHarpF;
-                    noteG = game.assets.noteAttackHarpG;
-
-                    chordAmin = game.assets.chordAttackHarpAmin;
-                    chordBdim = game.assets.chordAttackHarpBdim;
-                    chordCmaj = game.assets.chordAttackHarpCmaj;
-                    chordDmin = game.assets.chordAttackHarpDmin;
-                    chordEmin = game.assets.chordAttackHarpEmin;
-                    chordFmaj = game.assets.chordAttackHarpFmaj;
-                    chordGmaj = game.assets.chordAttackHarpGmaj;
-                    break;
-            }
+            prepareAudio();
         }
 
         // =========================================================================
@@ -294,6 +240,30 @@
 
         @Override
         public void render(float delta) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    if (combatBGM != null) combatBGM.pause();
+                } else {
+                    if (combatBGM != null && game.ctx.combatState != GameContext.CombatState.BATTLE_SCREEN) combatBGM.play();
+                }
+            }
+
+            if (isPaused) {
+                Gdx.gl.glClearColor(0, 0, 0, 1);
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+                game.uiCamera.update();
+                game.batch.setProjectionMatrix(game.uiCamera.combined);
+                game.batch.begin();
+                game.assets.font.setColor(Color.WHITE);
+                String text = "Paused... press p again to continue";
+                game.glyphLayout.setText(game.assets.font, text);
+                game.assets.font.draw(game.batch, text, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, Main.WORLD_HEIGHT / 2f);
+                game.batch.end();
+                return;
+            }
+
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -730,7 +700,7 @@
         private void renderTimerPanel(float delta) {
             beginUiBatch();
             game.batch.draw(game.assets.timerBackground,
-                timerPanelLeft, timerPanelBottom, timerPanelWidth + px(0.1f), timerPanelHeight);
+                timerPanelLeft, timerPanelBottom, timerPanelWidth, timerPanelHeight);
             game.batch.end();
 
             // Advance or reset the turn timer
@@ -1431,20 +1401,14 @@
             beginUiBatch();
             float itemXPosition = actionPanelLeft + ((actionPanelWidth - itemSlotsWidth) / 2f);
             float itemYPosition = actionPanelTop - ((actionPanelHeight - itemSlotsHeight) / 2f);
-            Texture item = game.assets.crimsonChorusSlotItem;
-            for(int i = 0; i < 10; i++){
-                switch(i){
-                    case 0: case 5: item = game.assets.crimsonChorusSlotItem; break;
-                    case 1: case 6: item = game.assets.majorsBlessingSlotItem; break;
-                    case 2: case 7: item = game.assets.minorsGraceSlotItem; break;
-                    case 3: case 8: item = game.assets.resolvedDissonanceSlotItem; break;
-                    case 4: case 9: item = game.assets.timeOrbSlotItem; break;
-                }
+            Texture item = game.assets.emptySlotItem;
+            for(int i = 0; i < inventory.getCapacity(); i++){
+                if(i < inventory.getInventorySize()){ item = inventory.getItem(i).getSlotIcon(); }
+
                 game.batch.draw(item,
                     itemXPosition + ((i % 5) * itemSlotWidth) + ((i % 5) * Xgap),
-                    itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? +1 : -2) * Ygap),
+                    itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? + 1 : -2) * Ygap),
                     itemSlotWidth, itemSlotHeight);
-
             }
             game.batch.end();
         }
@@ -1577,7 +1541,7 @@
             }
 
             enemy.takeDamage(finalDamage);
-            player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside Character
+            player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
 
             revealedNoteCount    = 0;
             noteRevealTimer      = 0f;
@@ -1592,7 +1556,7 @@
         private void executeEnemyAttack() {
             int dmg = enemy.performAttack();
             player.takeDamage(dmg);
-            player.onDamageReceived(enemy, dmg); // Sonara passive handled inside Character
+            player.onDamageReceived(enemy, dmg); // Sonara passive handled inside CharacterHero
             enemyDamage = dmg;
         }
 
@@ -1601,7 +1565,7 @@
         // =========================================================================
 
         private void finishRound() {
-            player.onTurnEnd(player); // Aurelius passive heal handled inside Character
+            player.onTurnEnd(player); // Aurelius passive heal handled inside CharacterHero
             game.ctx.noteHandler.noteCount = 0;
             game.ctx.combatLog             = "";
             notesRolledThisTurn            = false;
@@ -1688,6 +1652,87 @@
                     break;
                 default:
                     game.setScreen(game.ctx.currentMapScreen); // Default to Town
+                    break;
+            }
+        }
+
+        // =========================================================================
+        // Prepare Audio Assets
+        // =========================================================================
+
+        private void prepareAudio() {
+
+            switch(game.ctx.mapName){
+                case TOWN_OF_ECHOES:
+                    combatBGM = game.assets.battleTownBGM;
+                    break;
+                case SILENT_CAVERNS:
+                    combatBGM = game.assets.battleCavernsBGM;
+                    break;
+                case ABYSS_OF_DISSONANCE:
+                    combatBGM = game.assets.battleAbyssBGM;
+                    break;
+                default:
+                    combatBGM = game.assets.battleBossBGM;
+                    break;
+            }
+
+            if (combatBGM != null && !combatBGM.isPlaying()) {
+                combatBGM.setVolume(0.1f); // 0.0f to 1.0f
+                combatBGM.play();
+            }
+
+            switch(game.ctx.selectedCharacter){
+                case SONARA:
+                    noteA = game.assets.noteAttackBanjoA;
+                    noteB = game.assets.noteAttackBanjoB;
+                    noteC = game.assets.noteAttackBanjoC;
+                    noteD = game.assets.noteAttackBanjoD;
+                    noteE = game.assets.noteAttackBanjoE;
+                    noteF = game.assets.noteAttackBanjoF;
+                    noteG = game.assets.noteAttackBanjoG;
+
+                    chordAmin = game.assets.chordAttackBanjoAmin;
+                    chordBdim = game.assets.chordAttackBanjoBdim;
+                    chordCmaj = game.assets.chordAttackBanjoCmaj;
+                    chordDmin = game.assets.chordAttackBanjoDmin;
+                    chordEmin = game.assets.chordAttackBanjoEmin;
+                    chordFmaj = game.assets.chordAttackBanjoFmaj;
+                    chordGmaj = game.assets.chordAttackBanjoGmaj;
+                    break;
+                case AURELIUS:
+                    noteA = game.assets.noteAttackFluteA;
+                    noteB = game.assets.noteAttackFluteB;
+                    noteC = game.assets.noteAttackFluteC;
+                    noteD = game.assets.noteAttackFluteD;
+                    noteE = game.assets.noteAttackFluteE;
+                    noteF = game.assets.noteAttackFluteF;
+                    noteG = game.assets.noteAttackFluteG;
+
+                    chordAmin = game.assets.chordAttackFluteAmin;
+                    chordBdim = game.assets.chordAttackFluteBdim;
+                    chordCmaj = game.assets.chordAttackFluteCmaj;
+                    chordDmin = game.assets.chordAttackFluteDmin;
+                    chordEmin = game.assets.chordAttackFluteEmin;
+                    chordFmaj = game.assets.chordAttackFluteFmaj;
+                    chordGmaj = game.assets.chordAttackFluteGmaj;
+                    break;
+                case LYRON:
+                    noteA = game.assets.noteAttackHarpA;
+                    noteB = game.assets.noteAttackHarpB;
+                    noteC = game.assets.noteAttackHarpC;
+                    noteD = game.assets.noteAttackHarpD;
+                    noteE = game.assets.noteAttackHarpE;
+                    noteF = game.assets.noteAttackHarpF;
+                    noteG = game.assets.noteAttackHarpG;
+
+                    chordAmin = game.assets.chordAttackHarpAmin;
+                    chordBdim = game.assets.chordAttackHarpBdim;
+                    chordCmaj = game.assets.chordAttackHarpCmaj;
+                    chordDmin = game.assets.chordAttackHarpDmin;
+                    chordEmin = game.assets.chordAttackHarpEmin;
+                    chordFmaj = game.assets.chordAttackHarpFmaj;
+                    chordGmaj = game.assets.chordAttackHarpGmaj;
                     break;
             }
         }

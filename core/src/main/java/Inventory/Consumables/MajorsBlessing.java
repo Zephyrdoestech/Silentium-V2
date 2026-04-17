@@ -1,7 +1,6 @@
 package Inventory.Consumables;
 
-import Entities.Character;
-import Inventory.Item;
+import Entities.CharacterHero;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.Zephyrdoestech.Assets;
 
@@ -9,33 +8,18 @@ import io.github.Zephyrdoestech.Assets;
  * Major's Blessing
  * Start battle with +1 free use of any Major chord.
  */
-public class MajorsBlessing implements Item {
-
-    @Override
-    public String getName() {
-        return "Major's Blessing";
+public class MajorsBlessing extends Item {
+    public MajorsBlessing(Assets assets){
+        super("Major's Blessing",
+            "Start battle with +1 free use of any Major chord.",
+            assets.majorsBlessingBattleTex,
+            assets.majorsBlessingSlotItem);
     }
 
     @Override
-    public String getDescription() {
-        return "Start battle with +1 free use of any Major chord.";
-    }
-
-    @Override
-    public void applyEffect(Character player) {
-        // Temporary safe fallback effect.
-        player.heal(20);
-        System.out.println("[MajorsBlessing] Effect applied: " + player.getName()
-            + " recovers 20 HP.");
-    }
-
-    @Override
-    public Texture getInventoryIcon(Assets assets) {
-        return assets.majorsBlessingSlotItem;
-    }
-
-    @Override
-    public Texture getBattleIcon(Assets assets) {
-        return assets.majorsBlessingBattleTex;
+    public void applyEffect(CharacterHero player) {
+        // <></>emporary safe effect until enemy debuff state is implemented.
+        // For now, it will heal the player for 10 health.
+        player.heal(10);
     }
 }

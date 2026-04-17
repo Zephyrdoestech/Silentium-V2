@@ -1,18 +1,12 @@
 package Inventory;
 
-import Entities.Character;
+import Entities.CharacterHero;
+import Inventory.Consumables.*;
+import io.github.Zephyrdoestech.Assets;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Inventory — manages up to {@value #MAX_CAPACITY} items for a single character.
- *
- * Responsibilities:
- *  - Adding and removing items
- *  - Using items (applies effect then removes from list)
- *  - Displaying the current contents to the console
- *  - Placeholder loot-drop mechanics (to be wired to combat later)
- */
 public class Inventory {
 
     // ── Constants ─────────────────────────────────────────────────────────────
@@ -21,7 +15,7 @@ public class Inventory {
 
     // ── State ─────────────────────────────────────────────────────────────────
 
-    private final List<Item> items;
+    private final ArrayList<Item> items;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -31,63 +25,28 @@ public class Inventory {
 
     // ── Capacity checks ───────────────────────────────────────────────────────
 
-    /**
-     * Returns {@code true} when the inventory has reached its maximum capacity
-     * and no more items can be added.
-     */
+    public boolean isEmpty() { return items.isEmpty(); }
     public boolean isFull() {
         return items.size() >= MAX_CAPACITY;
     }
 
     // ── Add / Remove ──────────────────────────────────────────────────────────
 
-    /**
-     * Adds an item to the inventory if there is space.
-     * Prints a warning to the console if the inventory is already full.
-     *
-     * @param item the {@link Item} to add
-     */
     public void addItem(Item item) {
-        if (isFull()) {
-            System.out.println("[Inventory] Cannot add \"" + item.getName()
-                + "\" — inventory is full (" + MAX_CAPACITY + "/" + MAX_CAPACITY + ").");
-            return;
-        }
+        if (isFull()) { return; }
         items.add(item);
-        System.out.println("[Inventory] Added: " + item.getName()
-            + " (" + items.size() + "/" + MAX_CAPACITY + ")");
     }
 
-    /**
-     * Removes a specific item from the inventory if it is present.
-     * This is the "drop" action — the item is not used, just discarded.
-     *
-     * @param item the {@link Item} to remove
-     */
-    public void tryDrop(Item item) {
-        if (items.remove(item)) {
-            System.out.println("[Inventory] Dropped: " + item.getName());
-        } else {
-            System.out.println("[Inventory] Could not drop \"" + item.getName()
-                + "\" — item not found in inventory.");
-        }
-    }
+    public Item getItem(int index) { return items.get(index); }
 
-    /**
-     * Clears all items from the inventory.
-     * Intended for use at the start of a new run or after game-over.
-     */
-    public void resetInventory() {
-        items.clear();
-        System.out.println("[Inventory] Inventory has been reset.");
-    }
+    public void removeItem(int index) { items.remove(index); }
+
+    public Item transferItem(int index) { Item temp = items.get(index); items.remove(index); return temp; }
+
+    public void resetInventory() { items.clear(); }
 
     // ── Display ───────────────────────────────────────────────────────────────
 
-    /**
-     * Prints the current inventory contents to the console.
-     * Lists each item's index, name, and description.
-     */
     public void showInventory() {
         System.out.println("=== INVENTORY (" + items.size() + "/" + MAX_CAPACITY + ") ===");
         if (items.isEmpty()) {
@@ -99,19 +58,11 @@ public class Inventory {
                     i + 1, item.getName(), item.getDescription());
             }
         }
-        System.out.println("=================================");
     }
 
     // ── Use ───────────────────────────────────────────────────────────────────
 
-    /**
-     * Uses the item at the given (1-based) index:
-     * calls {@link Item#applyEffect(Character)} then removes the item.
-     *
-     * @param player the active player {@link Character}
-     * @param index  1-based index as shown by {@link #showInventory()}
-     */
-    public void useItem(Character player, int index) {
+    public void useItem(CharacterHero player, int index) {
         int i = index - 1; // convert to 0-based
         if (i < 0 || i >= items.size()) {
             System.out.println("[Inventory] Invalid item index: " + index);
@@ -126,42 +77,21 @@ public class Inventory {
 
     // ── Loot mechanics (placeholder) ──────────────────────────────────────────
 
-    /**
-     * Placeholder — randomly selects and adds one item from the loot pool.
-     * Hook this up to the combat reward system once the item pool is defined.
-     */
     public void randomDrop() {
         // TODO: wire to loot pool / drop-rate table
         System.out.println("[Inventory] randomDrop() called — loot pool not yet implemented.");
     }
 
-    /**
-     * Placeholder — adds a specific guaranteed item to the inventory after combat.
-     *
-     * @param item the {@link Item} that is guaranteed to drop
-     */
-    public void guaranteedDrop(Item item) {
-        System.out.println("[Inventory] Guaranteed drop: " + item.getName());
-        addItem(item);
-    }
-
-    /**
-     * Placeholder — adds two specific guaranteed items to the inventory after combat.
-     *
-     * @param item1 first guaranteed drop
-     * @param item2 second guaranteed drop
-     */
-    public void doubleGuaranteedDrop(Item item1, Item item2) {
-        System.out.println("[Inventory] Double guaranteed drop: "
-            + item1.getName() + " & " + item2.getName());
-        addItem(item1);
-        addItem(item2);
-    }
-
     // ── Accessor ──────────────────────────────────────────────────────────────
+    public List<Item> getItems() { return new ArrayList<>(items); }
+    public int getCapacity() { return MAX_CAPACITY; }
+    public int getInventorySize() { return items.size(); }
 
-    /** @return a copy of the current item list (read-only view for UI rendering) */
-    public List<Item> getItems() {
-        return new ArrayList<>(items);
-    }
+    // ── Gain Item ──────────────────────────────────────────────────────────────
+    public void gainCrimsonChorus(Assets assets){addItem(new CrimsonChorus(assets));}
+    public void gainMajorBlessing(Assets assets){addItem(new MajorsBlessing(assets));}
+    public void gainMinorsGrace(Assets assets){addItem(new MinorsGrace(assets));}
+    public void gainSilentBarrier(Assets assets){addItem(new SilentBarrier(assets));}
+    public void gainResolvedDissonance(Assets assets){addItem(new ResolvedDissonance(assets));}
+    public void gainTimeOrb(Assets assets){addItem(new TimeOrb(assets));}
 }

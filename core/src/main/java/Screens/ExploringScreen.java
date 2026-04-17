@@ -1,5 +1,6 @@
 package Screens;
 
+import Entities.CharacterHero;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -7,14 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import Entities.Character;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
@@ -580,7 +579,7 @@ public class ExploringScreen extends BaseScreen {
 
     // ── HUD ───────────────────────────────────────────────────────────────────
     private void drawHUD() {
-        Character c = game.ctx.activeCharacterStats;
+        CharacterHero c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
