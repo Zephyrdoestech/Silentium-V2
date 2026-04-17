@@ -5,6 +5,71 @@ Audio/BGM_BATTLE_silentcaverns.wav
 Audio/BGM_BATTLE_townofechoes.wav
 Audio/BGM_Title.wav
 Audio/BGM_intro_story.wav
+Audio/Combat/BGM/battle_abyss.mp3
+Audio/Combat/BGM/battle_boss.mp3
+Audio/Combat/BGM/battle_caverns.mp3
+Audio/Combat/BGM/battle_town.mp3
+Audio/Combat/SFX/Notes/Banjo/A.wav
+Audio/Combat/SFX/Notes/Banjo/Amin.wav
+Audio/Combat/SFX/Notes/Banjo/B.wav
+Audio/Combat/SFX/Notes/Banjo/Bdim.wav
+Audio/Combat/SFX/Notes/Banjo/C.wav
+Audio/Combat/SFX/Notes/Banjo/Cmaj.wav
+Audio/Combat/SFX/Notes/Banjo/D.wav
+Audio/Combat/SFX/Notes/Banjo/Dmin.wav
+Audio/Combat/SFX/Notes/Banjo/E.wav
+Audio/Combat/SFX/Notes/Banjo/Emin.wav
+Audio/Combat/SFX/Notes/Banjo/F.wav
+Audio/Combat/SFX/Notes/Banjo/Fmaj.wav
+Audio/Combat/SFX/Notes/Banjo/G.wav
+Audio/Combat/SFX/Notes/Banjo/Gmaj.wav
+Audio/Combat/SFX/Notes/Flute/flute_A.wav
+Audio/Combat/SFX/Notes/Flute/flute_A_Minor.mp3
+Audio/Combat/SFX/Notes/Flute/flute_B.wav
+Audio/Combat/SFX/Notes/Flute/flute_B_Diminished.mp3
+Audio/Combat/SFX/Notes/Flute/flute_C.wav
+Audio/Combat/SFX/Notes/Flute/flute_C_Major.mp3
+Audio/Combat/SFX/Notes/Flute/flute_D.mp3
+Audio/Combat/SFX/Notes/Flute/flute_D_Minor.mp3
+Audio/Combat/SFX/Notes/Flute/flute_E.mp3
+Audio/Combat/SFX/Notes/Flute/flute_E_Minor.mp3
+Audio/Combat/SFX/Notes/Flute/flute_F.wav
+Audio/Combat/SFX/Notes/Flute/flute_F_Major.mp3
+Audio/Combat/SFX/Notes/Flute/flute_G.wav
+Audio/Combat/SFX/Notes/Flute/flute_G_Major.mp3
+Audio/Combat/SFX/Notes/Harp/harp - A MINOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - B DIM.wav
+Audio/Combat/SFX/Notes/Harp/harp - C MAJOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - D MINOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - E MINOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - F MAJOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - G MAJOR.wav
+Audio/Combat/SFX/Notes/Harp/harp - a.wav
+Audio/Combat/SFX/Notes/Harp/harp - b.wav
+Audio/Combat/SFX/Notes/Harp/harp - c.wav
+Audio/Combat/SFX/Notes/Harp/harp - d.wav
+Audio/Combat/SFX/Notes/Harp/harp - e.wav
+Audio/Combat/SFX/Notes/Harp/harp - f.wav
+Audio/Combat/SFX/Notes/Harp/harp - g.wav
+Audio/Combat/SFX/SFX_AURELIUS_Attack.wav
+Audio/Combat/SFX/SFX_BOSS_attacks/sfx_boss_attack01.wav
+Audio/Combat/SFX/SFX_BOSS_attacks/sfx_boss_attack02.wav
+Audio/Combat/SFX/SFX_BOSS_attacks/sfx_boss_attack03.wav
+Audio/Combat/SFX/SFX_BOSS_attacks/sfx_boss_attack04.wav
+Audio/Combat/SFX/SFX_BOSS_attacks/sfx_boss_attack05.wav
+Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_01.wav
+Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_02.wav
+Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_03.wav
+Audio/Combat/SFX/SFX_ENEMY/sfx_enemy_attack_04.wav
+Audio/Combat/SFX/SFX_LYRON_Attack.wav
+Audio/Combat/SFX/SFX_SONARA_Attack.wav
+Audio/Combat/SFX/SFX_dead.wav
+Audio/Combat/SFX/SFX_encounter_enemy.wav
+Audio/Combat/SFX/SFX_levelup.wav
+Audio/Combat/SFX/SFX_skill_activated.wav
+Audio/Combat/SFX/SFX_use_item.wav
+Audio/Combat/SFX/SFX_win_fight.wav
+Audio/Combat/SFX/maybe the traversal sound_.mp3
 Audio/background_music/BGM_BATTLE_abyss.wav
 Audio/background_music/BGM_BATTLE_boss.wav
 Audio/background_music/BGM_BATTLE_silentcaverns.wav

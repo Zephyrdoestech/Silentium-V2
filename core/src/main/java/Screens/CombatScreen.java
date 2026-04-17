@@ -3,6 +3,8 @@
     import Mechanics.MapTraversalSystem.Room;
     import com.badlogic.gdx.Gdx;
     import com.badlogic.gdx.Input;
+    import com.badlogic.gdx.audio.Music;
+    import com.badlogic.gdx.audio.Sound;
     import com.badlogic.gdx.graphics.Color;
     import com.badlogic.gdx.graphics.GL20;
     import com.badlogic.gdx.graphics.Texture;
@@ -125,10 +127,30 @@
         private final float actionPanelHeight = Main.WORLD_HEIGHT * 0.40f;
         private final float actionPanelTop    = actionPanelBottom + actionPanelHeight;
 
-        float chordContainerWidth  = px(7.0f);
-        float chordContainerHeight = px(1.0f);
-        float chordContainerX      = screenRight - chordContainerWidth - px(1.0f);
-        float chordContainerY      = actionPanelTop + px(0f);
+        private float chordContainerWidth  = px(7.0f);
+        private float chordContainerHeight = px(1.0f);
+        private float chordContainerX      = screenRight - chordContainerWidth - px(1.0f);
+        private float chordContainerY      = actionPanelTop + px(0f);
+
+        // ── Audio ─────────────────────────────────────────────────────
+
+        private Music combatBGM;
+
+        private Sound noteA;
+        private Sound noteB;
+        private Sound noteC;
+        private Sound noteD;
+        private Sound noteE;
+        private Sound noteF;
+        private Sound noteG;
+        private Sound chordAmin;
+        private Sound chordBdim;
+        private Sound chordCmaj;
+        private Sound chordDmin;
+        private Sound chordEmin;
+        private Sound chordFmaj;
+        private Sound chordGmaj;
+
 
         // ── Gap / Scale Helper ────────────────────────────────────────────────────
 
@@ -188,6 +210,80 @@
                 case SILENT_CAVERNS:        maxTurnTime = 20f; break;
                 case ABYSS_OF_DISSONANCE:   maxTurnTime = 25f; break;
                 default:                    maxTurnTime = 15f; break;
+            }
+
+            switch(game.ctx.mapName){
+                case TOWN_OF_ECHOES:
+                    combatBGM = game.assets.battleTownBGM;
+                    break;
+                case SILENT_CAVERNS:
+                    combatBGM = game.assets.battleCavernsBGM;
+                    break;
+                case ABYSS_OF_DISSONANCE:
+                    combatBGM = game.assets.battleAbyssBGM;
+                    break;
+                default:
+                    combatBGM = game.assets.battleBossBGM;
+                    break;
+            }
+
+            if (combatBGM != null && !combatBGM.isPlaying()) {
+                combatBGM.setVolume(0.3f); // 0.0f to 1.0f
+                combatBGM.play();
+            }
+
+            switch(game.ctx.selectedCharacter){
+                case SONARA:
+                    noteA = game.assets.noteAttackBanjoA;
+                    noteB = game.assets.noteAttackBanjoB;
+                    noteC = game.assets.noteAttackBanjoC;
+                    noteD = game.assets.noteAttackBanjoD;
+                    noteE = game.assets.noteAttackBanjoE;
+                    noteF = game.assets.noteAttackBanjoF;
+                    noteG = game.assets.noteAttackBanjoG;
+
+                    chordAmin = game.assets.chordAttackBanjoAmin;
+                    chordBdim = game.assets.chordAttackBanjoBdim;
+                    chordCmaj = game.assets.chordAttackBanjoCmaj;
+                    chordDmin = game.assets.chordAttackBanjoDmin;
+                    chordEmin = game.assets.chordAttackBanjoEmin;
+                    chordFmaj = game.assets.chordAttackBanjoFmaj;
+                    chordGmaj = game.assets.chordAttackBanjoGmaj;
+                    break;
+                case AURELIUS:
+                    noteA = game.assets.noteAttackFluteA;
+                    noteB = game.assets.noteAttackFluteB;
+                    noteC = game.assets.noteAttackFluteC;
+                    noteD = game.assets.noteAttackFluteD;
+                    noteE = game.assets.noteAttackFluteE;
+                    noteF = game.assets.noteAttackFluteF;
+                    noteG = game.assets.noteAttackFluteG;
+
+                    chordAmin = game.assets.chordAttackFluteAmin;
+                    chordBdim = game.assets.chordAttackFluteBdim;
+                    chordCmaj = game.assets.chordAttackFluteCmaj;
+                    chordDmin = game.assets.chordAttackFluteDmin;
+                    chordEmin = game.assets.chordAttackFluteEmin;
+                    chordFmaj = game.assets.chordAttackFluteFmaj;
+                    chordGmaj = game.assets.chordAttackFluteGmaj;
+                    break;
+                case LYRON:
+                    noteA = game.assets.noteAttackHarpA;
+                    noteB = game.assets.noteAttackHarpB;
+                    noteC = game.assets.noteAttackHarpC;
+                    noteD = game.assets.noteAttackHarpD;
+                    noteE = game.assets.noteAttackHarpE;
+                    noteF = game.assets.noteAttackHarpF;
+                    noteG = game.assets.noteAttackHarpG;
+
+                    chordAmin = game.assets.chordAttackHarpAmin;
+                    chordBdim = game.assets.chordAttackHarpBdim;
+                    chordCmaj = game.assets.chordAttackHarpCmaj;
+                    chordDmin = game.assets.chordAttackHarpDmin;
+                    chordEmin = game.assets.chordAttackHarpEmin;
+                    chordFmaj = game.assets.chordAttackHarpFmaj;
+                    chordGmaj = game.assets.chordAttackHarpGmaj;
+                    break;
             }
         }
 
@@ -1091,7 +1187,7 @@
                     case "C": notesY[i] = baseY + (gapY * 4); break;
                     case "D": notesY[i] = baseY + (gapY * 5); break;
                     case "E": notesY[i] = baseY + (gapY * 6); break;
-                    case "F": notesY[i] = baseY ; break;
+                    case "F": notesY[i] = baseY             ; break;
                     case "G": notesY[i] = baseY + (gapY * 1); break;
                     default:  notesY[i] = baseY; break;
                 }
@@ -1117,6 +1213,16 @@
                 // Still revealing notes — advance one note per interval
                 if (noteRevealTimer >= NOTE_REVEAL_INTERVAL) {
                     noteRevealTimer = 0f;
+                    char noteToPlay = java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[revealedNoteCount]);
+                    switch(noteToPlay){
+                        case 'A': noteA.play(3.0f); break;
+                        case 'B': noteB.play(3.0f); break;
+                        case 'C': noteC.play(3.0f); break;
+                        case 'D': noteD.play(3.0f); break;
+                        case 'E': noteE.play(3.0f); break;
+                        case 'F': noteF.play(3.0f); break;
+                        case 'G': noteG.play(3.0f); break;
+                    }
                     revealedNoteCount++;
                 }
             } else {
@@ -1162,6 +1268,17 @@
                     game.ctx.noteHandler.noteBuffer[game.ctx.noteHandler.noteCount]  = note;
                     game.ctx.noteHandler.noteDamages[game.ctx.noteHandler.noteCount] = game.ctx.noteHandler.noteDamage(note);
                     game.ctx.noteHandler.noteCount++;
+
+                    note = java.lang.Character.toUpperCase(note);
+                    switch(note){
+                        case 'A': noteA.play(3.0f); break;
+                        case 'B': noteB.play(3.0f); break;
+                        case 'C': noteC.play(3.0f); break;
+                        case 'D': noteD.play(3.0f); break;
+                        case 'E': noteE.play(3.0f); break;
+                        case 'F': noteF.play(3.0f); break;
+                        case 'G': noteG.play(3.0f); break;
+                    }
                 }
                 break;
             }
