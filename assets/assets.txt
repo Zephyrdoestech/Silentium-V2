@@ -108,9 +108,7 @@ Aurelius/right3.png
 Background/Combat/Abyss.png
 Background/Combat/Cavern.png
 Background/Combat/Town.png
-Background/Combat/asd.jpg
-Background/Combat/asdads.jpg
-Background/Combat/asdas.jpg
+Background/Combat/asd.png
 Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Caverns_Exit.png
 Background/Map/Dungeon.png

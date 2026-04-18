@@ -548,12 +548,12 @@
             drawBar(game.shapeRenderer,
                 playerHpBarX, playerHpBarY, barWidth, barHeight,
                 (float) player.getHp() / player.getMaxHp(),
-                Color.DARK_GRAY, Color.GREEN);
+                Color.DARK_GRAY, Color.RED);
 
             drawBar(game.shapeRenderer,
                 playerShieldBarX, playerShieldBarY, barWidth, barHeight,
                 player.getMaxShield() > 0 ? (float) player.getShield() / player.getMaxShield() : 0f,
-                Color.DARK_GRAY, Color.CYAN);
+                Color.DARK_GRAY, new Color(0.07f, 0.58f, 0.93f, 1));
 
             drawBar(game.shapeRenderer,
                 enemyHpBarX, enemyHpBarY, barWidth, barHeight,
