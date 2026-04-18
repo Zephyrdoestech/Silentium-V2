@@ -13,13 +13,6 @@ public class TimeOrb extends Item {
         super("Time Orb",
             "Adds 15 seconds when the next battle starts.",
             assets.timeOrbBattleTex,
-            assets.timeOrbSlotItem);
-    }
-
-    @Override
-    public void applyEffect(CharacterHero player) {
-        // Temporary safe effect until enemy debuff state is implemented.
-        // For now, it will heal the player for 10 health.
-        player.heal(10);
+            assets.timeOrbSlotItem, 1);
     }
 }

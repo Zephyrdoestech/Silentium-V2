@@ -13,13 +13,6 @@ public class ResolvedDissonance extends Item {
         super("Resolved Dissonance",
             "The next time the player plays B Diminished, they don't lose HP.",
             assets.resolvedDissonanceBattleTex,
-            assets.resolvedDissonanceSlotItem);
-    }
-
-    @Override
-    public void applyEffect(CharacterHero player) {
-        // Temporary safe effect until enemy debuff state is implemented.
-        // For now, it will heal the player for 10 health.
-        player.heal(10);
+            assets.resolvedDissonanceSlotItem, 1);
     }
 }

@@ -11,21 +11,18 @@ import java.util.Random;
  */
 public class CrimsonChorus extends Item {
     private float extraDamage = 0f;
+    Random rd = new Random();
+    private int tracker = rd.nextInt(2,4);
 
     public CrimsonChorus(Assets assets){
         super("Crimson Chorus",
             "For 2-3 random turns, the enemy takes 5 - 10% more damage.",
             assets.crimsonChorusBattleTex,
-            assets.crimsonChorusSlotItem);
+            assets.crimsonChorusSlotItem, 0);
+
+        setTracker(tracker);
+        extraDamage = rd.nextFloat(5,11);
     }
 
-    @Override
-    public void applyEffect(CharacterHero player) {
-        Random rd = new Random();
-        setTracker(rd.nextInt(2, 4));
-
-        extraDamage = rd.nextInt(5, 11) / 100.0f;
-    }
-
-    public float getExtraDamage() { return extraDamage; }
+    public float getExtraDamage(){ return extraDamage; }
 }

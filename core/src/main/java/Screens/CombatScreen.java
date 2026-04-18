@@ -265,8 +265,10 @@
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            player.setHp(player.getMaxHp());
-            player.setShield(player.getMaxShield());
+//            // TEMPORARY MAX HP AND SHIELD
+//            player.setHp(player.getMaxHp());
+//            player.setShield(player.getMaxShield());
+
             animTimer += delta;
 
             switch (game.ctx.combatState) {
@@ -293,7 +295,8 @@
 
         private void renderSplashScreen(float delta) {
             splashTimer += delta;
-            TextureRegion frame = null;
+            TextureRegion   frame   = null;
+            Sound           sfx     = null;
 
             // If battleIntroAnim is null, immediately transition to ENEMY_INTRODUCTION to avoid NullPointerException.
             // This is a safety measure if the asset is missing or not yet loaded.
@@ -307,22 +310,26 @@
                     combatBGM.pause();
                     if (game.assets.battleIntroAnim != null) {
                         frame = game.assets.battleIntroAnim.getKeyFrame(splashTimer, false);
+                        sfx = game.assets.enemyEncounter;
                     }
                     break;
                 case VICTORY:
                     if (game.assets.victoryAnim != null) {
                         frame = game.assets.victoryAnim.getKeyFrame(splashTimer, false);
+                        sfx = game.assets.victory;
                     }
                     break;
                 case DEFEAT:
                     if (game.assets.defeatAnim != null) {
                         frame = game.assets.defeatAnim.getKeyFrame(splashTimer, false);
+                        sfx = game.assets.defeat;
                     }
                     break;
                 default: break;
             }
 
-            if (frame != null) {
+            if (frame != null && sfx != null) {
+                sfx.play();
                 beginUiBatch();
                 game.batch.draw(frame,
                     (Main.WORLD_WIDTH  - frame.getRegionWidth())  / 2f,
@@ -712,10 +719,6 @@
                 case OPEN_INVENTORY:
                 case USE_ITEM:
                 case ITEM_USED:
-                    if (additionalTime > 0) {
-                        turnTime    += additionalTime;
-                        additionalTime = 0f;
-                    }
                     if(turnComplete == false){
                         turnTime -= delta;
                     }
@@ -1532,7 +1535,7 @@
             beginUiBatch();
 
             game.assets.font.getData().setScale(1.2f);
-            game.assets.font.setColor(Color.WHITE);
+            game.assets.font.setColor(Color.YELLOW);
             game.assets.font.draw(game.batch, inventoryPrompt, descX, descY);
 
             game.assets.font.getData().setScale(1.6f);
@@ -1567,19 +1570,19 @@
             String  itemName        = item.getName();
             int     effectTracker   = usedItems.get(itemName);
 
+            usedItems.put(itemName, effectTracker - 1);
+            boolean isMinor = chord != null && (chord.equals("DMINOR") || chord.equals("EMINOR") || chord.equals("AMINOR"));
+            boolean isMajor = chord != null && (chord.equals("CMAJOR") || chord.equals("FMAJOR") || chord.equals("GMAJOR"));
+
             // Check if item is in effect
             if(effectTracker > 0){
-                usedItems.put(itemName, effectTracker - 1);
-                boolean isMinor = chord.equals("DMINOR") || chord.equals("EMINOR") || chord.equals("AMINOR");
-                boolean isMajor = chord.equals("CMAJOR") || chord.equals("FMAJOR") || chord.equals("GMAJOR");
-
                 switch(itemName){
                     case "Crimson Chorus":
                         float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
                         player.setDamageBuff(player.getDamageBuff() + extraDamage);
                         break;
                     case "Major's Blessing":
-                        if (chord != null){
+                        if (chord != null && isMajor){
                             switch (chord) {
                                 case "CMAJOR":
                                 case "FMAJOR":
@@ -1590,7 +1593,7 @@
                         }
                         break;
                     case "Minor's Grace":
-                        if (chord != null) {
+                        if (chord != null && isMinor) {
                             switch (chord) {
                                 case "DMINOR":
                                 case "EMINOR":
@@ -1610,7 +1613,7 @@
                         enemyDamage = 0;
                         break;
                     case "Time Orb":
-                        additionalTime += 15;
+                        turnTime += 15;
                         break;
                 }
             }

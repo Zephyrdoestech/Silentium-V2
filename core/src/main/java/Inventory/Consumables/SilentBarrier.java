@@ -13,13 +13,6 @@ public class SilentBarrier extends Item {
         super("Silent Barrier",
             "Grants 1 turn of full immunity to damage.",
             assets.silentBarrierBattleTex,
-            assets.silentBarrierSlotItem);
-    }
-
-    @Override
-    public void applyEffect(CharacterHero player) {
-        // Temporary safe effect until enemy debuff state is implemented.
-        // For now, it will heal the player for 10 health.
-        player.heal(10);
+            assets.silentBarrierSlotItem, 1);
     }
 }

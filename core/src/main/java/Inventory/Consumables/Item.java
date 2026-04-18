@@ -10,12 +10,12 @@ public abstract class Item {
     private Texture slotIcon;
     private int tracker;
 
-    public Item(String name, String description, Texture baseIcon, Texture slotIcon) {
+    public Item(String name, String description, Texture baseIcon, Texture slotIcon, int tracker) {
         this.name = name;
         this.description = description;
         this.baseIcon = baseIcon;
         this.slotIcon = slotIcon;
-        tracker = 0;
+        this.tracker = tracker;
     }
 
     public String getName(){ return name;}
@@ -24,6 +24,4 @@ public abstract class Item {
     public Texture getSlotIcon() { return slotIcon; }
     public int getTracker() { return tracker; }
     public void setTracker(int tracker) { this.tracker = tracker; }
-
-    public abstract void applyEffect(CharacterHero player);
 }

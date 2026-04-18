@@ -62,18 +62,18 @@ public class Inventory {
 
     // ── Use ───────────────────────────────────────────────────────────────────
 
-    public void useItem(CharacterHero player, int index) {
-        int i = index - 1; // convert to 0-based
-        if (i < 0 || i >= items.size()) {
-            System.out.println("[Inventory] Invalid item index: " + index);
-            return;
-        }
-        Item item = items.get(i);
-        System.out.println("[Inventory] Using: " + item.getName());
-        item.applyEffect(player);
-        items.remove(i);
-        System.out.println("[Inventory] " + item.getName() + " has been consumed.");
-    }
+//    public void useItem(CharacterHero player, int index) {
+//        int i = index - 1; // convert to 0-based
+//        if (i < 0 || i >= items.size()) {
+//            System.out.println("[Inventory] Invalid item index: " + index);
+//            return;
+//        }
+//        Item item = items.get(i);
+//        System.out.println("[Inventory] Using: " + item.getName());
+//        item.applyEffect(player);
+//        items.remove(i);
+//        System.out.println("[Inventory] " + item.getName() + " has been consumed.");
+//    }
 
     // ── Loot mechanics (placeholder) ──────────────────────────────────────────
 
