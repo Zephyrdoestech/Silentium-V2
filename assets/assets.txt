@@ -269,6 +269,7 @@ Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png
 Sprites/Combat/Interface/Inventory/SlotItems/MajorsBlessing.png
 Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png
 Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png
+Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png
 Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png
 Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png
 Sprites/Combat/Interface/MapHeader/AbyssOfDissonance.png

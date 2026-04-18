@@ -196,6 +196,7 @@ public class Assets implements Disposable {
     public final Texture resolvedDissonanceSlotItem;
     public final Texture timeOrbSlotItem;
     public final Texture emptySlotItem;
+    public final Texture selectedSlotItem;
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -384,6 +385,7 @@ public class Assets implements Disposable {
         resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
         timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
         emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
+        selectedSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -735,6 +737,8 @@ public class Assets implements Disposable {
         disposeTexture(silentBarrierSlotItem);
         disposeTexture(resolvedDissonanceSlotItem);
         disposeTexture(timeOrbSlotItem);
+        disposeTexture(emptySlotItem);
+        disposeTexture(selectedSlotItem);
 
         for (Texture t : animationTextures) {
             disposeTexture(t);

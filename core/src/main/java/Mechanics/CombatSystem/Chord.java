@@ -23,6 +23,32 @@ public class Chord {
         bDim = false;
     }
 
+    public void resetChord(String chord){
+        switch (chord) {
+            case "CMAJOR":
+                cMajor = false;
+                break;
+            case "DMINOR":
+                dMinor = false;
+                break;
+            case "EMINOR":
+                eMinor = false;
+                break;
+            case "FMAJOR":
+                fMajor = false;
+                break;
+            case "GMAJOR":
+                gMajor = false;
+                break;
+            case "AMINOR":
+                aMinor = false;
+                break;
+            case "BDIM":
+                bDim = false;
+                break;
+        }
+    };
+
     //chord detection
     public String checkChord(char n1, char n2, char n3) {
         String notes = "" + n1 + n2 + n3;

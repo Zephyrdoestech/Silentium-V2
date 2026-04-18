@@ -1,6 +1,7 @@
     package Screens;
 
     import Entities.CharacterHero;
+    import Inventory.Consumables.*;
     import Inventory.Inventory;
     import Mechanics.MapTraversalSystem.Room;
     import com.badlogic.gdx.Gdx;
@@ -19,23 +20,6 @@
 
     import java.util.HashMap;
 
-    /**
-     * Turn-based combat screen.
-     *
-     * Flow:
-     *   BATTLE_SCREEN → ENEMY_INTRODUCTION →
-     *
-     *   (loops until win or loss)
-     *   TURN_MENU →
-     *     Option 1: ATTACK → ATTACK_FEEDBACK →
-     *               DISPLAY_CHORD_EFFECT → DISPLAY_PLAYER_DAMAGE → DISPLAY_FINAL_DAMAGE →
-     *               ENEMY_ATTACK → DISPLAY_ENEMY_DAMAGE → (back to TURN_MENU)
-     *     Option 2: USE_SKILL → back to TURN_MENU
-     *     Option 3: OPEN_INVENTORY → USE_ITEM → back to TURN_MENU
-     *
-     *   Win:  CHARACTER_POSTCOMBAT_LINE → VICTORY → ExploringScreen
-     *   Loss: DEFEAT → ExploringScreen
-     */
     public class CombatScreen extends BaseScreen {
 
         // ── Constants ─────────────────────────────────────────────────────────────
@@ -59,19 +43,20 @@
         // ── Timers ────────────────────────────────────────────────────────────────
 
         /** Drives all sprite animations (loops continuously). */
-        private float animTimer   = 0f;
+        private float   animTimer           = 0f;
         /** Drives timed-message display and dialogue transitions. */
-        private float splashTimer = 0f;
+        private float   splashTimer         = 0f;
         /** Counts down the player's turn time limit. */
-        private float turnTime    = 0f;
-        private boolean turnComplete = false;
+        private float   turnTime            = 0f;
+        private float   additionalTime            = 0f;
+        private boolean turnComplete        = false;
         /** Maximum seconds the player has per turn (set per map). */
-        private float maxTurnTime = 0f;
+        private float   maxTurnTime         = 0f;
 
-        private float noteDisplayTimer = 0f;
+        private float   noteDisplayTimer    = 0f;
 
-        private int revealedNoteCount = 0;
-        private float noteRevealTimer = 0f;
+        private int     revealedNoteCount   = 0;
+        private float   noteRevealTimer     = 0f;
 
         // ── Damage Values ─────────────────────────────────────────────────────────
 
@@ -83,11 +68,14 @@
 
         // ── Menu State ────────────────────────────────────────────────────────────
 
-        private int           turnMenuSelection = 0;
-        private final String[] turnMenuOptions  = { "Attack", "Skill", "Inventory" };
+        private int             turnMenuSelection   = 0;
+        private final String[]  turnMenuOptions     = { "Attack", "Skill", "Inventory" };
 
-        private int           confirmSelection = 0;
-        private final String[] confirmOptions  = { "Use", "Cancel" };
+        private int             confirmSelection    = 0;
+        private final String[]  confirmOptions      = { "Use", "Cancel" };
+
+        private int             slotSelected        = 0;
+        private Item            selectedItem;
 
         // ── Entity References ─────────────────────────────────────────────────────
 
@@ -97,7 +85,7 @@
         // ── Inventory and Items ─────────────────────────────────────────────────────
 
         private Inventory inventory;
-        private HashMap<String, Boolean> usedItems = new HashMap<>();
+        private HashMap<String, Integer> usedItems = new HashMap<>();
 
         // ── Tutorial Screen  ─────────────────────────────────────────────────────────
 
@@ -179,6 +167,14 @@
         public void show() {
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
+            //temporary  items
+            player.getPlayerInventory().gainCrimsonChorus(game.assets);
+            player.getPlayerInventory().gainMajorBlessing(game.assets);
+            player.getPlayerInventory().gainMinorsGrace(game.assets);
+            player.getPlayerInventory().gainResolvedDissonance(game.assets);
+            player.getPlayerInventory().gainTimeOrb(game.assets);
+            player.getPlayerInventory().gainSilentBarrier(game.assets);
+
 
             game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
             game.gameCamera.update();
@@ -189,27 +185,36 @@
             game.ctx.chordSystem.resetChords();
             game.ctx.metronome.reset();
 
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:        maxTurnTime = 15f; break;
+                case SILENT_CAVERNS:        maxTurnTime = 20f; break;
+                case ABYSS_OF_DISSONANCE:   maxTurnTime = 25f; break;
+                default:                    maxTurnTime = 15f; break;
+            }
+
+            turnTime              = maxTurnTime;
             animTimer             = 0f;
             splashTimer           = 0f;
-            turnTime              = 0f;
+            additionalTime        = 0f;
             turnMenuSelection     = 0;
             confirmSelection      = 0;
+            initialDamage         = 0;
+            finalDamage           = 0;
             notesRolledThisTurn   = false;
             activeSkillUsedThisTurn = false;
             turnComplete            = false;
             enemyAttacked         = false;
-            chordUsedThisTurn     = null;
-            initialDamage         = 0;
-            finalDamage           = 0;
             metronomeActivated    = false;
+            chordUsedThisTurn     = null;
+            selectedItem          = null;
 
             inventory = player.getPlayerInventory();
-            usedItems.put("Crimson Chorus", false);
-            usedItems.put("Major's Blessing", false);
-            usedItems.put("Minor's Grace", false);
-            usedItems.put("Resolved Dissonance", false);
-            usedItems.put("Silent Barrier", false);
-            usedItems.put("Time Orb", false);
+            usedItems.put("Crimson Chorus", 0);
+            usedItems.put("Major's Blessing", 0);
+            usedItems.put("Minor's Grace", 0);
+            usedItems.put("Resolved Dissonance", 0);
+            usedItems.put("Silent Barrier", 0);
+            usedItems.put("Time Orb", 0);
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
@@ -223,13 +228,6 @@
             }
 
             // Turn time limit varies by map
-            switch (game.ctx.mapName) {
-                case TOWN_OF_ECHOES:        maxTurnTime = 15f; break;
-                case SILENT_CAVERNS:        maxTurnTime = 20f; break;
-                case ABYSS_OF_DISSONANCE:   maxTurnTime = 25f; break;
-                default:                    maxTurnTime = 15f; break;
-            }
-
 
             prepareAudio();
         }
@@ -530,7 +528,7 @@
             final float barHeight          = 11.8f;
             final float containerWidth     = 180f;
             final float containerHeight    = 32f;
-            final float barOffsetX         = -px(1.2f);
+            final float barOffsetX         = -px(1.6f);
             final float hpBarOffsetY       = -px(0.4f);
             final float shieldBarOffsetY   = -px(1.2f);
             final float containerOffsetX   = -27f;
@@ -713,11 +711,16 @@
                 case SKILL_USED:
                 case OPEN_INVENTORY:
                 case USE_ITEM:
-                    if(turnComplete == false){
-                        turnTime += delta;
+                case ITEM_USED:
+                    if (additionalTime > 0) {
+                        turnTime    += additionalTime;
+                        additionalTime = 0f;
                     }
-                    displayTime = (int) Math.ceil(maxTurnTime - turnTime);
-                    if (turnTime >= maxTurnTime) {
+                    if(turnComplete == false){
+                        turnTime -= delta;
+                    }
+                    displayTime = (int) Math.ceil(turnTime);
+                    if (turnTime <= 0) {
                         if(game.ctx.selectedCharacter == GameContext.CharacterType.SONARA){
                             activeSkillUsedThisTurn = false;
                             activeSkillUsed = false;}
@@ -728,7 +731,7 @@
                     }
                     break;
                 default:
-                    turnTime    = 0f;
+                    turnTime    = maxTurnTime;
                     displayTime = 0;
                     break;
             }
@@ -736,7 +739,7 @@
             // Countdown number
             beginUiBatch();
             game.assets.font.getData().setScale(2.0f);
-            game.assets.font.setColor(displayTime <= 3 ? Color.RED : (turnComplete? Color.GREEN : Color.WHITE));
+            game.assets.font.setColor(turnComplete? Color.GREEN : (displayTime <= 3 ? Color.RED : Color.WHITE));
             float numX = timerPanelLeft + ((timerPanelWidth - textWidth(displayTime + "")) / 2f);
             float numY = timerPanelBottom + px(2.4f);
 
@@ -819,6 +822,7 @@
                 case USE_ITEM:
                     renderUseItem();
                     break;
+                case ITEM_USED:
                 case SKILL_USED:
                 case SKILL_CONFIRMED:
                 case MISSED_TURN:
@@ -931,6 +935,8 @@
             switch (game.ctx.combatState) {
                 case MISSED_TURN:
                     return "Turn missed! No damage dealt.";
+                case ITEM_USED:
+                    return selectedItem.getName() + " used.";
                 case SKILL_CONFIRMED:
                     return activeSkillDesription();
                 case SKILL_USED:
@@ -963,6 +969,7 @@
         private Color resolveBattleLogColor() {
             switch (game.ctx.combatState) {
                 case DISPLAY_CHORD_EFFECT:   return Color.WHITE;
+                case ITEM_USED:
                 case SKILL_CONFIRMED:
                 case DISPLAY_PLAYER_DAMAGE:
                 case DISPLAY_FINAL_DAMAGE:   return Color.GREEN;
@@ -982,6 +989,9 @@
         private void advanceBattleLogState() {
             game.assets.stateTransition.play(1.0f);
             switch (game.ctx.combatState) {
+                case ITEM_USED:
+                    game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
+                    break;
                 case SKILL_USED:
                 case SKILL_CONFIRMED:
                     game.ctx.combatState = GameContext.CombatState.TURN_MENU;
@@ -1301,12 +1311,10 @@
         // =========================================================================
 
         private void renderSkillMenu() {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
-                || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
-                || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
             }
 
@@ -1398,19 +1406,74 @@
             float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
             float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
 
+            // Render Item Slots
             beginUiBatch();
             float itemXPosition = actionPanelLeft + ((actionPanelWidth - itemSlotsWidth) / 2f);
             float itemYPosition = actionPanelTop - ((actionPanelHeight - itemSlotsHeight) / 2f);
+            int capacity = inventory.getCapacity();
+            int cols = capacity / 2; // 5
             Texture item = game.assets.emptySlotItem;
+
             for(int i = 0; i < inventory.getCapacity(); i++){
                 if(i < inventory.getInventorySize()){ item = inventory.getItem(i).getSlotIcon(); }
+                else{ item = game.assets.emptySlotItem; }
 
+                int col = i % cols;
+                int row = i / cols;
                 game.batch.draw(item,
-                    itemXPosition + ((i % 5) * itemSlotWidth) + ((i % 5) * Xgap),
-                    itemYPosition - (itemSlotHeight * (1 + (i / 5))) + ((i < 5 ? + 1 : -2) * Ygap),
-                    itemSlotWidth, itemSlotHeight);
+                    itemXPosition + col * (itemSlotWidth + Xgap),
+                    itemYPosition - itemSlotHeight - row * (itemSlotHeight + Ygap),
+                    itemSlotWidth,
+                    itemSlotHeight
+                );
             }
+
             game.batch.end();
+
+
+            // Select Item Controls
+            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                slotSelected = (slotSelected >= capacity / 2 && slotSelected < capacity
+                    ? slotSelected - (capacity / 2) : slotSelected);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                slotSelected = (slotSelected < capacity / 2 && slotSelected >= 0
+                    ? slotSelected + (capacity / 2) : slotSelected);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                slotSelected = (slotSelected % (capacity / 2) > 0
+                    ? slotSelected - 1: slotSelected);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                slotSelected = (slotSelected % (capacity / 2) < capacity - 1
+                    ? slotSelected + 1: slotSelected);
+            }
+
+            // Render Selected Item
+            item = game.assets.selectedSlotItem;
+            beginUiBatch();
+            int col = slotSelected % cols;
+            int row = slotSelected / cols;
+
+            game.batch.draw(item,
+                itemXPosition + col * (itemSlotWidth + Xgap),
+                itemYPosition - itemSlotHeight - row * (itemSlotHeight + Ygap),
+                itemSlotWidth,
+                itemSlotHeight
+            );
+            game.batch.end();
+
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                // Route to renderUseItem
+                //reset slot selected to zero after turn and after usage/cancel
+                if(slotSelected >= 0 && slotSelected < inventory.getInventorySize()){
+                    selectedItem = inventory.getItem(slotSelected);
+                    game.ctx.combatState = GameContext.CombatState.USE_ITEM;
+                }else {
+                    selectedItem = null;
+                }
+            }
         }
 
         // =========================================================================
@@ -1418,26 +1481,26 @@
         // =========================================================================
 
         private void renderUseItem() {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)
-                || Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 confirmSelection = confirmSelection > 0 ? confirmSelection - 1 : confirmOptions.length - 1;
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)
-                || Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 confirmSelection = confirmSelection < confirmOptions.length - 1 ? confirmSelection + 1 : 0;
             }
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 if (confirmSelection == 0) {
-                    game.ctx.combatLog = "Item used!"; // Placeholder
+                    handleItemUse();
+                    game.ctx.combatState = GameContext.CombatState.ITEM_USED;
+                }else{
+                    game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
                 }
-                game.ctx.combatState = GameContext.CombatState.TURN_MENU;
                 return;
             }
 
             // ── Measure at correct scales before drawing ──────────────────────────────
 
-            String inventoryPrompt = "No items in inventory."; // Placeholder
+            String inventoryPrompt = "Use [ " +  selectedItem.getName() + " ] ?"; // Placeholder
             game.assets.font.getData().setScale(1.2f);
             float descW      = textWidth(inventoryPrompt);
             float descHeight = game.assets.font.getCapHeight();
@@ -1488,7 +1551,70 @@
             game.batch.end();
         }
 
+        private void handleItemUse(){
+            String  itemName    = selectedItem.getName();
+            int     itemInEffect = selectedItem.getTracker();
 
+            int     effectTracker = usedItems.get(itemName) + itemInEffect;
+            usedItems.put(itemName, effectTracker);
+
+            handleItemEffects(selectedItem, null);
+
+            inventory.removeItem(slotSelected);
+        }
+
+        private void handleItemEffects(Item item, String chord){
+            String  itemName        = item.getName();
+            int     effectTracker   = usedItems.get(itemName);
+
+            // Check if item is in effect
+            if(effectTracker > 0){
+                usedItems.put(itemName, effectTracker - 1);
+                boolean isMinor = chord.equals("DMINOR") || chord.equals("EMINOR") || chord.equals("AMINOR");
+                boolean isMajor = chord.equals("CMAJOR") || chord.equals("FMAJOR") || chord.equals("GMAJOR");
+
+                switch(itemName){
+                    case "Crimson Chorus":
+                        float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
+                        player.setDamageBuff(player.getDamageBuff() + extraDamage);
+                        break;
+                    case "Major's Blessing":
+                        if (chord != null){
+                            switch (chord) {
+                                case "CMAJOR":
+                                case "FMAJOR":
+                                case "GMAJOR":
+                                    game.ctx.chordSystem.resetChord(chord);
+                                    break;
+                            }
+                        }
+                        break;
+                    case "Minor's Grace":
+                        if (chord != null) {
+                            switch (chord) {
+                                case "DMINOR":
+                                case "EMINOR":
+                                case "AMINOR":
+                                    game.ctx.chordSystem.resetChord(chord);
+                                    break;
+                            }
+                        }
+                        break;
+                    case "Resolved Dissonance":
+                        if (chord != null && chord.equals("BDIM")) {
+                            int hpLoss = (int)(player.getMaxHp() * 0.1);
+                            player.setHp(player.getHp() + hpLoss);
+                        }
+                        break;
+                    case "Silent Barrier":
+                        enemyDamage = 0;
+                        break;
+                    case "Time Orb":
+                        additionalTime += 15;
+                        break;
+                }
+            }
+        }
         // =========================================================================
         // Combat Logic — Attack Resolution
         // =========================================================================
@@ -1537,9 +1663,16 @@
                 if (chord != null) {
                     game.ctx.chordSystem.applyChord(chord, player, initialDamage);
                     chordUsedThisTurn = chord;
+
+                    handleItemEffects(new MinorsGrace(game.assets), chord);
+                    handleItemEffects(new MajorsBlessing(game.assets), chord);
+                    handleItemEffects(new ResolvedDissonance(game.assets), chord);
+
+
                 }
             }
 
+            handleItemEffects(new CrimsonChorus(game.assets), null);
             enemy.takeDamage(finalDamage);
             player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
 
@@ -1554,6 +1687,7 @@
         // =========================================================================
 
         private void executeEnemyAttack() {
+            handleItemEffects(new SilentBarrier(game.assets), null);
             int dmg = enemy.performAttack();
             player.takeDamage(dmg);
             player.onDamageReceived(enemy, dmg); // Sonara passive handled inside CharacterHero
@@ -1579,6 +1713,7 @@
             initialDamage                  = 0;
             finalDamage                    = 0;
             noteDisplayTimer               = 0f;
+            additionalTime                 = 0f;
             enemyAttacked                  = false;
         }
 
