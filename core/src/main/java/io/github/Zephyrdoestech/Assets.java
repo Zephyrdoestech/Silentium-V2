@@ -2,6 +2,7 @@ package io.github.Zephyrdoestech;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,18 +54,68 @@ public class Assets implements Disposable {
     public final Texture darknessOverlay;
     public final Texture[] noteTextures;
 
-    public Music titleBGM;
     public Music storyBGM;
     public Music townOfEchoesBGM;
+    public Music battleTownBGM;
+    public Music battleCavernsBGM;
     public Music battleAbyssBGM;
     public Music battleBossBGM;
+
+    public Sound victory;
+    public Sound defeat;
+    public Sound enemyEncounter;
+    public Sound stateTransition;
+
+    public Sound noteAttackBanjoA;
+    public Sound noteAttackBanjoB;
+    public Sound noteAttackBanjoC;
+    public Sound noteAttackBanjoD;
+    public Sound noteAttackBanjoE;
+    public Sound noteAttackBanjoF;
+    public Sound noteAttackBanjoG;
+    public Sound chordAttackBanjoAmin;
+    public Sound chordAttackBanjoBdim;
+    public Sound chordAttackBanjoCmaj;
+    public Sound chordAttackBanjoDmin;
+    public Sound chordAttackBanjoEmin;
+    public Sound chordAttackBanjoFmaj;
+    public Sound chordAttackBanjoGmaj;
+
+    public Sound noteAttackFluteA;
+    public Sound noteAttackFluteB;
+    public Sound noteAttackFluteC;
+    public Sound noteAttackFluteD;
+    public Sound noteAttackFluteE;
+    public Sound noteAttackFluteF;
+    public Sound noteAttackFluteG;
+    public Sound chordAttackFluteAmin;
+    public Sound chordAttackFluteBdim;
+    public Sound chordAttackFluteCmaj;
+    public Sound chordAttackFluteDmin;
+    public Sound chordAttackFluteEmin;
+    public Sound chordAttackFluteFmaj;
+    public Sound chordAttackFluteGmaj;
+
+    public Sound noteAttackHarpA;
+    public Sound noteAttackHarpB;
+    public Sound noteAttackHarpC;
+    public Sound noteAttackHarpD;
+    public Sound noteAttackHarpE;
+    public Sound noteAttackHarpF;
+    public Sound noteAttackHarpG;
+    public Sound chordAttackHarpAmin;
+    public Sound chordAttackHarpBdim;
+    public Sound chordAttackHarpCmaj;
+    public Sound chordAttackHarpDmin;
+    public Sound chordAttackHarpEmin;
+    public Sound chordAttackHarpFmaj;
+    public Sound chordAttackHarpGmaj;
 
     public final Texture story1Tex;
     public final Texture story2Tex;
     public final Texture story3Tex;
     public final Texture story4Tex;
 
-    public Animation<TextureRegion> darryllionIdle;// Added as per request
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -77,6 +129,14 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> lyronWalkRight, lyronWalkLeft;
 
     // ── Combat Background Textures ────────────────────────────────────────────
+
+    public final Texture[] tutorials;
+
+    public final Texture noteTutorial;
+    public final Texture metronomeTutorial;
+    public final Texture chordTutorial;
+
+    // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
     public final Texture cavernsCombatBackground;
@@ -135,7 +195,9 @@ public class Assets implements Disposable {
     public final Texture minorsGraceSlotItem;
     public final Texture silentBarrierSlotItem;
     public final Texture resolvedDissonanceSlotItem;
-    public  final Texture timeOrbSlotItem;
+    public final Texture timeOrbSlotItem;
+    public final Texture emptySlotItem;
+    public final Texture selectedSlotItem;
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
@@ -146,13 +208,17 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> sonaraCombatIdle;
     public final Animation<TextureRegion> sonaraCombatAttack;
+    public final Animation<TextureRegion> sonaraCombatDeath;
     public final Animation<TextureRegion> aureliusCombatIdle;
     public final Animation<TextureRegion> aureliusCombatAttack;
+    public final Animation<TextureRegion> aureliusCombatDeath;
     public final Animation<TextureRegion> lyronCombatIdle;
     public final Animation<TextureRegion> lyronCombatAttack;
+    public final Animation<TextureRegion> lyronCombatDeath;
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
+    public final Animation<TextureRegion> fleshfeederCombatDamaged;
     public final Animation<TextureRegion> darryllionCombatIdle;
     public final Animation<TextureRegion> darryllionCombatAttack1;
     public final Animation<TextureRegion> darryllionCombatAttack2;
@@ -167,7 +233,7 @@ public class Assets implements Disposable {
 
     public Animation<TextureRegion> lyronSelectAnim;
 
-    public final Music titleBgm;
+    public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures
     private final List<Texture> animationTextures = new ArrayList<>();
@@ -260,6 +326,13 @@ public class Assets implements Disposable {
 
         // ── Combat Backgrounds ────────────────────────────────────────────────
 
+        noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
+        metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
+        chordTutorial = new Texture("Sprites/Combat/Tutorial/ChordTutorial.png");
+        tutorials = new Texture[] {noteTutorial, metronomeTutorial, chordTutorial};
+
+        // ── Tutorial Screens ────────────────────────────────────────────────
+
         townCombatBackground    = new Texture("Background/Combat/Town.png");
         cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
         abyssCombatBackground   = new Texture("Background/Combat/Abyss.png");
@@ -316,6 +389,8 @@ public class Assets implements Disposable {
         silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
         resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
         timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
+        emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
+        selectedSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
@@ -324,18 +399,22 @@ public class Assets implements Disposable {
         defeatAnim      = loadAnim("Sprites/Combat/SplashScreen/Defeat",  "",  30, 0.05f);
         timerAnim       = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
 
-        sonaraCombatIdle     = loadAnim("Sprites/Combat/Character/Sonara/Idle",     "Idle",   4, 0.2f);
-        sonaraCombatAttack   = loadAnim("Sprites/Combat/Character/Sonara/Attack",   "Attack", 6, 0.1f);
-        aureliusCombatIdle   = loadAnim("Sprites/Combat/Character/Aurelius/Idle",   "Idle",   4, 0.2f);
-        aureliusCombatAttack = loadAnim("Sprites/Combat/Character/Aurelius/Attack", "Attack", 6, 0.1f);
-        lyronCombatIdle      = loadAnim("Sprites/Combat/Character/Lyron/Idle",      "Idle",   4, 0.2f);
-        lyronCombatAttack    = loadAnim("Sprites/Combat/Character/Lyron/Attack",    "Attack", 6, 0.1f);
+        sonaraCombatIdle     = loadAnim("Sprites/Combat/CharacterHero/Sonara/Idle",     "Idle",   4, 0.2f);
+        sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "Attack", 6, 0.1f);
+        sonaraCombatDeath    = loadAnim("Sprites/Combat/CharacterHero/Sonara/Death",   "", 16, 0.1f);
+        aureliusCombatIdle   = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Idle",   "Idle",   4, 0.2f);
+        aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "Attack", 6, 0.1f);
+        aureliusCombatDeath  = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Death",   "", 16, 0.1f);
+        lyronCombatIdle      = loadAnim("Sprites/Combat/CharacterHero/Lyron/Idle",      "Idle",   4, 0.2f);
+        lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "Attack", 6, 0.1f);
+        lyronCombatDeath     = loadAnim("Sprites/Combat/CharacterHero/Lyron/Death",   "", 16, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 11, 0.12f));
+        fleshfeederCombatDamaged = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Damaged",  "", 4, 0.2f);
         darryllionCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "",   8, 0.2f));
-        darryllionCombatAttack1 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
-        darryllionCombatAttack2 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
+        darryllionCombatAttack1  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
+        darryllionCombatAttack2  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
         gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
@@ -345,7 +424,6 @@ public class Assets implements Disposable {
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
         syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
 
-//        darryllionIdle = loadAnim("Enemies/Darryllion/Idle", "darryllionIdle", 8, 0.15f);
         // ── Audio ─────────────────────────────────────────────────────────────
 
         // Load Background Music
@@ -353,16 +431,79 @@ public class Assets implements Disposable {
         townOfEchoesBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/TownOfEchoes.mp3"));
 
         // Update this to match your "title_music.wav" file
-        titleBgm = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
+        titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
 
         // Load Battle Music
-        battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_abyss.wav"));
-        battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/BGM_BATTLE_boss.wav"));
+        battleTownBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_town.mp3"));
+        battleCavernsBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_caverns.mp3"));
+        battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_abyss.mp3"));
+        battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_boss.mp3"));
+
+        // Battle SFX
+        // State Transition
+        stateTransition = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/state_transition.mp3"));
+        // Splash Screen
+        victory = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/victory.wav"));
+        defeat = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/defeat.wav"));
+        enemyEncounter = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/enemy_encounter.wav"));
+        // Notes
+        // Banjo (Sonara)
+        noteAttackBanjoA = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/A.wav"));
+        noteAttackBanjoB = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/B.wav"));
+        noteAttackBanjoC = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/C.wav"));
+        noteAttackBanjoD = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/D.wav"));
+        noteAttackBanjoE = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/E.wav"));
+        noteAttackBanjoF = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/F.wav"));
+        noteAttackBanjoG = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/G.wav"));
+        chordAttackBanjoAmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Amin.wav"));
+        chordAttackBanjoBdim = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Bdim.wav"));
+        chordAttackBanjoCmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Cmaj.wav"));
+        chordAttackBanjoDmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Dmin.wav"));
+        chordAttackBanjoEmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Emin.wav"));
+        chordAttackBanjoFmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Fmaj.wav"));
+        chordAttackBanjoGmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Banjo/Gmaj.wav"));
+
+        // Flute (Lyron)
+        noteAttackFluteA = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_A.wav"));
+        noteAttackFluteB = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_B.wav"));
+        noteAttackFluteC = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_C.wav"));
+        noteAttackFluteD = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_D.mp3"));
+        noteAttackFluteE = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_E.mp3"));
+        noteAttackFluteF = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_F.wav"));
+        noteAttackFluteG = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_G.wav"));
+        chordAttackFluteAmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_A_Minor.mp3"));
+        chordAttackFluteBdim = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_B_Diminished.mp3"));
+        chordAttackFluteCmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_C_Major.mp3"));
+        chordAttackFluteDmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_D_Minor.mp3"));
+        chordAttackFluteEmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_E_Minor.mp3"));
+        chordAttackFluteFmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_F_Major.mp3"));
+        chordAttackFluteGmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Flute/flute_G_Major.mp3"));
+
+        // Harp (Aurelius)
+        noteAttackHarpA = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - a.wav"));
+        noteAttackHarpB = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - b.wav"));
+        noteAttackHarpC = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - c.wav"));
+        noteAttackHarpD = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - d.wav"));
+        noteAttackHarpE = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - e.wav"));
+        noteAttackHarpF = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - f.wav"));
+        noteAttackHarpG = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - g.wav"));
+        chordAttackHarpAmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - A MINOR.wav"));
+        chordAttackHarpBdim = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - B DIM.wav"));
+        chordAttackHarpCmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - C MAJOR.wav"));
+        chordAttackHarpDmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - D MINOR.wav"));
+        chordAttackHarpEmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - E MINOR.wav"));
+        chordAttackHarpFmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - F MAJOR.wav"));
+        chordAttackHarpGmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - G MAJOR.wav"));
 
         // Set Loops
-        titleBgm.setLooping(true);
+        titleBGM.setLooping(true);
         storyBGM.setLooping(true);
         townOfEchoesBGM.setLooping(true);
+
+        battleTownBGM.setLooping(true);
+        battleCavernsBGM.setLooping(true);
+        battleAbyssBGM.setLooping(true);
+        battleBossBGM.setLooping(true);
     }
 
     // ── Private Helpers ───────────────────────────────────────────────────────
@@ -472,11 +613,31 @@ public class Assets implements Disposable {
     }
 
     public void stopAllMusic() {
-        if (titleBgm != null) titleBgm.stop();
+        if (titleBGM != null) titleBGM.stop();
         if (storyBGM != null) storyBGM.stop();
         if (townOfEchoesBGM != null) townOfEchoesBGM.stop();
+        if (battleTownBGM != null) battleTownBGM.stop();
+        if (battleCavernsBGM != null) battleCavernsBGM.stop();
         if (battleAbyssBGM != null) battleAbyssBGM.stop();
         if (battleBossBGM != null) battleBossBGM.stop();
+    }
+
+    private void disposeTexture(Texture tex) {
+        if (tex != null) {
+            tex.dispose();
+        }
+    }
+
+    private void disposeTextureRegion(TextureRegion reg) {
+        if (reg != null && reg.getTexture() != null) {
+            reg.getTexture().dispose();
+        }
+    }
+
+    private void disposeSound(Sound sound) {
+        if (sound != null) {
+            sound.dispose();
+        }
     }
 
     // ── Dispose ───────────────────────────────────────────────────────────────
@@ -487,82 +648,162 @@ public class Assets implements Disposable {
         titleFont.dispose();
         bigFont.dispose();
 
-        titleScreenTex.dispose();
-        if (townTex != null && townTex.getTexture() != null) {
-            townTex.getTexture().dispose();
-        }
-        if (sonaraTex != null) {
-            sonaraTex.dispose();
-        }
-        if (lyronTex != null) {
-            lyronTex.dispose();
-        }
-        if (aureliusTex != null) {
-            aureliusTex.dispose();
-        }
-        if (darknessOverlay != null) {
-            darknessOverlay.dispose();
-        }
+        disposeTexture(titleScreenTex);
 
-        story1Tex.dispose();
-        story2Tex.dispose();
-        story3Tex.dispose();
-        story4Tex.dispose();
+        disposeTexture(storyPanel1);
+        disposeTexture(storyPanel2);
+        disposeTexture(storyPanel3);
+        disposeTexture(storyPanel4);
 
-        for (Texture t : noteTextures) {
-            if (t != null) {
-                t.dispose();
+        disposeTextureRegion(townTex);
+        disposeTextureRegion(townExitTex);
+        disposeTextureRegion(silentCavernsTex);
+        disposeTextureRegion(cavernsExitTex);
+        disposeTextureRegion(abyssOfDissonanceTex);
+        disposeTextureRegion(townDecorationsTex);
+
+        disposeTexture(sonaraTex);
+        disposeTexture(lyronTex);
+        disposeTexture(aureliusTex);
+
+        disposeTexture(startBtnTex);
+        disposeTexture(tutorialBtnTex);
+        disposeTexture(storyBtnTex);
+        disposeTexture(creditsBtnTex);
+        disposeTexture(exitBtnTex);
+        disposeTexture(continueBtnTex);
+
+        disposeTexture(story1Tex);
+        disposeTexture(story2Tex);
+        disposeTexture(story3Tex);
+        disposeTexture(story4Tex);
+
+        disposeTexture(darknessOverlay);
+        if (noteTextures != null) {
+            for (Texture t : noteTextures) {
+                disposeTexture(t);
             }
         }
+
+        if (tutorials != null) {
+            for (Texture t : tutorials) {
+                disposeTexture(t);
+            }
+        }
+
+        disposeTexture(noteTutorial);
+        disposeTexture(metronomeTutorial);
+        disposeTexture(chordTutorial);
+
+        disposeTexture(townCombatBackground);
+        disposeTexture(cavernsCombatBackground);
+        disposeTexture(abyssCombatBackground);
+
+        disposeTexture(mapHeaderTownOfEchoes);
+        disposeTexture(mapHeaderSilentCaverns);
+        disposeTexture(mapHeaderAbyssOfDissonance);
+
+        disposeTexture(healthBar);
+        disposeTexture(shieldBar);
+        disposeTexture(staticHudBackground);
+        disposeTexture(timerBackground);
+        disposeTexture(dynamicHudBackground);
+        disposeTexture(noteContainer);
+        disposeTexture(noteContainerFilled);
+        disposeTexture(turnMenuHud);
+        disposeTexture(attackHud);
+        disposeTexture(skillHud);
+        disposeTexture(inventoryHud);
+        disposeTexture(musicStaff);
+        disposeTexture(musicNote);
+
+        disposeTexture(cMajor);
+        disposeTexture(dMinor);
+        disposeTexture(eMinor);
+        disposeTexture(fMajor);
+        disposeTexture(gMajor);
+        disposeTexture(aMinor);
+        disposeTexture(bDim);
+
+        disposeTexture(cMajorUsed);
+        disposeTexture(dMinorUsed);
+        disposeTexture(eMinorUsed);
+        disposeTexture(fMajorUsed);
+        disposeTexture(gMajorUsed);
+        disposeTexture(aMinorUsed);
+        disposeTexture(bDimUsed);
+
+        disposeTexture(crimsonChorusBattleTex);
+        disposeTexture(majorsBlessingBattleTex);
+        disposeTexture(minorsGraceBattleTex);
+        disposeTexture(resolvedDissonanceBattleTex);
+        disposeTexture(silentBarrierBattleTex);
+        disposeTexture(timeOrbBattleTex);
+
+        disposeTexture(inventoryBackground);
+        disposeTexture(crimsonChorusSlotItem);
+        disposeTexture(majorsBlessingSlotItem);
+        disposeTexture(minorsGraceSlotItem);
+        disposeTexture(silentBarrierSlotItem);
+        disposeTexture(resolvedDissonanceSlotItem);
+        disposeTexture(timeOrbSlotItem);
+        disposeTexture(emptySlotItem);
+        disposeTexture(selectedSlotItem);
+
         for (Texture t : animationTextures) {
-            if (t != null) {
-                t.dispose();
-            }
+            disposeTexture(t);
         }
+        animationTextures.clear();
 
-        if (townCombatBackground != null) {
-            townCombatBackground.dispose();
-        }
-        if (cavernsCombatBackground != null) {
-            cavernsCombatBackground.dispose();
-        }
-        if (abyssCombatBackground != null) {
-            abyssCombatBackground.dispose();
-        }
+        if (titleBGM != null) titleBGM.dispose();
+        if (storyBGM != null) storyBGM.dispose();
+        if (townOfEchoesBGM != null) townOfEchoesBGM.dispose();
+        if (battleAbyssBGM != null) battleAbyssBGM.dispose();
+        if (battleBossBGM != null) battleBossBGM.dispose();
 
-        if (healthBar != null) {
-            healthBar.dispose();
-        }
-        if (shieldBar != null) {
-            shieldBar.dispose();
-        }
-        if (staticHudBackground != null) {
-            staticHudBackground.dispose();
-        }
-        if (timerBackground != null) {
-            timerBackground.dispose();
-        }
-        if (dynamicHudBackground != null) {
-            dynamicHudBackground.dispose();
-        }
-        if (noteContainer != null) {
-            noteContainer.dispose();
-        }
-        if (turnMenuHud != null) {
-            turnMenuHud.dispose();
-        }
-        if (attackHud != null) {
-            attackHud.dispose();
-        }
-        if (skillHud != null) {
-            skillHud.dispose();
-        }
-        if (inventoryHud != null) {
-            inventoryHud.dispose();
-        }
+        disposeSound(noteAttackBanjoA);
+        disposeSound(noteAttackBanjoB);
+        disposeSound(noteAttackBanjoC);
+        disposeSound(noteAttackBanjoD);
+        disposeSound(noteAttackBanjoE);
+        disposeSound(noteAttackBanjoF);
+        disposeSound(noteAttackBanjoG);
+        disposeSound(chordAttackBanjoAmin);
+        disposeSound(chordAttackBanjoBdim);
+        disposeSound(chordAttackBanjoCmaj);
+        disposeSound(chordAttackBanjoDmin);
+        disposeSound(chordAttackBanjoEmin);
+        disposeSound(chordAttackBanjoFmaj);
+        disposeSound(chordAttackBanjoGmaj);
 
-        if (titleBgm != null) {
-            titleBgm.dispose();
-        }
+        disposeSound(noteAttackFluteA);
+        disposeSound(noteAttackFluteB);
+        disposeSound(noteAttackFluteC);
+        disposeSound(noteAttackFluteD);
+        disposeSound(noteAttackFluteE);
+        disposeSound(noteAttackFluteF);
+        disposeSound(noteAttackFluteG);
+        disposeSound(chordAttackFluteAmin);
+        disposeSound(chordAttackFluteBdim);
+        disposeSound(chordAttackFluteCmaj);
+        disposeSound(chordAttackFluteDmin);
+        disposeSound(chordAttackFluteEmin);
+        disposeSound(chordAttackFluteFmaj);
+        disposeSound(chordAttackFluteGmaj);
+
+        disposeSound(noteAttackHarpA);
+        disposeSound(noteAttackHarpB);
+        disposeSound(noteAttackHarpC);
+        disposeSound(noteAttackHarpD);
+        disposeSound(noteAttackHarpE);
+        disposeSound(noteAttackHarpF);
+        disposeSound(noteAttackHarpG);
+        disposeSound(chordAttackHarpAmin);
+        disposeSound(chordAttackHarpBdim);
+        disposeSound(chordAttackHarpCmaj);
+        disposeSound(chordAttackHarpDmin);
+        disposeSound(chordAttackHarpEmin);
+        disposeSound(chordAttackHarpFmaj);
+        disposeSound(chordAttackHarpGmaj);
     }
 }

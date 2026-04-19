@@ -1,42 +1,29 @@
 package Inventory.Consumables;
 
-import Entities.Character;
-import Inventory.Item;
-import com.badlogic.gdx.graphics.Texture;
+import Entities.CharacterHero;
 import io.github.Zephyrdoestech.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.util.Random;
 
 /**
  * Crimson Chorus
  * For 2-3 random turns, the enemy takes 5-10% more damage.
  */
-public class CrimsonChorus implements Item {
+public class CrimsonChorus extends Item {
+    private float extraDamage = 0f;
+    Random rd = new Random();
+    private int tracker = rd.nextInt(2,4);
 
-    @Override
-    public String getName() {
-        return "Crimson Chorus";
+    public CrimsonChorus(Assets assets){
+        super("Crimson Chorus",
+            "For 2-3 random turns, the enemy takes 5 - 10% more damage.",
+            assets.crimsonChorusBattleTex,
+            assets.crimsonChorusSlotItem, 0);
+
+        setTracker(tracker);
+        extraDamage = rd.nextFloat(5,11);
     }
 
-    @Override
-    public String getDescription() {
-        return "For 2-3 random turns, the enemy takes 5 - 10% more damage.";
-    }
-
-    @Override
-    public void applyEffect(Character player) {
-        // Temporary safe effect until enemy debuff state is implemented.
-        player.setDamageBuff(player.getDamageBuff() + 0.10);
-        System.out.println("[CrimsonChorus] Effect applied: " + player.getName()
-            + " gains +10% damage temporarily.");
-    }
-
-    @Override
-    public Texture getInventoryIcon(Assets assets) {
-        return assets.crimsonChorusSlotItem;
-    }
-
-    @Override
-    public Texture getBattleIcon(Assets assets) {
-        return assets.crimsonChorusBattleTex;
-    }
+    public float getExtraDamage(){ return extraDamage; }
 }

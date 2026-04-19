@@ -1,5 +1,6 @@
 package Screens;
 
+import Entities.CharacterHero;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -7,14 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import Entities.Character;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
@@ -36,10 +35,13 @@ public class ExploringScreen extends BaseScreen {
 
     protected static final Random RNG = new Random();
     protected final List<Rectangle> walkableZones = new ArrayList<>();
+    protected final List<Rectangle> corridorZones = new ArrayList<>();
+    protected Room lockedRoom = null;
 
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
+    //    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
@@ -84,9 +86,7 @@ public class ExploringScreen extends BaseScreen {
 
 
     protected void initPlayerPosition() {
-        if (game.ctx.mapEnemies.isEmpty()) {
-            spawnEnemies();
-        }
+        spawnEnemies();
 
         List<Room> emptyRooms = new ArrayList<>();
         for (Room r : game.ctx.rooms)
@@ -101,15 +101,50 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player = new MapCharacter(x, y);
     }
 
+    protected List<Rectangle> getActiveWalkableZones() {
+        if (isInEnemyRoom() && lockedRoom != null) {
+            List<Rectangle> lockdown = new ArrayList<>();
+            lockdown.add(lockedRoom.getBounds());
+            return lockdown;
+        }
+        List<Rectangle> all = new ArrayList<>(walkableZones);
+        all.addAll(corridorZones);
+        return all;
+    }
+
+    protected boolean isInEnemyRoom() {
+        if (game.ctx.player == null) return false;
+
+        float cx = game.ctx.player.getX() + GameContext.CHAR_SIZE / 2f;
+        float cy = game.ctx.player.getY() + GameContext.CHAR_SIZE / 2f;
+
+        if (lockedRoom != null) {
+            if (lockedRoom.getEnemies().isEmpty()) {
+                lockedRoom = null;
+                return false;
+            }
+            return true;
+        }
+
+        for (Room r : game.ctx.rooms) {
+            if (r.getBounds().contains(cx, cy) && !r.getEnemies().isEmpty()) {
+                lockedRoom = r;
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void show() {
         game.assets.font.getData().setScale(1.0f);       // ← add this
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
-        initMapData();
 
+        // 1. Initialize or restore the map
         if (game.ctx.rooms.isEmpty()) {
+            initMapData();
             initWalkable();
         } else {
             restoreInstanceFields();
@@ -142,11 +177,6 @@ public class ExploringScreen extends BaseScreen {
         }
         // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
         else {
-            if(game.ctx.playerDefeated){
-                // CHECKPOINT SYSTEM HERE
-                return;
-            }
-
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -164,6 +194,10 @@ public class ExploringScreen extends BaseScreen {
         }
 
         game.ctx.stateTime = 0f;
+
+        this.lockedRoom = null;
+        isInEnemyRoom();
+
         updateCamera(); // Initialize camera position after player position is set
     }
 
@@ -211,13 +245,9 @@ public class ExploringScreen extends BaseScreen {
         }
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
-            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
-            // - offset if we are in Silent Caverns
-            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
-
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                exitY,
+                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
                 exitSize, exitSize);
         }
         game.batch.end();
@@ -232,7 +262,7 @@ public class ExploringScreen extends BaseScreen {
         for (Room r : game.ctx.rooms)
             game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
         game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : walkableZones)
+        for (Rectangle h : getActiveWalkableZones())
             game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
         game.shapeRenderer.end();
 
@@ -403,6 +433,8 @@ public class ExploringScreen extends BaseScreen {
 
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                // TEMPORARY MAX LEVEL
+                game.ctx.activeCharacterStats.setLevel(5);
                 game.setScreen(new CombatScreen(game));
                 return;
 
@@ -460,7 +492,7 @@ public class ExploringScreen extends BaseScreen {
 
     private boolean isInWalkableZone(float x, float y) {
         Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        for (Rectangle zone : walkableZones)
+        for (Rectangle zone : getActiveWalkableZones())
             if (zone.overlaps(playerRect))
                 return true;
         return false;
@@ -549,7 +581,7 @@ public class ExploringScreen extends BaseScreen {
 
     // ── HUD ───────────────────────────────────────────────────────────────────
     private void drawHUD() {
-        Character c = game.ctx.activeCharacterStats;
+        CharacterHero c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
@@ -654,5 +686,8 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override public void dispose() { }
+    @Override
+    public void dispose() {
+        // Do not dispose of global assets here
+    }
 }

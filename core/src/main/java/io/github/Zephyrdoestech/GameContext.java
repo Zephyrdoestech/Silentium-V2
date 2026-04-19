@@ -1,6 +1,6 @@
 package io.github.Zephyrdoestech;
 
-import Entities.Character;
+import Entities.CharacterHero;
 import Entities.Enemy;
 import Entities.MapCharacter;
 import Mechanics.CombatSystem.Note;
@@ -31,7 +31,7 @@ public class GameContext {
         ENEMY_INTRODUCTION,
         TURN_MENU, ATTACK, ATTACK_FEEDBACK, MISSED_TURN,
         USE_SKILL, SKILL_USED, SKILL_CONFIRMED,
-        OPEN_INVENTORY, USE_ITEM,
+        OPEN_INVENTORY, USE_ITEM, ITEM_USED,
         DISPLAY_CHORD, DISPLAY_CHORD_EFFECT,
         DISPLAY_PLAYER_DAMAGE, DISPLAY_FINAL_DAMAGE,
         ENEMY_ATTACK, DISPLAY_ENEMY_DAMAGE,
@@ -47,10 +47,10 @@ public class GameContext {
         CMAJOR, DMINOR, EMINOR, FMAJOR, GMAJOR, AMINOR, BDIM, NONE
     }
 
-    // ── Character / player state ───────────────────────────────────────────────
+    // ── CharacterHero / player state ───────────────────────────────────────────────
 
     public CharacterType selectedCharacter;
-    public Character activeCharacterStats;  // HP, shield, level, buffs
+    public CharacterHero activeCharacterStats;  // HP, shield, level, buffs
     public MapCharacter player;                // world-space position
     public PlayerState playerState = PlayerState.IDLE;
     public Facing facing = Facing.RIGHT;
@@ -94,7 +94,7 @@ public class GameContext {
 
     public boolean playerDefeated = false;
 
-    // ── Character-select audio ─────────────────────────────────────────────────
+    // ── CharacterHero-select audio ─────────────────────────────────────────────────
 
     public Music currentTheme = null;
     public int lastThemeIndex = -1;  // 0=Sonara 1=Aurelius 2=Lyron  -1=none
@@ -193,7 +193,7 @@ public class GameContext {
         }
 
         // 2. Rebuild the character stats
-        Entities.Character loadedChar = new Entities.Character(name, weapon, maxHp, maxShield);
+        CharacterHero loadedChar = new CharacterHero(name, weapon, maxHp, maxShield);
         loadedChar.setHp(prefs.getInteger("charHp", maxHp));
         loadedChar.setShield(prefs.getInteger("charShield", 0));
         loadedChar.setLevel(prefs.getInteger("charLevel", 1));

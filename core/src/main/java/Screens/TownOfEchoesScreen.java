@@ -50,17 +50,16 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     protected void initWalkable() {
-        walkableZones.clear();
-        for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
+        super.initWalkable();
 
-        walkableZones.add(new Rectangle(65f,  138f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  717f, 1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1292f,1900f, 30f));
-        walkableZones.add(new Rectangle(65f,  1867f,1900f, 30f));
-        walkableZones.add(new Rectangle(155f,  65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(730f,  65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(1305f, 65f, 15f, 1900f));
-        walkableZones.add(new Rectangle(1880f, 65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(65f,  138f, 1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  717f, 1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  1292f,1900f, 30f));
+        corridorZones.add(new Rectangle(65f,  1867f,1900f, 30f));
+        corridorZones.add(new Rectangle(155f,  65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(730f,  65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(1305f, 65f, 15f, 1900f));
+        corridorZones.add(new Rectangle(1880f, 65f, 15f, 1900f));
     }
 
     @Override
