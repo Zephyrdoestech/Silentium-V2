@@ -19,6 +19,7 @@
     import io.github.Zephyrdoestech.Main;
 
     import java.util.HashMap;
+    import java.util.Random;
 
     public class CombatScreen extends BaseScreen {
 
@@ -154,8 +155,9 @@
         private Sound chordGmaj;
 
 
-        // ── Gap / Scale Helper ────────────────────────────────────────────────────
+        // ── Scale / Helpers ────────────────────────────────────────────────────
 
+        private static Random rd = new Random();
         private static final float GAP = 32f;
         private float px(float factor) { return GAP * factor; }
 
@@ -481,14 +483,14 @@
             TextureRegion enemySprite  = resolveEnemySprite(isEnemyAttacking);
 
             // Player is drawn at 3x its native sprite resolution
-            float playerWidth  = playerSprite != null ? playerSprite.getRegionWidth()  * 3.0f : 0f;
-            float playerHeight = playerSprite != null ? playerSprite.getRegionHeight() * 3.0f : 0f;
-            float enemyWidth   = 160f;
-            float enemyHeight  = 160f;
+            float playerWidth    = playerSprite != null ? playerSprite.getRegionWidth() * 3f : 0f;
+            float playerHeight   = playerSprite != null ? playerSprite.getRegionHeight() * 3f : 0f;
+            float enemyWidth     = enemySprite != null ? (isEnemyAttacking ? 512f : 160f) : 0f;
+            float enemyHeight    = 160f;
 
             playerSpriteX = screenLeft  + px(5.0f);
             playerSpriteY = screenTop   - px(6.4f);
-            enemySpriteX  = screenRight - px(4.0f) - enemyWidth;
+            enemySpriteX  = (isEnemyAttacking ? playerSpriteX : screenRight - px(4.0f) - enemyWidth);
             enemySpriteY  = screenTop   - px(6.4f);
 
             beginUiBatch();
@@ -538,6 +540,7 @@
          * Centralises the name-to-animation lookup outside of the main render flow.
          */
         private TextureRegion resolveEnemySprite(boolean isAttacking) {
+            int anim = rd.nextInt(0,2);
             if (enemy == null || enemy.getName() == null) return null;
 
             // Check if enemy is in a damage display state
@@ -553,22 +556,33 @@
                         ? game.assets.fleshfeederCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
                 case "Darryllion":
+                    if (isDamaged && game.assets.darryllionCombatDamaged != null)
+                        return game.assets.darryllionCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
-                        ? game.assets.darryllionCombatAttack1.getKeyFrame(stateAnimTimer, false)
+                        ? (anim == 0 ? game.assets.darryllionCombatAttack1.getKeyFrame(stateAnimTimer, false) :
+                        game.assets.darryllionCombatAttack2.getKeyFrame(stateAnimTimer, false))
                         : game.assets.darryllionCombatIdle.getKeyFrame(animTimer, true);
-                case "Aryzachnid":
+                case "Gobninil":
+                    if (isDamaged && game.assets.gobninilCombatDamaged != null)
+                        return game.assets.gobninilCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
                         ? game.assets.gobninilCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.gobninilCombatIdle.getKeyFrame(animTimer, true);
                 case "Chimericks":
+                    if (isDamaged && game.assets.chimericksCombatDamaged != null)
+                        return game.assets.chimericksCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
                         ? game.assets.chimericksCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.chimericksCombatIdle.getKeyFrame(animTimer, true);
                 case "Labagoliath":
+                    if (isDamaged && game.assets.labagoliathCombatDamaged != null)
+                        return game.assets.labagoliathCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
                         ? game.assets.labagoliathCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.labagoliathCombatIdle.getKeyFrame(animTimer, true);
                 case "Maestro Syozan":
+                    if (isDamaged && game.assets.syozanCombatDamaged != null)
+                        return game.assets.syozanCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
                         ? game.assets.syozanCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.syozanCombatIdle.getKeyFrame(animTimer, true);
@@ -582,6 +596,11 @@
         // =========================================================================
 
         private void renderStats() {
+            final float basePlayerX = screenLeft  + px(5.0f);
+            final float basePlayerY = screenTop   - px(6.4f);
+            final float baseEnemyX  = screenRight - px(8.0f);
+            final float baseEnemyY  = screenTop   - px(6.4f);
+
             final float barWidth           = 144f;
             final float barHeight          = 11.8f;
             final float containerWidth     = 180f;
@@ -593,12 +612,12 @@
             final float containerOffsetY   = -21f;
             final float textOffsetX        = barWidth + px(0.4f);
 
-            float playerHpBarX     = playerSpriteX + barOffsetX;
-            float playerHpBarY     = playerSpriteY + hpBarOffsetY;
-            float playerShieldBarX = playerSpriteX + barOffsetX;
-            float playerShieldBarY = playerSpriteY + shieldBarOffsetY;
-            float enemyHpBarX      = enemySpriteX  + barOffsetX;
-            float enemyHpBarY      = enemySpriteY  + hpBarOffsetY;
+            float playerHpBarX     = basePlayerX + barOffsetX;
+            float playerHpBarY     = basePlayerY + hpBarOffsetY;
+            float playerShieldBarX = basePlayerX + barOffsetX;
+            float playerShieldBarY = basePlayerY + shieldBarOffsetY;
+            float enemyHpBarX      = baseEnemyX  + barOffsetX;
+            float enemyHpBarY      = baseEnemyY  + hpBarOffsetY;
 
             game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
             game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

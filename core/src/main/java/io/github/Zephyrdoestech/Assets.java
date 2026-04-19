@@ -219,17 +219,27 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
     public final Animation<TextureRegion> fleshfeederCombatDamaged;
+
     public final Animation<TextureRegion> darryllionCombatIdle;
     public final Animation<TextureRegion> darryllionCombatAttack1;
     public final Animation<TextureRegion> darryllionCombatAttack2;
+    public final Animation<TextureRegion> darryllionCombatDamaged;
+
     public final Animation<TextureRegion> gobninilCombatIdle;
     public final Animation<TextureRegion> gobninilCombatAttack;
+    public final Animation<TextureRegion> gobninilCombatDamaged;
+
     public final Animation<TextureRegion> chimericksCombatIdle;
     public final Animation<TextureRegion> chimericksCombatAttack;
+    public final Animation<TextureRegion> chimericksCombatDamaged;
+
     public final Animation<TextureRegion> labagoliathCombatIdle;
     public final Animation<TextureRegion> labagoliathCombatAttack;
+    public final Animation<TextureRegion> labagoliathCombatDamaged;
+
     public final Animation<TextureRegion> syozanCombatIdle;
     public final Animation<TextureRegion> syozanCombatAttack;
+    public final Animation<TextureRegion> syozanCombatDamaged;
 
     public Animation<TextureRegion> lyronSelectAnim;
 
@@ -410,19 +420,29 @@ public class Assets implements Disposable {
         lyronCombatDeath     = loadAnim("Sprites/Combat/CharacterHero/Lyron/Death",   "", 16, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
-        fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 11, 0.12f));
+        fleshfeederCombatAttack  = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 9, 0.12f);
         fleshfeederCombatDamaged = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Damaged",  "", 4, 0.2f);
+
         darryllionCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "",   8, 0.2f));
         darryllionCombatAttack1  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
         darryllionCombatAttack2  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
+        darryllionCombatDamaged  = loadAnim("Sprites/Combat/Monster/Darryllion/Damaged",    "", 4, 0.2f);
+
         gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
+        gobninilCombatDamaged     = loadAnim("Sprites/Combat/Monster/Gobninil/Damaged",     "", 4, 0.2f);
+
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
         chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "Attack", 6, 0.2f));
-        labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "Idle",   4, 0.2f));
-        labagoliathCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "Attack", 6, 0.2f));
+        chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
+
+        labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
+        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "Attack", 6, 0.2f);
+        labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 4, 0.2f);
+
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
         syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
+        syozanCombatDamaged       = loadAnim("Sprites/Combat/Monster/Syozan/Damaged",       "", 4, 0.2f);
 
         // ── Audio ─────────────────────────────────────────────────────────────
 

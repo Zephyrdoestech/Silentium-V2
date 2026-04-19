@@ -1,7 +1,6 @@
 package Screens;
 
 import Entities.Enemy;
-import com.badlogic.gdx.graphics.Color;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Mechanics.MapTraversalSystem.Room;
@@ -96,7 +95,7 @@ public class SilentCavernsScreen extends ExploringScreen {
             float x = room.getBounds().x + RNG.nextFloat() * (room.getBounds().width  - 64f);
             float y = room.getBounds().y + RNG.nextFloat() * (room.getBounds().height - 64f);
 
-            Enemy e = RNG.nextBoolean() ? Enemy.aryzachnid(x, y) : Enemy.chimericks(x, y);
+            Enemy e = RNG.nextBoolean() ? Enemy.gobninil(x, y) : Enemy.chimericks(x, y);
             room.addEnemy(e);
             game.ctx.mapEnemies.add(e);
         }

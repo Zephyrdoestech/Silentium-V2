@@ -109,7 +109,7 @@ public class Enemy {
         );
     }
 
-    public static Enemy aryzachnid(float x, float y) {
+    public static Enemy gobninil(float x, float y) {
         return new Enemy("Gobninil", 500, x, y,
             new Attack("Binding Webs",     20, 40),
             new Attack("Paralyzing Fangs", 25, 50),
