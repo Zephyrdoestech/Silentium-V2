@@ -266,7 +266,7 @@ public class CharacterHero {
      * @param self the character whose turn just ended
      */
     public void onTurnEnd(CharacterHero self) {
-        if (name.equals("Aurelius")) {
+        if (name.equals("Aurelius") && self.getHp() > 0) {
             int healAmount = (int)(self.getMaxHp() * 0.05f);
             self.heal(healAmount);
         }

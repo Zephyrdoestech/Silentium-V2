@@ -57,6 +57,9 @@
 
         private int     revealedNoteCount   = 0;
         private float   noteRevealTimer     = 0f;
+        private float   stateAnimTimer      = 0f;
+        private float   deathAnimTimer      = 0f;
+        private GameContext.CombatState lastStateForAnim = GameContext.CombatState.NONE;
 
         // ── Damage Values ─────────────────────────────────────────────────────────
 
@@ -133,6 +136,7 @@
         // ── Audio ─────────────────────────────────────────────────────
 
         private Music combatBGM;
+        private boolean splashSFX = false;
 
         private Sound noteA;
         private Sound noteB;
@@ -167,6 +171,9 @@
         public void show() {
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
+
+            player.setHp(10);
+
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
             player.getPlayerInventory().gainMajorBlessing(game.assets);
@@ -195,6 +202,9 @@
             turnTime              = maxTurnTime;
             animTimer             = 0f;
             splashTimer           = 0f;
+            stateAnimTimer        = 0f;
+            deathAnimTimer        = 0f;
+            lastStateForAnim      = GameContext.CombatState.NONE;
             additionalTime        = 0f;
             turnMenuSelection     = 0;
             confirmSelection      = 0;
@@ -205,6 +215,7 @@
             turnComplete            = false;
             enemyAttacked         = false;
             metronomeActivated    = false;
+            splashSFX             = false;
             chordUsedThisTurn     = null;
             selectedItem          = null;
 
@@ -302,6 +313,7 @@
             // This is a safety measure if the asset is missing or not yet loaded.
             if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN && game.assets.battleIntroAnim == null) {
                 game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
+                splashTimer = 0f;
                 return; // Skip drawing and animation checks for this frame
             }
 
@@ -329,7 +341,11 @@
             }
 
             if (frame != null && sfx != null) {
-                sfx.play();
+                if(!splashSFX) {
+                    sfx.play();
+                    splashSFX = true;
+                }
+
                 beginUiBatch();
                 game.batch.draw(frame,
                     (Main.WORLD_WIDTH  - frame.getRegionWidth())  / 2f,
@@ -340,6 +356,7 @@
             if (game.ctx.combatState == GameContext.CombatState.BATTLE_SCREEN
                 && game.assets.battleIntroAnim.isAnimationFinished(splashTimer)) {
                 game.ctx.combatState = GameContext.CombatState.TUTORIAL;
+                splashTimer = 0f;
             }
 
             if (game.ctx.combatState == GameContext.CombatState.VICTORY
@@ -361,6 +378,7 @@
         private void renderTutorial(float delta){
             if(tutorialScreen == null){
                 game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
+                splashTimer = 0f;
                 return;
             }
 
@@ -395,6 +413,7 @@
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 combatBGM.play();
                 game.ctx.combatState = GameContext.CombatState.ENEMY_INTRODUCTION;
+                splashTimer = 0f;
                 return;
             }
         }
@@ -444,14 +463,26 @@
         // =========================================================================
 
         private void renderEntities() {
+            // Reset state animation timer when combat state changes
+            if (game.ctx.combatState != lastStateForAnim) {
+                stateAnimTimer   = 0f;
+                lastStateForAnim = game.ctx.combatState;
+            }
+            stateAnimTimer += Gdx.graphics.getDeltaTime();
+
             boolean isPlayerAttacking = game.ctx.combatState == GameContext.CombatState.ATTACK_FEEDBACK;
             boolean isEnemyAttacking  = game.ctx.combatState == GameContext.CombatState.ENEMY_ATTACK;
+            boolean isPlayerDead      = !player.isAlive();
 
-            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking);
+            // Only advance death timer when player is dead
+            if (isPlayerDead) { deathAnimTimer += Gdx.graphics.getDeltaTime(); }
+
+            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking, isPlayerDead);
             TextureRegion enemySprite  = resolveEnemySprite(isEnemyAttacking);
 
-            float playerWidth  = 96f;
-            float playerHeight = 96f;
+            // Player is drawn at 3x its native sprite resolution
+            float playerWidth  = playerSprite != null ? playerSprite.getRegionWidth()  * 3.0f : 0f;
+            float playerHeight = playerSprite != null ? playerSprite.getRegionHeight() * 3.0f : 0f;
             float enemyWidth   = 160f;
             float enemyHeight  = 160f;
 
@@ -470,20 +501,32 @@
          * Returns the correct animation frame for the player character.
          * Delegate to assets to avoid a large switch block here.
          */
-        private TextureRegion resolvePlayerSprite(boolean isAttacking) {
+        private TextureRegion resolvePlayerSprite(boolean isAttacking, boolean isPlayerDead) {
             if (game.ctx.selectedCharacter == null) return null;
+
+            // Death animation plays once and freezes on last frame
+            if (isPlayerDead) {
+                switch (game.ctx.selectedCharacter) {
+                    case SONARA:   return game.assets.sonaraCombatDeath.getKeyFrame(deathAnimTimer, false);
+                    case AURELIUS: return game.assets.aureliusCombatDeath.getKeyFrame(deathAnimTimer, false);
+                    case LYRON:    return game.assets.lyronCombatDeath.getKeyFrame(deathAnimTimer, false);
+                    default:       return null;
+                }
+            }
+
             switch (game.ctx.selectedCharacter) {
                 case SONARA:
+                    // Attack plays once per attack state entry, idle loops continuously
                     return isAttacking
-                        ? game.assets.sonaraCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.sonaraCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.sonaraCombatIdle.getKeyFrame(animTimer, true);
                 case AURELIUS:
                     return isAttacking
-                        ? game.assets.aureliusCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.aureliusCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.aureliusCombatIdle.getKeyFrame(animTimer, true);
                 case LYRON:
                     return isAttacking
-                        ? game.assets.lyronCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.lyronCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.lyronCombatIdle.getKeyFrame(animTimer, true);
                 default:
                     return null;
@@ -496,30 +539,38 @@
          */
         private TextureRegion resolveEnemySprite(boolean isAttacking) {
             if (enemy == null || enemy.getName() == null) return null;
+
+            // Check if enemy is in a damage display state
+            boolean isDamaged = game.ctx.combatState == GameContext.CombatState.DISPLAY_PLAYER_DAMAGE
+                || game.ctx.combatState == GameContext.CombatState.DISPLAY_FINAL_DAMAGE;
+
             switch (enemy.getName()) {
                 case "Flesh Feeder":
+                    // MODIFIED: damaged animation plays once on damage states, falls back to idle
+                    if (isDamaged && game.assets.fleshfeederCombatDamaged != null)
+                        return game.assets.fleshfeederCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     return isAttacking
-                        ? game.assets.fleshfeederCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.fleshfeederCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
                 case "Darryllion":
                     return isAttacking
-                        ? game.assets.darryllionCombatAttack1.getKeyFrame(animTimer, true)
+                        ? game.assets.darryllionCombatAttack1.getKeyFrame(stateAnimTimer, false)
                         : game.assets.darryllionCombatIdle.getKeyFrame(animTimer, true);
                 case "Aryzachnid":
                     return isAttacking
-                        ? game.assets.gobninilCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.gobninilCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.gobninilCombatIdle.getKeyFrame(animTimer, true);
                 case "Chimericks":
                     return isAttacking
-                        ? game.assets.chimericksCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.chimericksCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.chimericksCombatIdle.getKeyFrame(animTimer, true);
                 case "Labagoliath":
                     return isAttacking
-                        ? game.assets.labagoliathCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.labagoliathCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.labagoliathCombatIdle.getKeyFrame(animTimer, true);
                 case "Maestro Syozan":
                     return isAttacking
-                        ? game.assets.syozanCombatAttack.getKeyFrame(animTimer, true)
+                        ? game.assets.syozanCombatAttack.getKeyFrame(stateAnimTimer, false)
                         : game.assets.syozanCombatIdle.getKeyFrame(animTimer, true);
                 default:
                     return game.assets.fleshfeederCombatIdle.getKeyFrame(animTimer, true);
@@ -874,7 +925,10 @@
             game.assets.stateTransition.play(1.0f);
             switch (game.ctx.combatState) {
                 case ENEMY_INTRODUCTION:        game.ctx.combatState = GameContext.CombatState.TURN_MENU; break;
-                case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatState = GameContext.CombatState.VICTORY;   break;
+                case CHARACTER_POSTCOMBAT_LINE:
+                    game.ctx.combatState = GameContext.CombatState.VICTORY;
+                    splashSFX = false;
+                    break;
                 default: break;
             }
         }
@@ -1031,9 +1085,13 @@
 
                 case DISPLAY_ENEMY_DAMAGE:
                     finishRound();
-                    game.ctx.combatState = player.isAlive()
-                        ? GameContext.CombatState.TURN_MENU
-                        : GameContext.CombatState.DEFEAT;
+                    if (player.isAlive()) {
+                        game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+                    } else {
+                        game.ctx.combatState = GameContext.CombatState.DEFEAT;
+                        splashTimer = 0f;
+                        splashSFX = false;
+                    }
                     break;
 
                 default:
@@ -1566,56 +1624,41 @@
             inventory.removeItem(slotSelected);
         }
 
-        private void handleItemEffects(Item item, String chord){
-            String  itemName        = item.getName();
-            int     effectTracker   = usedItems.get(itemName);
+        private void handleItemEffects(Item item, String chord) {
+            String itemName      = item.getName();
+            int    effectTracker = usedItems.get(itemName);
+
+            // Exit early if item is not active — don't decrement
+            if (effectTracker <= 0) return;
 
             usedItems.put(itemName, effectTracker - 1);
+
             boolean isMinor = chord != null && (chord.equals("DMINOR") || chord.equals("EMINOR") || chord.equals("AMINOR"));
             boolean isMajor = chord != null && (chord.equals("CMAJOR") || chord.equals("FMAJOR") || chord.equals("GMAJOR"));
 
-            // Check if item is in effect
-            if(effectTracker > 0){
-                switch(itemName){
-                    case "Crimson Chorus":
-                        float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
-                        player.setDamageBuff(player.getDamageBuff() + extraDamage);
-                        break;
-                    case "Major's Blessing":
-                        if (chord != null && isMajor){
-                            switch (chord) {
-                                case "CMAJOR":
-                                case "FMAJOR":
-                                case "GMAJOR":
-                                    game.ctx.chordSystem.resetChord(chord);
-                                    break;
-                            }
-                        }
-                        break;
-                    case "Minor's Grace":
-                        if (chord != null && isMinor) {
-                            switch (chord) {
-                                case "DMINOR":
-                                case "EMINOR":
-                                case "AMINOR":
-                                    game.ctx.chordSystem.resetChord(chord);
-                                    break;
-                            }
-                        }
-                        break;
-                    case "Resolved Dissonance":
-                        if (chord != null && chord.equals("BDIM")) {
-                            int hpLoss = (int)(player.getMaxHp() * 0.1);
-                            player.setHp(player.getHp() + hpLoss);
-                        }
-                        break;
-                    case "Silent Barrier":
-                        enemyDamage = 0;
-                        break;
-                    case "Time Orb":
-                        turnTime += 15;
-                        break;
-                }
+            switch (itemName) {
+                case "Crimson Chorus":
+                    float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
+                    player.setDamageBuff(player.getDamageBuff() + extraDamage);
+                    break;
+                case "Major's Blessing":
+                    if (isMajor) game.ctx.chordSystem.resetChord(chord);
+                    break;
+                case "Minor's Grace":
+                    if (isMinor) game.ctx.chordSystem.resetChord(chord);
+                    break;
+                case "Resolved Dissonance":
+                    if (chord != null && chord.equals("BDIM")) {
+                        int hpLoss = (int)(player.getMaxHp() * 0.1);
+                        player.setHp(player.getHp() + hpLoss);
+                    }
+                    break;
+                case "Silent Barrier":
+                    enemyDamage = 0;
+                    break;
+                case "Time Orb":
+                    turnTime += 15f;
+                    break;
             }
         }
         // =========================================================================
@@ -1690,11 +1733,14 @@
         // =========================================================================
 
         private void executeEnemyAttack() {
-            handleItemEffects(new SilentBarrier(game.assets), null);
             int dmg = enemy.performAttack();
-            player.takeDamage(dmg);
-            player.onDamageReceived(enemy, dmg); // Sonara passive handled inside CharacterHero
             enemyDamage = dmg;
+
+            // Silent Barrier check is handled inside handleItemEffects
+            handleItemEffects(new SilentBarrier(game.assets), null);
+
+            player.takeDamage(enemyDamage);
+            player.onDamageReceived(enemy, enemyDamage);
         }
 
         // =========================================================================

@@ -208,13 +208,17 @@ public class Assets implements Disposable {
 
     public final Animation<TextureRegion> sonaraCombatIdle;
     public final Animation<TextureRegion> sonaraCombatAttack;
+    public final Animation<TextureRegion> sonaraCombatDeath;
     public final Animation<TextureRegion> aureliusCombatIdle;
     public final Animation<TextureRegion> aureliusCombatAttack;
+    public final Animation<TextureRegion> aureliusCombatDeath;
     public final Animation<TextureRegion> lyronCombatIdle;
     public final Animation<TextureRegion> lyronCombatAttack;
+    public final Animation<TextureRegion> lyronCombatDeath;
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
+    public final Animation<TextureRegion> fleshfeederCombatDamaged;
     public final Animation<TextureRegion> darryllionCombatIdle;
     public final Animation<TextureRegion> darryllionCombatAttack1;
     public final Animation<TextureRegion> darryllionCombatAttack2;
@@ -397,16 +401,20 @@ public class Assets implements Disposable {
 
         sonaraCombatIdle     = loadAnim("Sprites/Combat/CharacterHero/Sonara/Idle",     "Idle",   4, 0.2f);
         sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "Attack", 6, 0.1f);
+        sonaraCombatDeath    = loadAnim("Sprites/Combat/CharacterHero/Sonara/Death",   "", 16, 0.1f);
         aureliusCombatIdle   = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Idle",   "Idle",   4, 0.2f);
         aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "Attack", 6, 0.1f);
+        aureliusCombatDeath  = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Death",   "", 16, 0.1f);
         lyronCombatIdle      = loadAnim("Sprites/Combat/CharacterHero/Lyron/Idle",      "Idle",   4, 0.2f);
         lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "Attack", 6, 0.1f);
+        lyronCombatDeath     = loadAnim("Sprites/Combat/CharacterHero/Lyron/Death",   "", 16, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 11, 0.12f));
+        fleshfeederCombatDamaged = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Damaged",  "", 4, 0.2f);
         darryllionCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "",   8, 0.2f));
-        darryllionCombatAttack1 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
-        darryllionCombatAttack2 = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
+        darryllionCombatAttack1  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
+        darryllionCombatAttack2  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
         gobninilCombatIdle       = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Idle",       "",   4, 0.2f));
         gobninilCombatAttack     = flipped(loadAnim("Sprites/Combat/Monster/Gobninil/Attack",     "Attack", 6, 0.2f));
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
