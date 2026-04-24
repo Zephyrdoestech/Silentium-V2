@@ -1,16 +1,15 @@
 package Screens;
 
+import Entities.CharacterHero;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import io.github.Zephyrdoestech.*;
-import Entities.Character;
 
 /**
- * Character selection screen.
+ * CharacterHero selection screen.
  *
  * Features:
  * - A/D or Arrow keys to browse
@@ -187,9 +186,9 @@ public class CharSelectScreen extends BaseScreen {
         game.ctx.stopTheme();
         game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
         switch (index) {
-            case 0: game.ctx.activeCharacterStats = new Character("Sonara",   "Banjo", 150, 40); break;
-            case 1: game.ctx.activeCharacterStats = new Character("Aurelius", "Flute", 150, 40); break;
-            case 2: game.ctx.activeCharacterStats = new Character("Lyron",    "Harp",  250, 40); break;
+            case 0: game.ctx.activeCharacterStats = new CharacterHero("Sonara",   "Banjo", 150, 40); break;
+            case 1: game.ctx.activeCharacterStats = new CharacterHero("Aurelius", "Flute", 150, 40); break;
+            case 2: game.ctx.activeCharacterStats = new CharacterHero("Lyron",    "Harp",  250, 40); break;
         }
         game.setScreen(new TownOfEchoesScreen(game));
     }

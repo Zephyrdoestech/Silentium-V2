@@ -62,7 +62,7 @@ public class IntroScreen extends BaseScreen {
             timer = 0f;
             currentPage++;
 
-            // Out of pages? Go to Character Select!
+            // Out of pages? Go to CharacterHero Select!
             if (currentPage >= storyImages.length) {
                 game.setScreen(new CharSelectScreen(game));
                 return;

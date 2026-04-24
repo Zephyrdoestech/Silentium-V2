@@ -1,7 +1,7 @@
 package Mechanics.CombatSystem;
 
 
-import Entities.Character;
+import Entities.CharacterHero;
 
 public class Chord {
     private boolean cMajor = false;
@@ -22,6 +22,32 @@ public class Chord {
         aMinor = false;
         bDim = false;
     }
+
+    public void resetChord(String chord){
+        switch (chord) {
+            case "CMAJOR":
+                cMajor = false;
+                break;
+            case "DMINOR":
+                dMinor = false;
+                break;
+            case "EMINOR":
+                eMinor = false;
+                break;
+            case "FMAJOR":
+                fMajor = false;
+                break;
+            case "GMAJOR":
+                gMajor = false;
+                break;
+            case "AMINOR":
+                aMinor = false;
+                break;
+            case "BDIM":
+                bDim = false;
+                break;
+        }
+    };
 
     //chord detection
     public String checkChord(char n1, char n2, char n3) {
@@ -64,7 +90,7 @@ public class Chord {
     }
 
     //main buff system
-    public int applyChord(String chord, Character player, int damage) {
+    public int applyChord(String chord, CharacterHero player, int damage) {
         if (chord == null) return damage;
 
         double bonusDamage = 1;
@@ -162,9 +188,9 @@ public class Chord {
 
     /**
      * Returns the feedback message describing what a chord did.
-     * Requires the Character to compute HP-based values.
+     * Requires the CharacterHero to compute HP-based values.
      */
-    public String getChordMessage(String chord, Character c) {
+    public String getChordMessage(String chord, CharacterHero c) {
         switch (chord) {
             case "CMAJOR": {
                 int h = (int)(c.getMaxHp() * 0.20f);

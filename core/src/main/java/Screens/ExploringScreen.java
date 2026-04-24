@@ -1,5 +1,6 @@
 package Screens;
 
+import Entities.CharacterHero;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -7,14 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import Entities.Character;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
 import Entities.MapCharacter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
@@ -42,6 +41,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
+    //    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
@@ -177,11 +177,6 @@ public class ExploringScreen extends BaseScreen {
         }
         // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
         else {
-            if(game.ctx.playerDefeated){
-                // CHECKPOINT SYSTEM HERE
-                return;
-            }
-
             boolean placed = false;
             for (Room r : game.ctx.rooms) {
                 if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
@@ -250,13 +245,9 @@ public class ExploringScreen extends BaseScreen {
         }
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
-            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
-            // - offset if we are in Silent Caverns
-            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
-
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                exitY,
+                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
                 exitSize, exitSize);
         }
         game.batch.end();
@@ -442,6 +433,8 @@ public class ExploringScreen extends BaseScreen {
 
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                // TEMPORARY MAX LEVEL
+                game.ctx.activeCharacterStats.setLevel(5);
                 game.setScreen(new CombatScreen(game));
                 return;
 
@@ -588,7 +581,7 @@ public class ExploringScreen extends BaseScreen {
 
     // ── HUD ───────────────────────────────────────────────────────────────────
     private void drawHUD() {
-        Character c = game.ctx.activeCharacterStats;
+        CharacterHero c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
@@ -693,5 +686,8 @@ public class ExploringScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
     @Override public void hide()    {}
-    @Override public void dispose() { }
+    @Override
+    public void dispose() {
+        // Do not dispose of global assets here
+    }
 }
