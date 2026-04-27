@@ -174,7 +174,7 @@
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
 
-            player.setHp(10);
+            player.setHp(100);
 
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
@@ -1661,10 +1661,27 @@
                     player.setDamageBuff(player.getDamageBuff() + extraDamage);
                     break;
                 case "Major's Blessing":
-                    if (isMajor) game.ctx.chordSystem.resetChord(chord);
+                    if(!isMajor) break;
+
+                    Random rand = new Random();
+                    int chordNum;
+                    boolean majorsBlessingUsed = false;
+                    while(!majorsBlessingUsed){
+                        chordNum = rand.nextInt(0,4);
+                        switch(chordNum){
+                            case 0:
+                                if(!game.ctx.chordSystem.isChordUsed('C')){ game.ctx.chordSystem.resetChord("CMAJOR");}
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                        }
+                    }
+//                    if (isMajor) game.ctx.chordSystem.resetChord(chord);
                     break;
                 case "Minor's Grace":
-                    if (isMinor) game.ctx.chordSystem.resetChord(chord);
+//                    if (isMinor) game.ctx.chordSystem.resetChord(chord);
                     break;
                 case "Resolved Dissonance":
                     if (chord != null && chord.equals("BDIM")) {
@@ -1732,8 +1749,6 @@
                     handleItemEffects(new MinorsGrace(game.assets), chord);
                     handleItemEffects(new MajorsBlessing(game.assets), chord);
                     handleItemEffects(new ResolvedDissonance(game.assets), chord);
-
-
                 }
             }
 
