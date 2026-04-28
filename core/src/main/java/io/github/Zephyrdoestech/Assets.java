@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class Assets implements Disposable {
 
 
     public final Texture titleScreenTex;
+    public final Texture characterSelectBG;
+    public final Texture mainMenuBG;
 
     // Story Slideshow
     public Texture storyPanel1;
@@ -47,6 +50,13 @@ public class Assets implements Disposable {
     public final TextureRegion cavernsExitTex;
     public final TextureRegion abyssOfDissonanceTex;
     public final TextureRegion townDecorationsTex;
+
+    public final Animation<TextureRegion> sonaraCardDefault;
+    public final Animation<TextureRegion> sonaraCardSelected;
+    public final Animation<TextureRegion> aureliusCardDefault;
+    public final Animation<TextureRegion> aureliusCardSelected;
+    public final Animation<TextureRegion> lyronCardDefault;
+    public final Animation<TextureRegion> lyronCardSelected;
 
     public final Texture sonaraTex;
     public final Texture lyronTex;
@@ -258,6 +268,8 @@ public class Assets implements Disposable {
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
+        characterSelectBG = safeLoadTexture("Background/Texture/Cobblestone.png");
+        mainMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
 
         // Load the Story Panels
         storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
@@ -292,6 +304,13 @@ public class Assets implements Disposable {
 
 //        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
 //        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
+
+        sonaraCardDefault = loadAnim("Sprites/Characters/Sonara/PlayerCard/default",   "",  10, 0.12f);
+        sonaraCardSelected = loadAnim("Sprites/Characters/Sonara/PlayerCard/selected",   "",  10, 0.12f);
+        aureliusCardDefault = loadAnim("Sprites/Characters/Aurelius/PlayerCard/default",   "",  10, 0.12f);
+        aureliusCardSelected = loadAnim("Sprites/Characters/Aurelius/PlayerCard/selected",   "",  10, 0.12f);
+        lyronCardDefault = loadAnim("Sprites/Characters/Lyron/PlayerCard/default",   "",  10, 0.12f);
+        lyronCardSelected = loadAnim("Sprites/Characters/Lyron/PlayerCard/selected",   "",  10, 0.12f);
 
         sonaraTex = new Texture("sonara.png");
         lyronTex = new Texture("lyron.png");
@@ -410,21 +429,21 @@ public class Assets implements Disposable {
         timerAnim       = loadAnim("Sprites/Combat/Interface/Timer/TimerAnim", "Timer", 4, 0.2f);
 
         sonaraCombatIdle     = loadAnim("Sprites/Combat/CharacterHero/Sonara/Idle",     "Idle",   4, 0.2f);
-        sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "Attack", 6, 0.1f);
+        sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "", 13, 0.12f);
         sonaraCombatDeath    = loadAnim("Sprites/Combat/CharacterHero/Sonara/Death",   "", 16, 0.1f);
         aureliusCombatIdle   = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Idle",   "Idle",   4, 0.2f);
-        aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "Attack", 6, 0.1f);
+        aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "", 12, 0.12f);
         aureliusCombatDeath  = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Death",   "", 16, 0.1f);
         lyronCombatIdle      = loadAnim("Sprites/Combat/CharacterHero/Lyron/Idle",      "Idle",   4, 0.2f);
-        lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "Attack", 6, 0.1f);
+        lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "", 13, 0.12f);
         lyronCombatDeath     = loadAnim("Sprites/Combat/CharacterHero/Lyron/Death",   "", 16, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
-        fleshfeederCombatAttack  = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 9, 0.12f);
+        fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 9, 0.12f));
         fleshfeederCombatDamaged = loadAnim("Sprites/Combat/Monster/Fleshfeeder/Damaged",  "", 4, 0.2f);
 
         darryllionCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Idle",      "",   8, 0.2f));
-        darryllionCombatAttack1  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 8, 0.16f));
+        darryllionCombatAttack1  = loadAnim("Sprites/Combat/Monster/Darryllion/Attack1",    "", 9, 0.1f);
         darryllionCombatAttack2  = flipped(loadAnim("Sprites/Combat/Monster/Darryllion/Attack2",    "", 10, 0.16f));
         darryllionCombatDamaged  = loadAnim("Sprites/Combat/Monster/Darryllion/Damaged",    "", 4, 0.2f);
 
@@ -433,11 +452,11 @@ public class Assets implements Disposable {
         gobninilCombatDamaged     = loadAnim("Sprites/Combat/Monster/Gobninil/Damaged",     "", 4, 0.2f);
 
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
-        chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "Attack", 6, 0.2f));
+        chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.16f));
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
-        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "Attack", 6, 0.2f);
+        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 4, 0.2f);
 
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
