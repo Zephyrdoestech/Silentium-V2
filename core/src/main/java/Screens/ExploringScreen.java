@@ -245,9 +245,13 @@ public class ExploringScreen extends BaseScreen {
         }
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
+            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
+            // - offset if we are in Silent Caverns
+            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
+
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
+                exitY,
                 exitSize, exitSize);
         }
         game.batch.end();
