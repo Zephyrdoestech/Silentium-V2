@@ -479,7 +479,7 @@
             // Only advance death timer when player is dead
             if (isPlayerDead) { deathAnimTimer += Gdx.graphics.getDeltaTime(); }
 
-            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking, isPlayerDead);
+            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking, isEnemyAttacking, isPlayerDead);
             TextureRegion enemySprite  = resolveEnemySprite(isEnemyAttacking);
 
             // Player is drawn at 3x its native sprite resolution
@@ -513,7 +513,7 @@
          * Returns the correct animation frame for the player character.
          * Delegate to assets to avoid a large switch block here.
          */
-        private TextureRegion resolvePlayerSprite(boolean isAttacking, boolean isPlayerDead) {
+        private TextureRegion resolvePlayerSprite(boolean isAttacking, boolean isDamaged, boolean isPlayerDead) {
             if (game.ctx.selectedCharacter == null) return null;
 
             // Death animation plays once and freezes on last frame
@@ -522,6 +522,16 @@
                     case SONARA:   return game.assets.sonaraCombatDeath.getKeyFrame(deathAnimTimer, false);
                     case AURELIUS: return game.assets.aureliusCombatDeath.getKeyFrame(deathAnimTimer, false);
                     case LYRON:    return game.assets.lyronCombatDeath.getKeyFrame(deathAnimTimer, false);
+                    default:       return null;
+                }
+            }
+
+            // Damaged animation plays once and freezes on last frame
+            if (isDamaged) {
+                switch (game.ctx.selectedCharacter) {
+                    case SONARA:   return game.assets.sonaraCombatDamaged.getKeyFrame(stateAnimTimer, false);
+                    case AURELIUS: return game.assets.aureliusCombatDamaged.getKeyFrame(stateAnimTimer, false);
+                    case LYRON:    return game.assets.lyronCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     default:       return null;
                 }
             }
