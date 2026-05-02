@@ -174,7 +174,7 @@
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
 
-            player.setHp(100);
+            player.setHp(500);
 
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
@@ -231,7 +231,7 @@
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
-                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
+                enemy.setMaxHp((int)(enemy.getMaxHp() * 3.0f));
             }
 
             if (player.getLevel() <= 3) {
@@ -937,7 +937,7 @@
         private void renderDialogue(float delta) {
             switch (game.ctx.combatState) {
                 case ENEMY_INTRODUCTION:        game.ctx.combatLog = enemy.getName() + " encountered!";       break;
-                case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = "Insert Post Combat Dialogue Here.";     break;
+                case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = enemy.getName() + " has been defeated!";     break;
                 default: break;
             }
 
@@ -1656,7 +1656,11 @@
             int     effectTracker = usedItems.get(itemName) + itemInEffect;
             usedItems.put(itemName, effectTracker);
 
-            handleItemEffects(selectedItem, null);
+            if (itemName.equals("Time Orb")
+                || itemName.equals("Major's Blessing")
+                || itemName.equals("Minor's Grace")) {
+                handleItemEffects(selectedItem, null);
+            }
 
             inventory.removeItem(slotSelected);
         }
@@ -1673,10 +1677,6 @@
             Random rand = new Random();
             int chordNum;
             switch (itemName) {
-                case "Crimson Chorus":
-                    float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
-                    player.setDamageBuff(player.getDamageBuff() + extraDamage);
-                    break;
                 case "Major's Blessing":
                     boolean majorsBlessingUsed = false;
                     while(!majorsBlessingUsed){
@@ -1732,7 +1732,7 @@
                                 break;
                             case 2:
                                 if(game.ctx.chordSystem.isChordUsed('A')){
-                                    game.ctx.chordSystem.resetChord("AMINOR ");
+                                    game.ctx.chordSystem.resetChord("AMINOR");
                                     minorsGraceUsed=true;
                                 }
                                 break;
@@ -1799,7 +1799,7 @@
                     java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[1]),
                     java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[2]));
                 if (chord != null) {
-                    game.ctx.chordSystem.applyChord(chord, player, initialDamage);
+                    finalDamage = game.ctx.chordSystem.applyChord(chord, player, finalDamage);
                     chordUsedThisTurn = chord;
 
                     handleItemEffects(new MinorsGrace(game.assets), chord);
@@ -1808,8 +1808,14 @@
                 }
             }
 
-            handleItemEffects(new CrimsonChorus(game.assets), null);
+            if (usedItems.get("Crimson Chorus") > 0) {
+                float extraDamage = new CrimsonChorus(game.assets).getExtraDamage() / 100f;
+                finalDamage = (int)(finalDamage * (1.0f + extraDamage));
+                usedItems.put("Crimson Chorus", usedItems.get("Crimson Chorus") - 1);
+            }
+
             enemy.takeDamage(finalDamage);
+
             player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
 
             revealedNoteCount    = 0;
@@ -1823,8 +1829,7 @@
         // =========================================================================
 
         private void executeEnemyAttack() {
-            int dmg = enemy.performAttack();
-            enemyDamage = dmg;
+            enemyDamage = enemy.performAttack();
 
             // Silent Barrier check is handled inside handleItemEffects
             handleItemEffects(new SilentBarrier(game.assets), null);

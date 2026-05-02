@@ -101,11 +101,11 @@ public class Chord {
                 player.heal((int)(player.getMaxHp() * 0.2));
                 break;
             case "DMINOR":
-                player.setDamageBuff(1.2);
+                player.setDamageBuff(0.2);
                 break;
             case "EMINOR":
                 player.heal((int)(player.getMaxHp() * 0.1));
-                player.setDamageBuff(1.1);
+                player.setDamageBuff(0.1);
                 break;
             case "FMAJOR":
                 player.gainShield(25);
@@ -118,7 +118,7 @@ public class Chord {
                 player.gainShield(35);
                 break;
             case "BDIM":
-                bonusDamage = 1.3;
+                bonusDamage = 1.5;
                 player.setHp(player.getHp() - (int)(player.getMaxHp() * 0.1));
                 break;
         }
