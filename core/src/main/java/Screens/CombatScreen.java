@@ -41,6 +41,13 @@
         private String  chordUsedThisTurn       = null;
         private boolean isPaused                = false;
 
+        // ── Pause Menu ────────────────────────────────────────────────────────────
+
+        private int             pauseMenuSelection   = 0;
+        private final String[]  pauseMenuOptions     = { "Continue", "Chord List", "Item Info", "Exit" };
+        private boolean         showChordList        = false;
+        private boolean         showItemInfo         = false;
+
         // ── Timers ────────────────────────────────────────────────────────────────
 
         /** Drives all sprite animations (loops continuously). */
@@ -174,7 +181,6 @@
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
 
-            player.setHp(100);
 
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
@@ -195,10 +201,10 @@
             game.ctx.metronome.reset();
 
             switch (game.ctx.mapName) {
-                case TOWN_OF_ECHOES:        maxTurnTime = 15f; break;
-                case SILENT_CAVERNS:        maxTurnTime = 20f; break;
-                case ABYSS_OF_DISSONANCE:   maxTurnTime = 25f; break;
-                default:                    maxTurnTime = 15f; break;
+                case TOWN_OF_ECHOES:        maxTurnTime = 25f; break;
+                case SILENT_CAVERNS:        maxTurnTime = 21f; break;
+                case ABYSS_OF_DISSONANCE:   maxTurnTime = 18f; break;
+                default:                    maxTurnTime = 25f; break;
             }
 
             turnTime              = maxTurnTime;
@@ -231,8 +237,9 @@
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
-                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
+                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
             }
+
 
             if (player.getLevel() <= 3) {
                 tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
@@ -254,6 +261,9 @@
             if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
                 isPaused = !isPaused;
                 if (isPaused) {
+                    pauseMenuSelection = 0;
+                    showChordList = false;
+                    showItemInfo = false;
                     if (combatBGM != null) combatBGM.pause();
                 } else {
                     if (combatBGM != null && game.ctx.combatState != GameContext.CombatState.BATTLE_SCREEN) combatBGM.play();
@@ -261,17 +271,7 @@
             }
 
             if (isPaused) {
-                Gdx.gl.glClearColor(0, 0, 0, 1);
-                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-                game.uiCamera.update();
-                game.batch.setProjectionMatrix(game.uiCamera.combined);
-                game.batch.begin();
-                game.assets.font.setColor(Color.WHITE);
-                String text = "Paused... press p again to continue";
-                game.glyphLayout.setText(game.assets.font, text);
-                game.assets.font.draw(game.batch, text, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, Main.WORLD_HEIGHT / 2f);
-                game.batch.end();
+                renderPauseScreen(delta);
                 return;
             }
 
@@ -300,6 +300,116 @@
 
             game.assets.font.setColor(Color.WHITE);
             game.assets.titleFont.setColor(Color.WHITE);
+        }
+
+        // =========================================================================
+        // Pause Screen
+        // =========================================================================
+
+        private void renderPauseScreen(float delta) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+            game.uiCamera.update();
+            game.batch.setProjectionMatrix(game.uiCamera.combined);
+            game.batch.begin();
+
+            if (showChordList) {
+                game.assets.titleFont.setColor(Color.CYAN);
+                game.glyphLayout.setText(game.assets.titleFont, "CHORD LIST");
+                game.assets.titleFont.draw(game.batch, "CHORD LIST", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 520);
+                game.assets.titleFont.setColor(Color.WHITE);
+
+                game.assets.font.getData().setScale(0.85f);
+
+                float leftX = 300f;
+                game.assets.font.setColor(Color.YELLOW);
+                game.assets.font.draw(game.batch, "CHORDS (Required Notes)", leftX, 440);
+                game.assets.font.setColor(Color.WHITE);
+                game.assets.font.draw(game.batch, "C Major (C-E-G): Heals 20% max HP", leftX, 400);
+                game.assets.font.draw(game.batch, "D Minor (D-F-A): +20% Damage Buff", leftX, 360);
+                game.assets.font.draw(game.batch, "E Minor (E-G-B): Heals 10% max HP, +10% Dmg Buff", leftX, 320);
+                game.assets.font.draw(game.batch, "F Major (F-A-C): Gains 25 Shield", leftX, 280);
+                game.assets.font.draw(game.batch, "G Major (G-B-D): Heals 15% max HP, 15 Shield", leftX, 240);
+                game.assets.font.draw(game.batch, "A Minor (A-C-E): Gains 35 Shield", leftX, 200);
+                game.assets.font.draw(game.batch, "B Diminished (B-D-F): +50% Dmg Buff, Lose 10% HP", leftX, 160);
+
+                game.assets.font.getData().setScale(1.0f);
+
+                game.assets.font.setColor(Color.GRAY);
+                game.glyphLayout.setText(game.assets.font, "Press ESC to go back");
+                game.assets.font.draw(game.batch, "Press ESC to go back", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 60);
+                game.assets.font.setColor(Color.WHITE);
+
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    showChordList = false;
+                }
+            } else if (showItemInfo) {
+                game.assets.titleFont.setColor(Color.CYAN);
+                game.glyphLayout.setText(game.assets.titleFont, "ITEM INFO");
+                game.assets.titleFont.draw(game.batch, "ITEM INFO", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 520);
+                game.assets.titleFont.setColor(Color.WHITE);
+
+                game.assets.font.getData().setScale(0.85f);
+
+                float rightX = 260f;
+                game.assets.font.setColor(Color.YELLOW);
+                game.assets.font.draw(game.batch, "ITEMS", rightX, 440);
+                game.assets.font.setColor(Color.WHITE);
+                game.assets.font.draw(game.batch, "Crimson Chorus: Converts Shield into Damage Buff ", rightX, 400);
+                game.assets.font.draw(game.batch, "Major's Blessing: Recovers a used Major chord", rightX, 360);
+                game.assets.font.draw(game.batch, "Minor's Grace: Recovers a used Minor chord", rightX, 320);
+                game.assets.font.draw(game.batch, "Resolved Dissonance: Heals 10% HP upon B Dim", rightX, 280);
+                game.assets.font.draw(game.batch, "Silent Barrier: Nullifies next enemy attack", rightX, 240);
+                game.assets.font.draw(game.batch, "Time Orb: Adds 20 seconds to turn timer", rightX, 200);
+
+                game.assets.font.getData().setScale(1.0f);
+
+                game.assets.font.setColor(Color.GRAY);
+                game.glyphLayout.setText(game.assets.font, "Press ESC to go back");
+                game.assets.font.draw(game.batch, "Press ESC to go back", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 60);
+                game.assets.font.setColor(Color.WHITE);
+
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    showItemInfo = false;
+                }
+            } else {
+                game.assets.titleFont.setColor(Color.CYAN);
+                game.glyphLayout.setText(game.assets.titleFont, "PAUSED");
+                game.assets.titleFont.draw(game.batch, "PAUSED", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 450);
+                game.assets.titleFont.setColor(Color.WHITE);
+
+                for (int i = 0; i < pauseMenuOptions.length; i++) {
+                    String text = (i == pauseMenuSelection) ? "> " + pauseMenuOptions[i] + " <" : pauseMenuOptions[i];
+                    game.assets.font.setColor(i == pauseMenuSelection ? Color.YELLOW : Color.WHITE);
+                    game.glyphLayout.setText(game.assets.font, text);
+                    game.assets.font.draw(game.batch, text, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 350 - (i * 50));
+                }
+                game.assets.font.setColor(Color.WHITE);
+
+                if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                    pauseMenuSelection = pauseMenuSelection > 0 ? pauseMenuSelection - 1 : pauseMenuOptions.length - 1;
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                    pauseMenuSelection = pauseMenuSelection < pauseMenuOptions.length - 1 ? pauseMenuSelection + 1 : 0;
+                }
+
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                    if (pauseMenuSelection == 0) {
+                        isPaused = false;
+                        if (combatBGM != null && game.ctx.combatState != GameContext.CombatState.BATTLE_SCREEN) combatBGM.play();
+                    } else if (pauseMenuSelection == 1) {
+                        showChordList = true;
+                    } else if (pauseMenuSelection == 2) {
+                        showItemInfo = true;
+                    } else if (pauseMenuSelection == 3) {
+                        game.assets.stopAllMusic();
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                }
+            }
+
+            game.batch.end();
         }
 
         // =========================================================================
@@ -479,7 +589,7 @@
             // Only advance death timer when player is dead
             if (isPlayerDead) { deathAnimTimer += Gdx.graphics.getDeltaTime(); }
 
-            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking, isPlayerDead);
+            TextureRegion playerSprite = resolvePlayerSprite(isPlayerAttacking, isEnemyAttacking, isPlayerDead);
             TextureRegion enemySprite  = resolveEnemySprite(isEnemyAttacking);
 
             // Player is drawn at 3x its native sprite resolution
@@ -513,7 +623,7 @@
          * Returns the correct animation frame for the player character.
          * Delegate to assets to avoid a large switch block here.
          */
-        private TextureRegion resolvePlayerSprite(boolean isAttacking, boolean isPlayerDead) {
+        private TextureRegion resolvePlayerSprite(boolean isAttacking, boolean isDamaged, boolean isPlayerDead) {
             if (game.ctx.selectedCharacter == null) return null;
 
             // Death animation plays once and freezes on last frame
@@ -522,6 +632,16 @@
                     case SONARA:   return game.assets.sonaraCombatDeath.getKeyFrame(deathAnimTimer, false);
                     case AURELIUS: return game.assets.aureliusCombatDeath.getKeyFrame(deathAnimTimer, false);
                     case LYRON:    return game.assets.lyronCombatDeath.getKeyFrame(deathAnimTimer, false);
+                    default:       return null;
+                }
+            }
+
+            // Damaged animation plays once and freezes on last frame
+            if (isDamaged) {
+                switch (game.ctx.selectedCharacter) {
+                    case SONARA:   return game.assets.sonaraCombatDamaged.getKeyFrame(stateAnimTimer, false);
+                    case AURELIUS: return game.assets.aureliusCombatDamaged.getKeyFrame(stateAnimTimer, false);
+                    case LYRON:    return game.assets.lyronCombatDamaged.getKeyFrame(stateAnimTimer, false);
                     default:       return null;
                 }
             }
@@ -712,9 +832,9 @@
             }
             beginUiBatch();
             game.batch.draw(mapHeader,
-                screenLeft + ((Main.WORLD_WIDTH - (mapHeader.getWidth()) * 2) / 2f),
-                screenTop - px(1.6f) - mapHeader.getHeight(),
-                mapHeader.getWidth() * 2, mapHeader.getHeight() * 2);
+                screenLeft + ((Main.WORLD_WIDTH - (mapHeader.getWidth())) / 2f),
+                screenTop - px(1f) - mapHeader.getHeight() / 2,
+                mapHeader.getWidth(), mapHeader.getHeight());
             game.batch.end();
         }
 
@@ -927,7 +1047,7 @@
         private void renderDialogue(float delta) {
             switch (game.ctx.combatState) {
                 case ENEMY_INTRODUCTION:        game.ctx.combatLog = enemy.getName() + " encountered!";       break;
-                case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = "Insert Post Combat Dialogue Here.";     break;
+                case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = enemy.getName() + " has been defeated!";     break;
                 default: break;
             }
 
@@ -1646,7 +1766,12 @@
             int     effectTracker = usedItems.get(itemName) + itemInEffect;
             usedItems.put(itemName, effectTracker);
 
-            handleItemEffects(selectedItem, null);
+            if (itemName.equals("Time Orb")
+                || itemName.equals("Major's Blessing")
+                || itemName.equals("Minor's Grace")
+                || itemName.equals("Crimson Chorus")) {
+                handleItemEffects(selectedItem, null);
+            }
 
             inventory.removeItem(slotSelected);
         }
@@ -1664,8 +1789,9 @@
             int chordNum;
             switch (itemName) {
                 case "Crimson Chorus":
-                    float extraDamage = new CrimsonChorus(game.assets).getExtraDamage();
-                    player.setDamageBuff(player.getDamageBuff() + extraDamage);
+                    double additionalBuff = (player.getShield() * 0.50) / 100;
+                    player.setDamageBuff(player.getDamageBuff() + additionalBuff);
+                    player.setShield(0);
                     break;
                 case "Major's Blessing":
                     boolean majorsBlessingUsed = false;
@@ -1722,7 +1848,7 @@
                                 break;
                             case 2:
                                 if(game.ctx.chordSystem.isChordUsed('A')){
-                                    game.ctx.chordSystem.resetChord("AMINOR ");
+                                    game.ctx.chordSystem.resetChord("AMINOR");
                                     minorsGraceUsed=true;
                                 }
                                 break;
@@ -1739,7 +1865,7 @@
                     enemyDamage = 0;
                     break;
                 case "Time Orb":
-                    turnTime += 15f;
+                    turnTime += 20f;
                     break;
             }
         }
@@ -1789,17 +1915,15 @@
                     java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[1]),
                     java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[2]));
                 if (chord != null) {
-                    game.ctx.chordSystem.applyChord(chord, player, initialDamage);
+                    finalDamage = game.ctx.chordSystem.applyChord(chord, player, finalDamage);
                     chordUsedThisTurn = chord;
 
-                    handleItemEffects(new MinorsGrace(game.assets), chord);
-                    handleItemEffects(new MajorsBlessing(game.assets), chord);
                     handleItemEffects(new ResolvedDissonance(game.assets), chord);
                 }
             }
 
-            handleItemEffects(new CrimsonChorus(game.assets), null);
             enemy.takeDamage(finalDamage);
+
             player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
 
             revealedNoteCount    = 0;
@@ -1813,8 +1937,7 @@
         // =========================================================================
 
         private void executeEnemyAttack() {
-            int dmg = enemy.performAttack();
-            enemyDamage = dmg;
+            enemyDamage = enemy.performAttack();
 
             // Silent Barrier check is handled inside handleItemEffects
             handleItemEffects(new SilentBarrier(game.assets), null);
@@ -2047,7 +2170,6 @@
                     break;
                 case LYRON:
                     description = (activeSkillUsed ? "Damage Rerolled.": "Reroll notes' current damage.");
-                    description = "";
                     break;
             }
 

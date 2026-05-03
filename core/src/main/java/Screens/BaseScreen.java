@@ -4,6 +4,7 @@ import Mechanics.MusicNote;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import io.github.Zephyrdoestech.Main;
@@ -61,11 +62,18 @@ public abstract class BaseScreen implements Screen {
     protected void drawFadeOverlay() {
         if (fadeAlpha <= 0f) return;
         game.batch.end();
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         game.shapeRenderer.setColor(0f, 0f, 0f, fadeAlpha);
         game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
         game.shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
     }

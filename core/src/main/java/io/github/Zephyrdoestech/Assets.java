@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ public class Assets implements Disposable {
     public final BitmapFont font;       // body text  (scale 1.5)
     public final BitmapFont titleFont;  // headings   (scale 2.2)
     public final BitmapFont bigFont;    // victory/defeat (scale 3.0)
+    public final BitmapFont loreFont;   // lore text  (scale 1.5)
 
 
     public final Texture titleScreenTex;
@@ -219,12 +220,15 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> sonaraCombatIdle;
     public final Animation<TextureRegion> sonaraCombatAttack;
     public final Animation<TextureRegion> sonaraCombatDeath;
+    public final Animation<TextureRegion> sonaraCombatDamaged;
     public final Animation<TextureRegion> aureliusCombatIdle;
     public final Animation<TextureRegion> aureliusCombatAttack;
     public final Animation<TextureRegion> aureliusCombatDeath;
+    public final Animation<TextureRegion> aureliusCombatDamaged;
     public final Animation<TextureRegion> lyronCombatIdle;
     public final Animation<TextureRegion> lyronCombatAttack;
     public final Animation<TextureRegion> lyronCombatDeath;
+    public final Animation<TextureRegion> lyronCombatDamaged;
 
     public final Animation<TextureRegion> fleshfeederCombatIdle;
     public final Animation<TextureRegion> fleshfeederCombatAttack;
@@ -265,6 +269,17 @@ public class Assets implements Disposable {
         font      = new BitmapFont(); font.getData().setScale(1.5f);
         titleFont = new BitmapFont(); titleFont.getData().setScale(2.2f);
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fonts/HTOWERT.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+            // Set the base size of the font you want
+        parameter.size = 24;
+            // You can also easily add borders, shadows, and colors here!
+        parameter.borderWidth = 1;
+
+        loreFont = generator.generateFont(parameter);
+        loreFont.getData().setScale(1.5f);
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
@@ -431,12 +446,15 @@ public class Assets implements Disposable {
         sonaraCombatIdle     = loadAnim("Sprites/Combat/CharacterHero/Sonara/Idle",     "Idle",   4, 0.2f);
         sonaraCombatAttack   = loadAnim("Sprites/Combat/CharacterHero/Sonara/Attack",   "", 13, 0.12f);
         sonaraCombatDeath    = loadAnim("Sprites/Combat/CharacterHero/Sonara/Death",   "", 16, 0.1f);
+        sonaraCombatDamaged  = loadAnim("Sprites/Combat/CharacterHero/Sonara/Damaged",   "", 8, 0.1f);
         aureliusCombatIdle   = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Idle",   "Idle",   4, 0.2f);
         aureliusCombatAttack = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Attack", "", 12, 0.12f);
         aureliusCombatDeath  = loadAnim("Sprites/Combat/CharacterHero/Aurelius/Death",   "", 16, 0.1f);
+        aureliusCombatDamaged= loadAnim("Sprites/Combat/CharacterHero/Aurelius/Damaged",   "", 8, 0.1f);
         lyronCombatIdle      = loadAnim("Sprites/Combat/CharacterHero/Lyron/Idle",      "Idle",   4, 0.2f);
         lyronCombatAttack    = loadAnim("Sprites/Combat/CharacterHero/Lyron/Attack",    "", 13, 0.12f);
         lyronCombatDeath     = loadAnim("Sprites/Combat/CharacterHero/Lyron/Death",   "", 16, 0.1f);
+        lyronCombatDamaged   = loadAnim("Sprites/Combat/CharacterHero/Lyron/Damaged",   "", 8, 0.1f);
 
         fleshfeederCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Idle",    "",   4, 0.2f));
         fleshfeederCombatAttack  = flipped(loadAnim("Sprites/Combat/Monster/Fleshfeeder/Attack",  "", 9, 0.12f));
