@@ -490,7 +490,7 @@ public class ExploringScreen extends BaseScreen {
 //                        }
 //                    }
 //                }
-//                game.ctx.enemiesDefeatedInCurrentMap++;
+                game.ctx.enemiesDefeatedInCurrentMap++;
 
                 // ENEMY ENCOUNTER MONOLOGUE
                 String[][] encounters = {
