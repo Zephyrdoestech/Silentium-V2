@@ -23,6 +23,7 @@ public class CharSelectScreen extends BaseScreen {
 
     private int   index        = 0;
     private float stateTime    = 0f;
+    private boolean isFading = false;
 
     private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
@@ -67,7 +68,21 @@ public class CharSelectScreen extends BaseScreen {
         updateFade(delta);
         handleInput();
 
-        if (game.getScreen() != this) return;
+        if (isFading) {
+            fadeAlpha += delta * 1.2f;
+            if (fadeAlpha >= 1f) {
+                fadeAlpha = 1f;
+                // Perform the screen transition once the fade-out is complete
+                game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
+                switch (index) {
+                    case 0: game.ctx.activeCharacterStats = new CharacterHero("Sonara",   "Banjo", 150, 40); break;
+                    case 1: game.ctx.activeCharacterStats = new CharacterHero("Aurelius", "Flute", 150, 40); break;
+                    case 2: game.ctx.activeCharacterStats = new CharacterHero("Lyron",    "Harp",  250, 40); break;
+                }
+                game.setScreen(new TownOfEchoesScreen(game));
+                return; // Exit render loop to prevent further drawing
+            }
+        }
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
@@ -80,15 +95,6 @@ public class CharSelectScreen extends BaseScreen {
             px(1.6f), Color.CYAN, 1.5f);
 
         Texture[] staticTexs = {game.assets.sonaraTex, game.assets.aureliusTex, game.assets.lyronTex};
-
-        int[] drawOrder = new int[3];
-        int sortIndex = 0;
-        for (int i = 0; i < 3; i++) {
-            if (i != index) {
-                drawOrder[sortIndex++] = i;
-            }
-        }
-        drawOrder[2] = index;
 
         // CARD & DESCRIPTION RENDERING
         for (int i = 0; i < 3; i++) {
@@ -119,12 +125,11 @@ public class CharSelectScreen extends BaseScreen {
             if (animFrame != null) { game.batch.draw(animFrame, imageX, imageY, cardWidth, cardHeight);
             } else if (staticFrame != null) { game.batch.draw(staticFrame, imageX, imageY, cardWidth, cardHeight);}
 
-            game.assets.font.getData().setScale(1.2f);
-            game.assets.font.setColor(sel ? Color.YELLOW : Color.WHITE);
-            game.assets.font.draw(game.batch, NAMES[i],   textX, textY);
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, WEAPONS[i], textX, textY - px(0.8f));
-            game.assets.font.draw(game.batch, HP_VALS[i], textX, textY - px (1.6f));
+            game.assets.loreFont.getData().setScale(1.2f);
+            game.assets.loreFont.setColor(sel ? Color.YELLOW : Color.WHITE);
+            game.assets.loreFont.draw(game.batch, WEAPONS[i], textX, textY);
+            game.assets.loreFont.draw(game.batch, HP_VALS[i], textX, textY - px (1f));
+            game.assets.loreFont.setColor(Color.WHITE);
         }
 
         drawCenteredText(DESCS[index], 0, px(2.0f), Main.WORLD_WIDTH, px(1.6f),
@@ -139,6 +144,8 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void handleInput() {
+        if (isFading) return; // Block input during fade transitions
+
         // --- 1. KEYBOARD INPUT ---
         int leftKey  = game.ctx.useWasd ? Input.Keys.A : Input.Keys.LEFT;
         int rightKey = game.ctx.useWasd ? Input.Keys.D : Input.Keys.RIGHT;
@@ -157,26 +164,18 @@ public class CharSelectScreen extends BaseScreen {
         }
 
         // --- 2. MOUSE INPUT ---
-        // Get the mouse coordinates and translate them to the game's UI viewport
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         game.uiViewport.unproject(mousePos);
 
-        // Loop through our 3 character slots
         for (int i = 0; i < 3; i++) {
-            // Create an invisible "hitbox" over their original starting positions
             float hitX = cardDisplayX + (i * (cardWidth + cardGap));
             float hitY = cardDisplayY;
             float hitW = cardWidth;
             float hitH = cardHeight;
 
-            // Check if the mouse is currently inside this hitbox
             if (mousePos.x >= hitX && mousePos.x <= hitX + hitW &&
                 mousePos.y >= hitY && mousePos.y <= hitY + hitH) {
-
-                // Set the selected index to the hovered character!
                 index = i;
-
-                // If they click the left mouse button while hovering, lock it in
                 if (Gdx.input.justTouched()) {
                     confirmSelection();
                 }
@@ -185,18 +184,13 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void confirmSelection() {
-        // Stops the title music right as you load into the game
+        if (isFading) return;
+        isFading = true;
+
         if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
             game.assets.titleBGM.stop();
         }
         game.ctx.stopTheme();
-        game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
-        switch (index) {
-            case 0: game.ctx.activeCharacterStats = new CharacterHero("Sonara",   "Banjo", 150, 40); break;
-            case 1: game.ctx.activeCharacterStats = new CharacterHero("Aurelius", "Flute", 150, 40); break;
-            case 2: game.ctx.activeCharacterStats = new CharacterHero("Lyron",    "Harp",  250, 40); break;
-        }
-        game.setScreen(new TownOfEchoesScreen(game));
     }
 
     //Centered Text Rendering
@@ -204,7 +198,6 @@ public class CharSelectScreen extends BaseScreen {
         String text, float areaX, float areaY, float areaWidth,
         float areaHeight, Color color, float scale) {
 
-        game.batch.setColor(Color.WHITE);
         game.assets.font.getData().setScale(scale);
         game.assets.font.setColor(color);
         float x = areaX + ((areaWidth - textWidth(text)) / 2f);
@@ -224,9 +217,6 @@ public class CharSelectScreen extends BaseScreen {
 
     @Override public void hide() {
         clearNotes();
-        // Removed stopTheme() from here
-        // Note: The title music is stopped in confirmSelection() when starting the game,
-        // or continues playing if you back out to the Main Menu via ESC.
     }
 
     @Override public void dispose() {}
