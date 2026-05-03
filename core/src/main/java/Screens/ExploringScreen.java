@@ -433,8 +433,6 @@ public class ExploringScreen extends BaseScreen {
 
                 // ORIGINAL COMBAT SCREEN ROUTING
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
-                // TEMPORARY MAX LEVEL
-                game.ctx.activeCharacterStats.setLevel(5);
                 game.setScreen(new CombatScreen(game));
                 return;
 

@@ -181,7 +181,6 @@
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
 
-
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
             player.getPlayerInventory().gainMajorBlessing(game.assets);
@@ -239,7 +238,6 @@
             if (player.getMonstersDefeated() == 0) {
                 enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
             }
-
 
             if (player.getLevel() <= 3) {
                 tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
