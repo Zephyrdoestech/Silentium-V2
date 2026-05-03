@@ -579,6 +579,11 @@ Sprites/Combat/Monster/Syozan/Idle/Idle1.png
 Sprites/Combat/Monster/Syozan/Idle/Idle2.png
 Sprites/Combat/Monster/Syozan/Idle/Idle3.png
 Sprites/Combat/Monster/Syozan/Idle/Idle4.png
+Sprites/Combat/Pause/chord info.png
+Sprites/Combat/Pause/continue.png
+Sprites/Combat/Pause/exit.png
+Sprites/Combat/Pause/item info.png
+Sprites/Combat/Pause/pause.png
 Sprites/Combat/SplashScreen/Defeat/1.png
 Sprites/Combat/SplashScreen/Defeat/10.png
 Sprites/Combat/SplashScreen/Defeat/11.png
@@ -662,6 +667,7 @@ Sprites/Combat/SplashScreen/Victory/9.png
 Sprites/Combat/Tutorial/ChordTutorial.png
 Sprites/Combat/Tutorial/MetronomeTutorial.png
 Sprites/Combat/Tutorial/NoteTutorial.png
+Sprites/Combat/Tutorial/screen.png
 UI/Items/Battle/crimson_chorus_battle.png
 UI/Items/Battle/majors_blessing_battle.png
 UI/Items/Battle/minors_grace_battle.png

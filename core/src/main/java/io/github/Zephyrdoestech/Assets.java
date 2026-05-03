@@ -483,7 +483,7 @@ public class Assets implements Disposable {
         gobninilCombatDamaged     = loadAnim("Sprites/Combat/Monster/Gobninil/Damaged",     "", 4, 0.2f);
 
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
-        chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.16f));
+        chimericksCombatAttack   = (loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.1f));
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
