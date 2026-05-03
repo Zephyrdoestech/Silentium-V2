@@ -181,9 +181,6 @@
             player = game.ctx.activeCharacterStats;
             enemy  = game.ctx.currentEnemy;
 
-            player.setLevel(5);
-            player.setMonstersDefeated(5);
-            player.setHp(500);
 
             //temporary  items
             player.getPlayerInventory().gainCrimsonChorus(game.assets);
@@ -240,8 +237,9 @@
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
-                enemy.setMaxHp((int)(enemy.getMaxHp() * 3.0f));
+                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
             }
+
 
             if (player.getLevel() <= 3) {
                 tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
