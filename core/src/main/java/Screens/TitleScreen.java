@@ -38,7 +38,8 @@ public class TitleScreen extends BaseScreen {
         game.batch.setColor(Color.WHITE);
         game.batch.draw(game.assets.titleScreenTex, 0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
 
-        // Prompt
+        drawFloatingNotes(delta);
+
         game.assets.font.setColor(new Color(0.85f, 0.85f, 0.85f, 0.9f));
         game.assets.font.draw(game.batch, "Press SPACE to continue",
             290, 60);
@@ -46,7 +47,10 @@ public class TitleScreen extends BaseScreen {
 
         game.batch.end();
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) ||
+            Gdx.input.isKeyJustPressed(Input.Keys.ENTER) ||
+            Gdx.input.justTouched()) {
+
             game.setScreen(new MainMenuScreen(game));
         }
     }
@@ -54,6 +58,8 @@ public class TitleScreen extends BaseScreen {
     @Override public void resize(int w, int h) {
         game.gameViewport.update(w, h, true);
     }
-    @Override public void hide()    {}
+    @Override public void hide()    {
+        clearNotes();
+    }
     @Override public void dispose() {}
 }

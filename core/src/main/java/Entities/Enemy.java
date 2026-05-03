@@ -28,7 +28,7 @@ public class Enemy {
     // ── Fields ────────────────────────────────────────────────────────────────
 
     private final String   name;
-    private final int      maxHp;
+    private int      maxHp;
     private       int      currentHp;
     private final Attack[] attacks;
 
@@ -49,6 +49,11 @@ public class Enemy {
         this.x        = x;
         this.y        = y;
         this.attacks  = attacks;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+        this.currentHp = maxHp;
     }
 
     // ── Getters ───────────────────────────────────────────────────────────────
@@ -96,16 +101,16 @@ public class Enemy {
         );
     }
 
-    public static Enemy andrewellers(float x, float y) {
-        return new Enemy("Andrewellers", 350, x, y,
+    public static Enemy darrylion(float x, float y) {
+        return new Enemy("Darryllion", 350, x, y,
             new Attack("Luminous Gaze",     10, 20),
             new Attack("Deafening Screech", 15, 25),
             new Attack("Shatter Cry",       20, 35)
         );
     }
 
-    public static Enemy aryzachnid(float x, float y) {
-        return new Enemy("Aryzachnid", 500, x, y,
+    public static Enemy gobninil(float x, float y) {
+        return new Enemy("Gobninil", 500, x, y,
             new Attack("Binding Webs",     20, 40),
             new Attack("Paralyzing Fangs", 25, 50),
             new Attack("Wrapup",           50, 75)
@@ -120,8 +125,8 @@ public class Enemy {
         );
     }
 
-    public static Enemy abarquez(float x, float y) {
-        return new Enemy("Abarquez the Abyss Guardian", 1000, x, y,
+    public static Enemy labagoliath(float x, float y) {
+        return new Enemy("Labagoliath the Void Shaker", 1000, x, y,
             new Attack("Defensive Stance", 10, 20),
             new Attack("Hammer Swipe",     25, 55),
             new Attack("Hammer Strikes",   30, 65)
