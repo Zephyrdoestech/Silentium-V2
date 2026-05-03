@@ -150,6 +150,7 @@ Enemies/Darryllion/Idle/5.png
 Enemies/Darryllion/Idle/6.png
 Enemies/Darryllion/Idle/7.png
 Enemies/Darryllion/Idle/8.png
+Fonts/HTOWERT.TTF
 Lyron/Select/lyronSelect1.png
 Lyron/Select/lyronSelect10.png
 Lyron/Select/lyronSelect2.png
@@ -674,6 +675,11 @@ UI/Items/Inventory/MinorsGrace.png
 UI/Items/Inventory/ResolvedDissonance.png
 UI/Items/Inventory/SilentBarrier.png
 UI/Items/Inventory/TimeOrb.png
+UI/Pause/btn_chordinfo.png
+UI/Pause/btn_continue.png
+UI/Pause/btn_exit.png
+UI/Pause/btn_iteminfo.png
+UI/Pause/pause.png
 UI/continue_btn.png
 UI/credits_btn.png
 UI/exit_btn.png

@@ -213,10 +213,14 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.mapEnemies.clear();
 
             if (game.ctx.lives <= 0) {
+                // --- 1. HOOK UP DEATH HERE ---
                 game.ctx.lives = 3;
                 game.ctx.player = null;
-                game.setScreen(new MainMenuScreen(game));
+
+                // Trigger Claude's leaderboard popup instead of going to the Main Menu!
+                Screens.LeaderBoard.LeaderboardScreen.promptForUsername(game, game.ctx, 3);
                 return;
+
             } else {
                 game.ctx.activeCharacterStats.resetStats();
                 this.show();
@@ -226,6 +230,8 @@ public class ExploringScreen extends BaseScreen {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+
+        game.ctx.totalPlaytime += delta;
 
         game.ctx.stateTime += delta;
         handleMovement(delta);

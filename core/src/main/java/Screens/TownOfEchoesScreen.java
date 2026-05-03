@@ -123,7 +123,11 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     public void show() {
-        super.show(); // This is critical! It runs the map-loading logic in ExploringScreen.
+        super.show();
+
+        if (game.ctx != null) {
+            game.ctx.mapsCleared = 0;
+        }
 
         // Start the town music when the screen is shown
         if (game.assets.townOfEchoesBGM != null) {

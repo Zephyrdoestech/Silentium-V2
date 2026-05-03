@@ -47,6 +47,10 @@ public class GameContext {
         CMAJOR, DMINOR, EMINOR, FMAJOR, GMAJOR, AMINOR, BDIM, NONE
     }
 
+    // For Leaderboard
+    public float totalPlaytime = 0f;
+    public int mapsCleared = 0;
+
     // ── CharacterHero / player state ───────────────────────────────────────────────
 
     public CharacterType selectedCharacter;
