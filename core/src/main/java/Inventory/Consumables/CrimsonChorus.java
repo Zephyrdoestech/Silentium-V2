@@ -11,19 +11,11 @@ import java.util.Random;
  * For 2-3 random turns, the enemy takes 5-10% more damage.
  */
 public class CrimsonChorus extends Item {
-    private float extraDamage = 0f;
-    Random rd = new Random();
-    private int tracker = rd.nextInt(2,4);
-
     public CrimsonChorus(Assets assets){
         super("Crimson Chorus",
-            "For 2-3 random turns, the enemy takes 5 - 10% more damage.",
+            "Converts the player’s current shield into an additional damage buff.",
             assets.crimsonChorusBattleTex,
-            assets.crimsonChorusSlotItem, 0);
-
-        setTracker(tracker);
-        extraDamage = rd.nextFloat(5,11);
+            assets.crimsonChorusSlotItem, 1);
     }
 
-    public float getExtraDamage(){ return extraDamage; }
 }

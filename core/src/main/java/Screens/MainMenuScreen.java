@@ -60,7 +60,7 @@ public class MainMenuScreen extends BaseScreen {
 
         // 1. Background
         game.batch.setColor(Color.WHITE);
-        game.batch.draw(game.assets.titleScreenTex, 0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        game.batch.draw(game.assets.mainMenuBG, 0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
 
         // 2. Floating notes
         drawFloatingNotes(delta);
