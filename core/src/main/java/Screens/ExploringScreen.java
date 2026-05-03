@@ -142,6 +142,12 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
+        if (game.ctx.playerDefeated) {
+            game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
+            handlePlayerDeath();
+            return;
+        }
+
         // 1. Initialize or restore the map
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
@@ -205,31 +211,15 @@ public class ExploringScreen extends BaseScreen {
     // ── Render ────────────────────────────────────────────────────────────────
     @Override
     public void render(float delta) {
-        if (game.ctx.activeCharacterStats.getHp() <= 0) {
-            game.ctx.lives--;
-
-            game.ctx.enemiesDefeatedInCurrentMap = 0;
-            game.ctx.rooms.clear();
-            game.ctx.mapEnemies.clear();
-
-            if (game.ctx.lives <= 0) {
-                // --- 1. HOOK UP DEATH HERE ---
-                game.ctx.lives = 3;
-                game.ctx.player = null;
-
-                // Trigger Claude's leaderboard popup instead of going to the Main Menu!
-                Screens.LeaderBoard.LeaderboardScreen.promptForUsername(game, game.ctx, 3);
-                return;
-
-            } else {
-                game.ctx.activeCharacterStats.resetStats();
-                this.show();
-                return;
-            }
-        }
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
+
+        if (game.ctx.player == null) return; // Safeguard to prevent NPE if rendered during transition
+
+        if (game.ctx.activeCharacterStats.getHp() <= 0) {
+            handlePlayerDeath();
+            return;
+        }
 
         game.ctx.totalPlaytime += delta;
 
@@ -313,6 +303,38 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
 
             game.setScreen(new MainMenuScreen(game));
+        }
+    }
+
+    private void handlePlayerDeath() {
+        game.ctx.lives--;
+        game.ctx.enemiesDefeatedInCurrentMap = 0;
+        game.ctx.rooms.clear();
+        game.ctx.mapEnemies.clear();
+        game.ctx.activeCharacterStats.resetStats();
+        game.ctx.player = null;
+
+        if (game.ctx.lives <= 0) {
+            // Player is completely out of lives - reset the run completely and go back to map 1
+            game.ctx.lives = 3;
+            game.ctx.mapsCleared = 0;
+            game.setScreen(new TownOfEchoesScreen(game));
+        } else {
+            // Player lost a life but has more, retry current map
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:
+                    game.setScreen(new TownOfEchoesScreen(game));
+                    break;
+                case SILENT_CAVERNS:
+                    game.setScreen(new SilentCavernsScreen(game));
+                    break;
+                case ABYSS_OF_DISSONANCE:
+                    game.setScreen(new AbyssOfDissonanceScreen(game));
+                    break;
+                default:
+                    game.setScreen(new TownOfEchoesScreen(game));
+                    break;
+            }
         }
     }
 

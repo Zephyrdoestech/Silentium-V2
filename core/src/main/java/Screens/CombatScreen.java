@@ -287,10 +287,6 @@ public class CombatScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//            // TEMPORARY MAX HP AND SHIELD
-//            player.setHp(player.getMaxHp());
-//            player.setShield(player.getMaxShield());
-
         animTimer += delta;
 
         switch (game.ctx.combatState) {

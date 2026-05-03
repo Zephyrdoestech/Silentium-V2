@@ -121,6 +121,8 @@ public class TownOfEchoesScreen extends ExploringScreen {
         return new SilentCavernsScreen(game);
     }
 
+    // In TownOfEchoesScreen.java
+
     @Override
     public void show() {
         super.show();
@@ -132,11 +134,12 @@ public class TownOfEchoesScreen extends ExploringScreen {
         // Start the town music when the screen is shown
         if (game.assets.townOfEchoesBGM != null) {
             game.assets.townOfEchoesBGM.setLooping(true);
-            game.assets.townOfEchoesBGM.setVolume(0.5f); // Set this to whatever volume feels right!
+            game.assets.townOfEchoesBGM.setVolume(0.5f);
             game.assets.townOfEchoesBGM.play();
         }
 
-        if(game.ctx != null){
+        // ADDED NULL CHECK: Only save if the player exists.
+        if(game.ctx != null && game.ctx.player != null){
             game.ctx.saveGame("TownOfEchoes", game.ctx.player.getX(), game.ctx.player.getY());
         }
     }
