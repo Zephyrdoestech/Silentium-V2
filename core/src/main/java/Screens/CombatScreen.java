@@ -1661,7 +1661,6 @@
                     itemSlotHeight
                 );
             }
-
             game.batch.end();
 
 

@@ -215,6 +215,7 @@ public class Assets implements Disposable {
     public final Texture silentBarrierBattleTex;
     public final Texture timeOrbBattleTex;
 
+    public final Texture inventoryPanelBackground;
     public final Texture inventoryBackground;
     public final Texture crimsonChorusSlotItem;
     public final Texture majorsBlessingSlotItem;
@@ -455,6 +456,8 @@ public class Assets implements Disposable {
         resolvedDissonanceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/ResolvedDissonance.png");
         silentBarrierBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/SilentBarrier.png");
         timeOrbBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/TimeOrb.png");
+
+        inventoryPanelBackground = new Texture("UI/Panels/Inventory.png");
 
         inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
         crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/CrimsonChorus.png");

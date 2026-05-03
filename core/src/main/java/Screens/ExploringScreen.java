@@ -1,9 +1,11 @@
 package Screens;
 
 import Entities.CharacterHero;
+import Inventory.Inventory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -710,51 +712,59 @@ public class ExploringScreen extends BaseScreen {
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
     private void drawInventoryOverlay() {
-        float overlayX = Main.WORLD_WIDTH * 0.2f;
-        float overlayY = Main.WORLD_HEIGHT * 0.18f;
-        float overlayW = Main.WORLD_WIDTH * 0.6f;
-        float overlayH = Main.WORLD_HEIGHT * 0.64f;
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA, com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0f, 0f, 0f, 0.75f);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.7f); // Low opacity black background
         game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
-        game.shapeRenderer.setColor(0.1f, 0.12f, 0.18f, 0.95f);
-        game.shapeRenderer.rect(overlayX, overlayY, overlayW, overlayH);
         game.shapeRenderer.end();
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+
+        Texture inventoryPanelBackground = game.assets.inventoryPanelBackground;
+        Inventory inventory = game.ctx.activeCharacterStats.getPlayerInventory();
+
+        float inventoryPanelWidth = inventoryPanelBackground.getWidth();
+        float inventoryPanelHeight =  inventoryPanelBackground.getHeight();
+        float inventoryPanelX = (Main.WORLD_WIDTH - inventoryPanelWidth)/ 2f;
+        float inventoryPanelY = (Main.WORLD_HEIGHT - inventoryPanelHeight) /2f;
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
+        game.batch.draw(inventoryPanelBackground,
+            inventoryPanelX, inventoryPanelY, inventoryPanelWidth, inventoryPanelHeight);
+        game.batch.end();
 
-        float titleX = overlayX + 24f;
-        float titleY = overlayY + overlayH - 24f;
-        game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(Color.YELLOW);
-        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
+        float Xgap = px(0.1f);
+        float Ygap = px(0.1f);
+        float itemSlotWidth = px(2.0f);
+        float itemSlotHeight = px(2.0f);
+        float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
+        float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
 
-        game.assets.font.getData().setScale(0.9f);
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        game.assets.font.draw(game.batch, "[I] Close", overlayX + overlayW - 90f, titleY);
+        // Render Item Slots
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        float itemXPosition = inventoryPanelX + ((inventoryPanelWidth - itemSlotsWidth) / 2f);
+        float itemYPosition = (inventoryPanelY + inventoryPanelHeight) - ((inventoryPanelHeight - itemSlotsHeight) / 2f) - px(0.6f);
+        int capacity = inventory.getCapacity();
+        int cols = capacity / 2; // 5
+        Texture item = game.assets.emptySlotItem;
 
-        float itemY = titleY - 36f;
-        float lineGap = 26f;
+        for(int i = 0; i < inventory.getCapacity(); i++){
+            if(i < inventory.getInventorySize()){ item = inventory.getItem(i).getSlotIcon(); }
+            else{ item = game.assets.emptySlotItem; }
 
-        java.util.Map<String, Integer> inventory = game.ctx.activeCharacterStats.inventory;
-        if (inventory == null || inventory.isEmpty()) {
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Inventory is empty", titleX, itemY);
-        } else {
-            game.assets.font.setColor(Color.WHITE);
-            for (java.util.Map.Entry<String, Integer> entry : inventory.entrySet()) {
-                String line = "- " + entry.getKey() + " x" + entry.getValue();
-                game.assets.font.draw(game.batch, line, titleX, itemY);
-                itemY -= lineGap;
-                if (itemY < overlayY + 24f) break;
-            }
+            int col = i % cols;
+            int row = i / cols;
+            game.batch.draw(item,
+                itemXPosition + col * (itemSlotWidth + Xgap),
+                itemYPosition - itemSlotHeight - row * (itemSlotHeight + Ygap),
+                itemSlotWidth,
+                itemSlotHeight
+            );
         }
-
-        game.assets.font.getData().setScale(1.0f);
-        game.assets.font.setColor(Color.WHITE);
         game.batch.end();
     }
 
