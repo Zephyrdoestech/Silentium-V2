@@ -254,7 +254,7 @@
 
             // First enemy encountered gets 30% health (tutorial difficulty reduction)
             if (player.getMonstersDefeated() == 0) {
-                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
+                enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
             }
 
             if (player.getLevel() <= 3) {
