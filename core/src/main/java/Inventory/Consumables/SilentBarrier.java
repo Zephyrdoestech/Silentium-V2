@@ -6,7 +6,7 @@ import io.github.Zephyrdoestech.Assets;
 
 /**
  * Silent Barrier
- * Grants 1 turn of full immunity to damage and debuffs.
+ * Grants 1 turn of full immunity to damagegit.
  */
 public class SilentBarrier extends Item {
     public SilentBarrier(Assets assets){

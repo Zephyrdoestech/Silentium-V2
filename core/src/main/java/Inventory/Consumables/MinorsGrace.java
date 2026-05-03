@@ -6,7 +6,7 @@ import io.github.Zephyrdoestech.Assets;
 
 /**
  * Minor's Grace
- * Start battle with +1 free use of any Minor chord.
+ * Gain +1 free use of any Minor chord.
  */
 public class MinorsGrace extends Item {
     public MinorsGrace(Assets assets){

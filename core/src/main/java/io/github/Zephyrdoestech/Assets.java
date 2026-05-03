@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class Assets implements Disposable {
     public final BitmapFont font;       // body text  (scale 1.5)
     public final BitmapFont titleFont;  // headings   (scale 2.2)
     public final BitmapFont bigFont;    // victory/defeat (scale 3.0)
+    public final BitmapFont loreFont;   // lore text  (scale 1.5)
 
 
     public final Texture titleScreenTex;
@@ -267,6 +269,17 @@ public class Assets implements Disposable {
         font      = new BitmapFont(); font.getData().setScale(1.5f);
         titleFont = new BitmapFont(); titleFont.getData().setScale(2.2f);
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fonts/HTOWERT.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+            // Set the base size of the font you want
+        parameter.size = 24;
+            // You can also easily add borders, shadows, and colors here!
+        parameter.borderWidth = 1;
+
+        loreFont = generator.generateFont(parameter);
+        loreFont.getData().setScale(1.5f);
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
