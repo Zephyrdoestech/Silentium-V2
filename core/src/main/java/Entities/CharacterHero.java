@@ -170,6 +170,7 @@ public class CharacterHero {
 
     public PassiveSkill getPassiveSkill() { return passiveSkill; }
     public ActiveSkill  getActiveSkill()  { return activeSkill; }
+    public Monologues  getMonologues()  { return monologues; }
 
     public Inventory getPlayerInventory() { return playerInventory; }
     public void setPlayerInventory(Inventory playerInventory) { this.playerInventory = playerInventory; }
