@@ -29,6 +29,10 @@ public class Assets implements Disposable {
     public final Texture pauseItemInfoBtn;
     public final Texture pauseExitBtn;
 
+    public final Texture inventoryBtnTex;
+    public final Texture pauseBtnTex;
+    public final Texture menuBtnTex;
+
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
 
@@ -64,6 +68,10 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> aureliusCardSelected;
     public final Animation<TextureRegion> lyronCardDefault;
     public final Animation<TextureRegion> lyronCardSelected;
+
+    public final Animation<TextureRegion> sonaraMonologueBox;
+    public final Animation<TextureRegion> aureliusMonologueBox;
+    public final Animation<TextureRegion> lyronMonologueBox;
 
     public final Texture sonaraTex;
     public final Texture lyronTex;
@@ -160,6 +168,17 @@ public class Assets implements Disposable {
     public final Texture abyssCombatBackground;
 
     // ── Combat HUD Textures ───────────────────────────────────────────────────
+
+    public final Texture playerHeaderSonara;
+    public final Texture playerHeaderAurelius;
+    public final Texture playerHeaderLyron;
+
+    public final Texture enemyHeaderFleshFeeder;
+    public final Texture enemyHeaderDarryllion;
+    public final Texture enemyHeaderGobninil;
+    public final Texture enemyHeaderChimericks;
+    public final Texture enemyHeaderLabagoliath;
+    public final Texture enemyHeaderSyozan;
 
     public final Texture mapHeaderTownOfEchoes;
     public final Texture mapHeaderSilentCaverns;
@@ -333,6 +352,10 @@ public class Assets implements Disposable {
         lyronCardDefault = loadAnim("Sprites/Characters/Lyron/PlayerCard/default",   "",  10, 0.12f);
         lyronCardSelected = loadAnim("Sprites/Characters/Lyron/PlayerCard/selected",   "",  10, 0.12f);
 
+        sonaraMonologueBox = loadAnim("Sprites/Characters/Sonara/MonologueBox",   "",  10, 0.12f);
+        aureliusMonologueBox = loadAnim("Sprites/Characters/Aurelius/MonologueBox",   "",  10, 0.12f);
+        lyronMonologueBox = loadAnim("Sprites/Characters/Lyron/MonologueBox",   "",  10, 0.12f);
+
         sonaraTex = new Texture("sonara.png");
         lyronTex = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
@@ -350,6 +373,9 @@ public class Assets implements Disposable {
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
         pauseExitBtn = new Texture("UI/Pause/btn_exit.png");
 
+        inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
+        pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
+        menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
@@ -396,9 +422,20 @@ public class Assets implements Disposable {
 
         // ── Combat HUD ────────────────────────────────────────────────────────
 
-        mapHeaderTownOfEchoes          = new Texture("Sprites/Combat/Interface/MapHeader/TownOfEchoes.png");
-        mapHeaderSilentCaverns          = new Texture("Sprites/Combat/Interface/MapHeader/SilentCaverns.png");
-        mapHeaderAbyssOfDissonance          = new Texture("Sprites/Combat/Interface/MapHeader/AbyssOfDissonance.png");
+        playerHeaderSonara          = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Sonara.png");
+        playerHeaderAurelius        = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Aurelius.png");
+        playerHeaderLyron           = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Lyron.png");
+
+        enemyHeaderFleshFeeder      = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/FleshFeeder.png");
+        enemyHeaderDarryllion       = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Darryllion.png");
+        enemyHeaderGobninil         = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Gobninil.png");
+        enemyHeaderChimericks       = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Chimericks.png");
+        enemyHeaderLabagoliath      = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Labagoliath.png");
+        enemyHeaderSyozan           = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Syozan.png");
+
+        mapHeaderTownOfEchoes       = new Texture("Sprites/Combat/Interface/BattleHeader/Map/TownOfEchoes.png");
+        mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
+        mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
         healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
         shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
@@ -483,7 +520,7 @@ public class Assets implements Disposable {
         gobninilCombatDamaged     = loadAnim("Sprites/Combat/Monster/Gobninil/Damaged",     "", 4, 0.2f);
 
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
-        chimericksCombatAttack   = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.16f));
+        chimericksCombatAttack   = (loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.1f));
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
@@ -748,6 +785,10 @@ public class Assets implements Disposable {
         disposeTexture(pauseChordInfoBtn);
         disposeTexture(pauseItemInfoBtn);
         disposeTexture(pauseExitBtn);
+
+        disposeTexture(inventoryBtnTex);
+        disposeTexture(pauseBtnTex);
+        disposeTexture(menuBtnTex);
 
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);

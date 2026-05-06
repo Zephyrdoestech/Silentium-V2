@@ -107,7 +107,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
 
     @Override
     protected void restoreInstanceFields() {
-        this.mapName = "TownOfEchoes";
+        this.mapName = "Town Of Echoes";
         game.ctx.mapName = GameContext.MapName.TOWN_OF_ECHOES;
 
         game.ctx.MAP_SIZE = 2048f; // Town's actual map size — set yours correctly
