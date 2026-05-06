@@ -354,7 +354,9 @@ public class ExploringScreen extends BaseScreen {
         // HUD (uses fixed uiCamera)
         drawHUD();
 
-        if (showInventory) { drawInventoryOverlay(); }
+        if (showInventory) {
+            drawInventoryOverlay();
+        }
 
         if (isMonologueActive) { drawMonologueOverlay(delta); }
 
@@ -710,10 +712,42 @@ public class ExploringScreen extends BaseScreen {
             230, Main.WORLD_HEIGHT - 40);
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
 
-        game.assets.font.setColor(Color.GRAY);
-        game.assets.font.draw(game.batch, "ESC – Menu", 10, 20);
-        game.assets.font.draw(game.batch, "I – Inventory", 10, 40);
+        // Draw new HUD buttons vertically
+        float btnWidth = 130f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
+        float btnHeight = 40f; // Adjusted height
+        float spacing = 15f;
+        float currentX = 5f;
 
+        // Calculate starting Y so they stack upwards from the bottom
+        // Inventory is at the bottom, then Pause, then Menu on top
+        float startY = 15f;
+
+        if (game.assets.inventoryBtnTex != null) {
+            game.batch.draw(game.assets.inventoryBtnTex, currentX, startY, btnWidth, btnHeight);
+        } else {
+            game.assets.font.setColor(Color.GRAY);
+            game.assets.font.draw(game.batch, "I – Inventory", currentX, startY + btnHeight);
+        }
+
+        startY += btnHeight + spacing;
+
+        if (game.assets.pauseBtnTex != null) {
+            game.batch.draw(game.assets.pauseBtnTex, currentX, startY, btnWidth, btnHeight);
+        } else {
+            game.assets.font.setColor(Color.GRAY);
+            game.assets.font.draw(game.batch, "P – Pause", currentX, startY + btnHeight);
+        }
+
+        startY += btnHeight + spacing;
+
+        if (game.assets.menuBtnTex != null) {
+            game.batch.draw(game.assets.menuBtnTex, currentX, startY, btnWidth, btnHeight);
+        } else {
+            game.assets.font.setColor(Color.GRAY);
+            game.assets.font.draw(game.batch, "ESC – Menu", currentX, startY + btnHeight);
+        }
+
+        // Adjust LIVES text position so it doesn't overlap the new buttons
         game.assets.font.setColor(Color.WHITE);
         game.assets.font.draw(game.batch, "LIVES: " + game.ctx.lives, 20, Main.WORLD_HEIGHT - 85);
 
@@ -729,6 +763,42 @@ public class ExploringScreen extends BaseScreen {
         game.batch.end();
 
         drawExitOverlay();
+
+        // Handle HUD button clicks
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            game.uiCamera.unproject(mousePos);
+
+            float checkX = 10f;
+            float checkY = 10f; // Start checking from bottom again
+
+            // Inventory button logic
+            if (game.assets.inventoryBtnTex != null) {
+                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
+                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
+                    showInventory = !showInventory;
+                }
+            }
+            checkY += btnHeight + spacing;
+
+            // Pause button logic (simulating ESC for ExploringScreen for now, as ExploringScreen has no pause menu)
+            if (game.assets.pauseBtnTex != null) {
+                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
+                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
+                    // Optional: you can implement a pause screen for the overworld here if you want
+                }
+            }
+            checkY += btnHeight + spacing;
+
+            // Menu button logic
+            if (game.assets.menuBtnTex != null) {
+                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
+                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
+                    game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+                    game.setScreen(new MainMenuScreen(game));
+                }
+            }
+        }
     }
 
     private float getMapNameWidth() {

@@ -29,6 +29,10 @@ public class Assets implements Disposable {
     public final Texture pauseItemInfoBtn;
     public final Texture pauseExitBtn;
 
+    public final Texture inventoryBtnTex;
+    public final Texture pauseBtnTex;
+    public final Texture menuBtnTex;
+
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
 
@@ -369,6 +373,9 @@ public class Assets implements Disposable {
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
         pauseExitBtn = new Texture("UI/Pause/btn_exit.png");
 
+        inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
+        pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
+        menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
@@ -778,6 +785,10 @@ public class Assets implements Disposable {
         disposeTexture(pauseChordInfoBtn);
         disposeTexture(pauseItemInfoBtn);
         disposeTexture(pauseExitBtn);
+
+        disposeTexture(inventoryBtnTex);
+        disposeTexture(pauseBtnTex);
+        disposeTexture(menuBtnTex);
 
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);
