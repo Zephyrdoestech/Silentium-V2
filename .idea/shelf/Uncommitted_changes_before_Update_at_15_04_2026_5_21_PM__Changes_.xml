@@ -1,0 +1,109 @@
+<changelist name="Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]" date="1776244868555" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 15/04/2026 5:21 PM [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/GameContext.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/MainMenuScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/MainMenuScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/MainMenuScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/ExploringScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/ExploringScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/ExploringScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/Assets.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/Assets.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/Assets.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lwjgl3/build/resources/main/Background/Title_Screen/Title_Screen_Placeholder.png" />
+    <option name="AFTER_PATH" value="lwjgl3/build/resources/main/Background/Title_Screen/Title_Screen_Placeholder.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/Title_Screen_Placeholder.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/TitleScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/TitleScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/TitleScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/CombatScreen$1.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/CombatScreen$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/CombatScreen$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/ExploringScreen$1.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/ExploringScreen$1.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/ExploringScreen$1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="core/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/previous-compilation-data.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Entities/Character.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Entities/Character.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/Character.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/CharSelectScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/CharSelectScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/CharSelectScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$Facing.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$Facing.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/GameContext$Facing.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Entities/Character$ActiveSkill.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Entities/Character$ActiveSkill.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/Character$ActiveSkill.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Entities/Character$PassiveSkill.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Entities/Character$PassiveSkill.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/Character$PassiveSkill.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="lwjgl3/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="AFTER_PATH" value="lwjgl3/build/tmp/compileJava/previous-compilation-data.bin" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/previous-compilation-data1.bin" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$CharacterType.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$CharacterType.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/GameContext$CharacterType.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="AFTER_PATH" value="core/build/libs/core-1.0.0.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/core-1.0.0.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/BaseScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/BaseScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/BaseScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/Screens/CombatScreen.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/Screens/CombatScreen.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/CombatScreen.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$PlayerState.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$PlayerState.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/GameContext$PlayerState.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$CombatState.class" />
+    <option name="AFTER_PATH" value="core/build/classes/java/main/io/github/Zephyrdoestech/GameContext$CombatState.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_15_04_2026_5_21_PM_[Changes]/GameContext$CombatState.class" />
+  </binary>
+</changelist>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GDX Silentium" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GDX Silentium" type="f1a62948:ProjectNode" />
+                <item name="lwjgl3" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GDX Silentium" type="f1a62948:ProjectNode" />
+                <item name="lwjgl3" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GDX Silentium" type="f1a62948:ProjectNode" />
+                <item name="lwjgl3" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="application" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="update" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;dellisyoss&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Zephyrdoestech/Silentium-V2.git&quot;,
+    &quot;accountId&quot;: &quot;b4d5224b-3304-45bc-bae4-04e5913c2e18&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl3/1.14.0/25ee7eb0fb0bf8647f258e1500bf25ac02c5b37d/gdx-backend-lwjgl3-1.14.0-sources.jar!/com/badlogic/gdx/backends/lwjgl3/audio/OpenALLwjgl3Audio.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="3BboX8oyr2kzR1rMwPbf9Lf0KQk" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Gradle.Build GDX Silentium.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Configure Daemon JVM Criteria.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:io.github.some_example_name.lwjgl3.Lwjgl3Launcher.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;bruh&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="Screens" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\IdeaProjects\GDX Silentium\assets\Sprites\Combat\Interface" />
+      <recent name="C:\Users\USER\IdeaProjects\GDX Silentium\assets\Background\Map" />
+      <recent name="C:\Users\USER\IdeaProjects\GDX Silentium\assets\UI" />
+      <recent name="C:\Users\USER\IdeaProjects\GDX Silentium\assets\Audio" />
+      <recent name="C:\Users\USER\IdeaProjects\GDX Silentium\core\src\main\java" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Background.Map" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.GDX Silentium [:lwjgl3:run]">
+    <configuration name="Game" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="ms-17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher" />
+      <module name="GDX_Silentium.lwjgl3.main" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/assets" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GDX Silentium [:lwjgl3:run]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":lwjgl3:run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Game" />
+      <item itemvalue="Gradle.GDX Silentium [:lwjgl3:run]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.GDX Silentium [:lwjgl3:run]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="" />
+      <created>1774767168649</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1774767168649</updated>
+    </task>
+    <task id="LOCAL-00001" summary="map pngs">
+      <option name="closed" value="true" />
+      <created>1774876424757</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774876424757</updated>
+    </task>
+    <task id="LOCAL-00002" summary="map pngs">
+      <option name="closed" value="true" />
+      <created>1774881585857</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1774881585858</updated>
+    </task>
+    <task id="LOCAL-00003" summary="made some changes">
+      <option name="closed" value="true" />
+      <created>1774890927994</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1774890927994</updated>
+    </task>
+    <task id="LOCAL-00004" summary="r">
+      <option name="closed" value="true" />
+      <created>1774891058796</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1774891058796</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Exploring changes">
+      <option name="closed" value="true" />
+      <created>1774895573630</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1774895573630</updated>
+    </task>
+    <task id="LOCAL-00006" summary="map collision and layers + reset stats if defeated">
+      <option name="closed" value="true" />
+      <created>1775026351128</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1775026351128</updated>
+    </task>
+    <task id="LOCAL-00007" summary="map traversal, lives system, exit to next map, &amp; all">
+      <option name="closed" value="true" />
+      <created>1775194866125</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1775194866125</updated>
+    </task>
+    <task id="LOCAL-00008" summary="updated everything merged n all from syos' end">
+      <option name="closed" value="true" />
+      <created>1775487048709</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1775487048709</updated>
+    </task>
+    <task id="LOCAL-00009" summary="dont pull pls ahhaha">
+      <option name="closed" value="true" />
+      <created>1775487148475</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1775487148475</updated>
+    </task>
+    <task id="LOCAL-00010" summary="assets fix (lahi ang inventory sa ui and sprites)">
+      <option name="closed" value="true" />
+      <created>1775490433002</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1775490433002</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix gamay exploring but not done">
+      <option name="closed" value="true" />
+      <created>1775490973766</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1775490973767</updated>
+    </task>
+    <task id="LOCAL-00012" summary="traversal fix unfinished">
+      <option name="closed" value="true" />
+      <created>1775493017415</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1775493017415</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixed first map texture restore">
+      <option name="closed" value="true" />
+      <created>1775494407888</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1775494407889</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fixed map traversal, gamay nalang !!">
+      <option name="closed" value="true" />
+      <created>1775496287183</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1775496287183</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fixed exit, it stays the same for the rest of the battles sa map">
+      <option name="closed" value="true" />
+      <created>1775497888017</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1775497888017</updated>
+    </task>
+    <task id="LOCAL-00016" summary="merged from dars and gamay fix sa spawnEnemies">
+      <option name="closed" value="true" />
+      <created>1775549137062</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1775549137062</updated>
+    </task>
+    <task id="LOCAL-00017" summary="silent caverns done ish, and merged dars inventory + buttons update">
+      <option name="closed" value="true" />
+      <created>1775564210092</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1775564210092</updated>
+    </task>
+    <task id="LOCAL-00018" summary="2nd map cleaned">
+      <option name="closed" value="true" />
+      <created>1776089369534</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1776089369536</updated>
+    </task>
+    <task id="LOCAL-00019" summary="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)">
+      <option name="closed" value="true" />
+      <created>1776095884465</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1776095884465</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/bruh" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="map pngs" />
+    <MESSAGE value="made some changes" />
+    <MESSAGE value="r" />
+    <MESSAGE value="Exploring changes" />
+    <MESSAGE value="map collision and layers + reset stats if defeated" />
+    <MESSAGE value="map traversal, lives system, exit to next map, &amp; all" />
+    <MESSAGE value="updated everything merged n all from syos' end" />
+    <MESSAGE value="dont pull pls ahhaha" />
+    <MESSAGE value="assets fix (lahi ang inventory sa ui and sprites)" />
+    <MESSAGE value="fix gamay exploring but not done" />
+    <MESSAGE value="traversal fix unfinished" />
+    <MESSAGE value="fixed first map texture restore" />
+    <MESSAGE value="fixed map traversal, gamay nalang !!" />
+    <MESSAGE value="fixed exit, it stays the same for the rest of the battles sa map" />
+    <MESSAGE value="merged from dars and gamay fix sa spawnEnemies" />
+    <MESSAGE value="silent caverns done ish, and merged dars inventory + buttons update" />
+    <MESSAGE value="2nd map cleaned" />
+    <MESSAGE value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
+    <option name="LAST_COMMIT_MESSAGE" value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
+  </component>
+</project>
