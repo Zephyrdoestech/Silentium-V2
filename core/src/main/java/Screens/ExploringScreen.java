@@ -246,6 +246,36 @@ public class ExploringScreen extends BaseScreen {
         updateCamera(); // Initialize camera position after player position is set
     }
 
+    private TextureRegion getEnemyFrame(Enemy e) {
+        com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> anim;
+
+        switch (e.getName()) {
+            case "Flesh Feeder":
+                anim = game.assets.fleshfeederCombatIdle;
+                break;
+            case "Darryllion":
+                anim = game.assets.darryllionCombatIdle;
+                break;
+            case "Gobninil":
+                anim = game.assets.gobninilCombatIdle;
+                break;
+            case "Chimericks":
+                anim = game.assets.chimericksCombatIdle;
+                break;
+            case "Labagoliath the Void Shaker":
+                anim = game.assets.labagoliathCombatIdle;
+                break;
+            case "Maestro Syozan":
+                anim = game.assets.syozanCombatIdle;
+                break;
+            default:
+                // Fallback if name doesn't match
+                anim = game.assets.fleshfeederCombatIdle;
+                break;
+        }
+
+        return (anim != null) ? anim.getKeyFrame(game.ctx.stateTime, true) : null;
+    }
 
     // ── Render ────────────────────────────────────────────────────────────────
     @Override
@@ -253,7 +283,7 @@ public class ExploringScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-        if (game.ctx.player == null) return; // Safeguard to prevent NPE if rendered during transition
+        if (game.ctx.player == null) return;
 
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
@@ -261,10 +291,8 @@ public class ExploringScreen extends BaseScreen {
         }
 
         game.ctx.totalPlaytime += delta;
-
         game.ctx.stateTime += delta;
 
-        // Auto-initialize the typewriter effect whenever isMonologueActive flips to true
         if (isMonologueActive && !wasMonologueActive) {
             prepareMonologue();
         } else if (!isMonologueActive && wasMonologueActive) {
@@ -274,7 +302,7 @@ public class ExploringScreen extends BaseScreen {
                 return;
             } else if (pendingCombat) {
                 pendingCombat = false;
-                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
                 game.setScreen(new CombatScreen(game));
                 return;
             }
@@ -290,36 +318,52 @@ public class ExploringScreen extends BaseScreen {
 
         updateCamera();
 
+        // 1. DRAW ALL WORLD SPRITES (The "Main Batch")
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
-
-        // Ensure batch color is white before drawing textures
-        game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+        game.batch.setColor(Color.WHITE);
 
         // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
-        } else {
-            System.err.println("Warning: Map texture is null in ExploringScreen.java. Check asset loading.");
         }
+
+        // Exit Portal
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
             float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
-            // - offset if we are in Silent Caverns
             if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
 
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                exitY,
-                exitSize, exitSize);
+                exitY, exitSize, exitSize);
         }
-        game.batch.end();
 
-        // Debug room outlines (ShapeRenderer)
+        // Enemies
+        for (Enemy e : game.ctx.mapEnemies) {
+            if (!e.isDefeated()) {
+                TextureRegion enemyFrame = getEnemyFrame(e);
+                if (enemyFrame != null) {
+                    game.batch.draw(enemyFrame, e.getX(), e.getY(), 64f, 64f);
+                }
+            }
+        }
+        game.assets.font.setColor(Color.WHITE);
+
+        // Player sprite
+        drawPlayerSprite();
+
+        // Map Decor
+        if (mapDecor != null)
+            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+
+        // Darkness overlay
+        drawDarknessOverlay();
+
+        game.batch.end(); // END OF WORLD DRAWING
+
+        // 2. DRAW SHAPES (Debug Outlines)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-
-
-        // Debug room outlines + enemy rects (ShapeRenderer)
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
         for (Room r : game.ctx.rooms)
@@ -329,48 +373,14 @@ public class ExploringScreen extends BaseScreen {
             game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
         game.shapeRenderer.end();
 
-
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated())
-                game.shapeRenderer.rect(e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        }
-        game.shapeRenderer.end();
-
-        game.batch.begin();
-        game.assets.font.setColor(Color.RED);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated()) {
-                game.assets.font.draw(game.batch, e.getName(),
-                    e.getX() - 10, e.getY() + GameContext.CHAR_SIZE + 18);
-            }
-        }
-        game.assets.font.setColor(Color.WHITE);
-        // Player sprite
-        drawPlayerSprite();
-        //MAP DECORS
-        if (mapDecor != null)
-            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
-
-        // Darkness overlay (world space, centred on player)
-        drawDarknessOverlay();
-        game.batch.end();
-
-        // HUD (uses fixed uiCamera)
+        // 3. DRAW UI (Fixed screen-space)
         drawHUD();
+        if (showInventory) drawInventoryOverlay();
+        if (isMonologueActive) drawMonologueOverlay(delta);
 
-        if (showInventory) {
-            drawInventoryOverlay();
-        }
-
-        if (isMonologueActive) { drawMonologueOverlay(delta); }
-
-        // ESC → Save Game and return to main menu
+        // ESC Save/Menu logic
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            // Save exactly where they are standing right now!
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
-
             game.setScreen(new MainMenuScreen(game));
         }
     }
