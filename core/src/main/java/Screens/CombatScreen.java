@@ -346,9 +346,11 @@ public class CombatScreen extends BaseScreen {
                 break;
             case 1: // Chord List
                 showChordList = true;
+                infoIndex = 0;
                 break;
             case 2: // Item Info
                 showItemInfo = true;
+                infoIndex = 0;
                 break;
             case 3: // Exit
                 game.assets.stopAllMusic();
@@ -358,8 +360,6 @@ public class CombatScreen extends BaseScreen {
     }
 
     private void renderPauseScreen(float delta) {
-        int  infoIndex = 0;
-
         Gdx.gl.glClearColor(0, 0, 0, 0.9f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
