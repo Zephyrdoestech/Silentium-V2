@@ -161,6 +161,13 @@ public class Assets implements Disposable {
     public final Texture metronomeTutorial;
     public final Texture chordTutorial;
 
+    public final Texture chordInfoPage1;
+    public final Texture chordInfoPage2;
+    public final Texture itemInfoPage1;
+    public final Texture itemInfoPage2;
+    public final Texture[] chordInfo;
+    public final Texture[] itemInfo;
+
     // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
@@ -414,6 +421,13 @@ public class Assets implements Disposable {
         metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
         chordTutorial = new Texture("Sprites/Combat/Tutorial/ChordTutorial.png");
         tutorials = new Texture[] {noteTutorial, metronomeTutorial, chordTutorial};
+
+        chordInfoPage1 = new Texture("Sprites/Combat/Pause/ChordInfo/1.png");
+        chordInfoPage2 = new Texture("Sprites/Combat/Pause/ChordInfo/2.png");
+        itemInfoPage1 = new Texture("Sprites/Combat/Pause/ItemInfo/1.png");
+        itemInfoPage2 = new Texture("Sprites/Combat/Pause/ItemInfo/2.png");
+        chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
+        itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
         // ── Tutorial Screens ────────────────────────────────────────────────
 

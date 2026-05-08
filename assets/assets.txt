@@ -620,10 +620,10 @@ Sprites/Combat/Monster/Syozan/Idle/Idle1.png
 Sprites/Combat/Monster/Syozan/Idle/Idle2.png
 Sprites/Combat/Monster/Syozan/Idle/Idle3.png
 Sprites/Combat/Monster/Syozan/Idle/Idle4.png
-Sprites/Combat/Pause/ITEMS GUIDE-20260508T055037Z-3-001/ITEMS GUIDE/ITEMS_GUIDE.png
-Sprites/Combat/Pause/ITEMS GUIDE-20260508T055037Z-3-001/ITEMS GUIDE/ITEMS_GUIDE2.png
-Sprites/Combat/Pause/NOTES GUIDE-20260508T055035Z-3-001/NOTES GUIDE/NOTES_GUIDE.png
-Sprites/Combat/Pause/NOTES GUIDE-20260508T055035Z-3-001/NOTES GUIDE/NOTES_GUIDE2.png
+Sprites/Combat/Pause/ChordInfo/1.png
+Sprites/Combat/Pause/ChordInfo/2.png
+Sprites/Combat/Pause/ItemInfo/1.png
+Sprites/Combat/Pause/ItemInfo/2.png
 Sprites/Combat/Pause/chord info.png
 Sprites/Combat/Pause/continue.png
 Sprites/Combat/Pause/exit.png
