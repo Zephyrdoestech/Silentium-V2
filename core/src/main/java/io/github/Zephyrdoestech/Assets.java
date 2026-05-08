@@ -197,6 +197,7 @@ public class Assets implements Disposable {
     public final Texture mapHeaderAbyssOfDissonance;
 
     public final Texture heart;
+    public final Texture heartEmpty;
 
     public final Texture healthBar;
     public final Texture shieldBar;
@@ -462,6 +463,7 @@ public class Assets implements Disposable {
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
         heart                = new Texture("Sprites/Combat/Interface/Heart.png");
+        heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");
 
         healthBar            = new Texture("Sprites/Combat/Interface/HealthBar.png");
         shieldBar            = new Texture("Sprites/Combat/Interface/ShieldBar.png");

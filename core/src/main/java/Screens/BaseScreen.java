@@ -55,6 +55,7 @@ public abstract class BaseScreen implements Screen {
         fadingOut = false;
     }
 
+
     /** Starts a clear-to-black fade-out and transitions to the given screen. */
     protected void startFadeOut(Screen nextScreen) {
         fadeAlpha = 0f;

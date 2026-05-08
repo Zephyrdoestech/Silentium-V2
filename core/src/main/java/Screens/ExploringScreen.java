@@ -786,13 +786,13 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void renderPlayerStats(){
-        float playerStatsX = screenLeft + px(1.0f);
-        float playerStatsY = screenTop - px(1.0f);
-        float cardScale = 0.8f;
+        float cardScale = 0.6f;
         float cardWidth = 135 * cardScale;
         float cardHeight = 177 * cardScale;
-        float cardX = playerStatsX;
-        float cardY = playerStatsY - cardHeight;
+        float cardX = screenLeft + px(1.0f);
+        float cardY = screenTop - px(1.0f) - cardHeight;
+        float playerStatsY;
+        float playerStatsX = cardX + cardWidth;
 
         TextureRegion animFrame = null;
         switch(game.ctx.selectedCharacter){

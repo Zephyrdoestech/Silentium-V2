@@ -23,7 +23,8 @@ public class CharSelectScreen extends BaseScreen {
 
     private int   index        = 0;
     private float stateTime    = 0f;
-    private boolean isFading = false;
+    private boolean isFadingIn = false;
+    private boolean isFadingOut = false;
 
     private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
@@ -56,6 +57,7 @@ public class CharSelectScreen extends BaseScreen {
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
         startFadeIn();
+        isFadingIn = true;
     }
 
     @Override
@@ -66,12 +68,20 @@ public class CharSelectScreen extends BaseScreen {
         stateTime += delta;
 
         updateFade(delta);
-        handleInput();
+        if(isFadingIn) {
+            fadeAlpha -= delta * 1.2f;
+            if(fadeAlpha <= 0f){
+                fadeAlpha = 0f;
+                isFadingIn = false;
+            }
+        }
+                handleInput();
 
-        if (isFading) {
+        if (isFadingOut) {
             fadeAlpha += delta * 1.2f;
             if (fadeAlpha >= 1f) {
                 fadeAlpha = 1f;
+                isFadingOut = false;
                 // Perform the screen transition once the fade-out is complete
                 game.ctx.selectedCharacter = GameContext.CharacterType.values()[index];
                 switch (index) {
@@ -143,7 +153,7 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void handleInput() {
-        if (isFading) return; // Block input during fade transitions
+        if (isFadingOut || isFadingIn) return; // Block input during fade transitions
 
         // --- 1. KEYBOARD INPUT ---
         int leftKey  = game.ctx.useWasd ? Input.Keys.A : Input.Keys.LEFT;
@@ -183,8 +193,8 @@ public class CharSelectScreen extends BaseScreen {
     }
 
     private void confirmSelection() {
-        if (isFading) return;
-        isFading = true;
+        if (isFadingOut) return;
+        isFadingOut = true;
 
         if (game.assets.titleBGM != null && game.assets.titleBGM.isPlaying()) {
             game.assets.titleBGM.stop();
