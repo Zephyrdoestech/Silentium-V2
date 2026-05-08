@@ -33,6 +33,9 @@ public abstract class BaseScreen implements Screen {
     // ── Fade overlay ──────────────────────────────────────────────────────────
     protected float   fadeAlpha = 0f;
     protected boolean fadingIn  = false;
+    protected boolean fadingOut = false;
+    protected Screen  nextScreenAfterFade = null;
+    protected float   fadeSpeed = 1.2f;
 
     // ── Floating note particles ───────────────────────────────────────────────
     protected final List<MusicNote> musicNotes     = new ArrayList<>();
@@ -46,13 +49,43 @@ public abstract class BaseScreen implements Screen {
     // ── Fade helpers ──────────────────────────────────────────────────────────
 
     /** Starts a black-to-clear fade-in. Call from show() or on state entry. */
-    protected void startFadeIn() { fadeAlpha = 1f; fadingIn = true; }
+    protected void startFadeIn() {
+        fadeAlpha = 1f;
+        fadingIn = true;
+        fadingOut = false;
+    }
+
+    /** Starts a clear-to-black fade-out and transitions to the given screen. */
+    protected void startFadeOut(Screen nextScreen) {
+        fadeAlpha = 0f;
+        fadingOut = true;
+        fadingIn = false;
+        nextScreenAfterFade = nextScreen;
+    }
 
     /** Advances the fade each frame. Call at the top of render(). */
     protected void updateFade(float delta) {
-        if (!fadingIn) return;
-        fadeAlpha -= delta * 1.2f;
-        if (fadeAlpha <= 0f) { fadeAlpha = 0f; fadingIn = false; }
+        if (fadingIn) {
+            fadeAlpha -= delta * fadeSpeed;
+            if (fadeAlpha <= 0f) {
+                fadeAlpha = 0f;
+                fadingIn = false;
+            }
+        } else if (fadingOut) {
+            fadeAlpha += delta * fadeSpeed;
+            if (fadeAlpha >= 1f) {
+                fadeAlpha = 1f;
+                fadingOut = false;
+                onFadeOutComplete();
+            }
+        }
+    }
+
+    /** Called when the fade-out animation completes. */
+    protected void onFadeOutComplete() {
+        if (nextScreenAfterFade != null) {
+            game.setScreen(nextScreenAfterFade);
+        }
     }
 
     /**
@@ -61,7 +94,12 @@ public abstract class BaseScreen implements Screen {
      */
     protected void drawFadeOverlay() {
         if (fadeAlpha <= 0f) return;
-        game.batch.end();
+
+        // Ensure batch is ended before starting shape renderer, but safely check if it's active
+        boolean batchWasDrawing = game.batch.isDrawing();
+        if (batchWasDrawing) {
+            game.batch.end();
+        }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -74,8 +112,11 @@ public abstract class BaseScreen implements Screen {
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        game.batch.setProjectionMatrix(game.gameCamera.combined);
-        game.batch.begin();
+        // Resume batch if it was drawing
+        if (batchWasDrawing) {
+            game.batch.setProjectionMatrix(game.gameCamera.combined);
+            game.batch.begin();
+        }
     }
 
     // ── Floating note particles ───────────────────────────────────────────────
