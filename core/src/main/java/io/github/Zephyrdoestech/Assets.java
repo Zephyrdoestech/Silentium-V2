@@ -216,7 +216,6 @@ public class Assets implements Disposable {
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
 
-
     // ── Item Textures ─────────────────────────────────────────────────────────
 
     public final Texture crimsonChorusBattleTex;
@@ -529,7 +528,7 @@ public class Assets implements Disposable {
 
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
         chimericksCombatAttack   = (loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.1f));
-        chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
+        chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 4, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
         labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);

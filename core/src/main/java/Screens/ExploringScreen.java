@@ -47,6 +47,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
+    private boolean isPaused = false;
     private boolean showingExitPrompt = false;
     private Rectangle yesButtonRect = new Rectangle();
     private Rectangle noButtonRect = new Rectangle();
@@ -75,6 +76,13 @@ public class ExploringScreen extends BaseScreen {
     private float lineDelayTimer = 0f;
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
+
+    // --- Pause Menu ---
+    private int             pauseMenuSelection   = 0;
+    private Texture[]       pauseButtons;
+    private boolean         showChordList        = false;
+    private boolean         showItemInfo         = false;
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     public ExploringScreen(Main game) {
         super(game);
@@ -168,7 +176,12 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
-        startFadeIn();
+        pauseButtons = new Texture[]{
+            game.assets.pauseContinueBtn,
+            game.assets.pauseChordInfoBtn,
+            game.assets.pauseItemInfoBtn,
+            game.assets.pauseExitBtn
+        };
 
         if (game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
@@ -257,7 +270,8 @@ public class ExploringScreen extends BaseScreen {
 
         if (game.ctx.player == null) return; // Safeguard to prevent NPE if rendered during transition
 
-        updateFade(delta);
+        // If a fade out finishes this frame, don't do anything else (BaseScreen handles the transition)
+        if (updateFade(delta)) return;
 
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
@@ -546,6 +560,17 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    private void performExit(ExploringScreen nextScreen) {
+        if (nextScreen != null) {
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+            game.setScreen(nextScreen);
+        }
+    }
+
     private void drawExitOverlay() {
         if (!showingExitPrompt) return;
 
@@ -710,9 +735,9 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
 
         // Draw new HUD buttons vertically
-        float btnWidth = 130f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
-        float btnHeight = 40f; // Adjusted height
-        float spacing = 15f;
+        float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
+        float btnHeight = 27f; // Adjusted height
+        float spacing = 10f;
         float currentX = 5f;
 
         // Calculate starting Y so they stack upwards from the bottom
