@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
+import org.w3c.dom.Text;
 
 /**
  * The overworld map screen.
@@ -65,6 +66,10 @@ public class ExploringScreen extends BaseScreen {
     private static Random rd = new Random();
     private static final float GAP = 32f;
     private float px(float factor) { return GAP * factor; }
+    private float textWidth(String text) {
+        game.glyphLayout.setText(game.assets.font, text);
+        return game.glyphLayout.width;
+    }
 
     // --- Monologue Variables ---
     private boolean isMonologueActive = false;
@@ -786,14 +791,16 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void renderPlayerStats(){
-        float cardScale = 0.6f;
+        float cardScale = 0.64f;
         float cardWidth = 135 * cardScale;
         float cardHeight = 177 * cardScale;
         float cardX = screenLeft + px(1.0f);
         float cardY = screenTop - px(1.0f) - cardHeight;
-        float playerStatsY;
-        float playerStatsX = cardX + cardWidth;
+        float statsOffsetX = px(0.8f);
+        float playerStatsX = cardX + cardWidth + statsOffsetX;
+        float playerStatsY = cardY;
 
+        // Player Card
         TextureRegion animFrame = null;
         switch(game.ctx.selectedCharacter){
             case SONARA:  animFrame = game.assets.sonaraCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
@@ -806,28 +813,70 @@ public class ExploringScreen extends BaseScreen {
         if (animFrame != null) { game.batch.draw(animFrame, cardX, cardY, cardWidth, cardHeight);}
         game.batch.end();
 
-        renderStatsBars(cardX, cardY);
+        // Status Bars
+        renderStatsBars(playerStatsX, playerStatsY);
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
+
+        // Name
         game.assets.font.setColor(Color.WHITE);
-        game.assets.font.getData().setScale(1.6f);
+        game.assets.font.getData().setScale(1.2f);
         String text = game.ctx.activeCharacterStats.getName();
-        float textX = cardX + cardWidth + px(0.8f);
-        float textY = cardY + cardHeight - px(0.8f);
+        float textX = playerStatsX;
+        float textY = playerStatsY + cardHeight - px(0.16f);
         game.assets.font.draw(game.batch, text, textX, textY);
 
+        // Level
         game.assets.font.setColor(Color.YELLOW);
         game.assets.font.getData().setScale(1.0f);
         text = "Level " + game.ctx.activeCharacterStats.getLevel();
-        textX = cardX + cardWidth + px(4.0f);
-        textY = cardY + cardHeight - px(1.0f);
+        textX = playerStatsX + px(4.0f);
+        textY = playerStatsY + cardHeight - px(0.2f);
+
+        // Lives
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.getData().setScale(1.0f);
+        text = "Lives: ";
+        textX = playerStatsX;
+        textY = playerStatsY + px(0.4f);
         game.assets.font.draw(game.batch, text, textX, textY);
 
-        if (getRequiredKills() > 0) {
-            String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
-            game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
+        // Hearts
+        int heartsRender = game.ctx.lives;
+        Texture heart = null;
+
+        float heartX        = textX + textWidth(text) + px(0.2f);
+        float heartY        = playerStatsY;
+        float heartWidth    = px(0.6f);
+        float heartHeight   = px(0.6f);
+        float heartGap      = px(0.2f);
+
+        for(int i = 0; i < game.ctx.maxLives; i++){
+            heart = (i < heartsRender ? game.assets.heart : game.assets.heartEmpty);
+            game.batch.draw(heart,
+                heartX + i * (heartWidth + heartGap), heartY,
+                heartWidth, heartHeight);
         }
+
+
+        // Level
+        text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        float textWidth = textWidth(text);
+        float textHeight = px(1.6f);
+        textX = screenRight - textWidth - px(1.6f);
+        textY = screenTop - textHeight;
+        game.assets.font.setColor(Color.RED);
+        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) game.assets.font.setColor(Color.GREEN);
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        text = "Objectives: ";
+        textX = textX;
+        textY += px(0.48f);
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.getData().setScale(0.8f);
+        game.assets.font.draw(game.batch, text, textX, textY);
         game.batch.end();
     }
 
@@ -838,7 +887,7 @@ public class ExploringScreen extends BaseScreen {
         final float barHeight          = 11.8f;
         final float containerWidth     = 180f;
         final float containerHeight    = 32f;
-        final float barOffsetX         = px(4.8f);
+        final float barOffsetX         = px(0.4f);
         final float hpBarOffsetY       = px(2.4f);
         final float shieldBarOffsetY   = px(1.6f);
         final float containerOffsetX   = -27f;
@@ -874,15 +923,6 @@ public class ExploringScreen extends BaseScreen {
             playerShieldBarX + containerOffsetX, playerShieldBarY + containerOffsetY,
             containerWidth, containerHeight);
         game.assets.font.getData().setScale(1.0f);
-
-        // Stats Text
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch,
-            player.getHp() + " / " + player.getMaxHp(),
-            playerHpBarX + textOffsetX, playerHpBarY);
-        game.assets.font.draw(game.batch,
-            player.getShield() + " / " + player.getMaxShield(),
-            playerShieldBarX + textOffsetX, playerShieldBarY);
         game.batch.end();
     }
 
