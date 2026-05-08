@@ -23,6 +23,16 @@ public class Assets implements Disposable {
     public final Texture creditsBtnTex;
     public final Texture exitBtnTex;
 
+    public final Texture pauseMenuBG;
+    public final Texture pauseContinueBtn;
+    public final Texture pauseChordInfoBtn;
+    public final Texture pauseItemInfoBtn;
+    public final Texture pauseExitBtn;
+
+    public final Texture inventoryBtnTex;
+    public final Texture pauseBtnTex;
+    public final Texture menuBtnTex;
+
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
 
@@ -357,6 +367,16 @@ public class Assets implements Disposable {
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
+
+        pauseMenuBG = new Texture("UI/Pause/pause.png");
+        pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
+        pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
+        pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
+        pauseExitBtn = new Texture("UI/Pause/btn_exit.png");
+
+        inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
+        pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
+        menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
@@ -762,6 +782,16 @@ public class Assets implements Disposable {
         disposeTexture(creditsBtnTex);
         disposeTexture(exitBtnTex);
         disposeTexture(continueBtnTex);
+
+        disposeTexture(pauseMenuBG);
+        disposeTexture(pauseContinueBtn);
+        disposeTexture(pauseChordInfoBtn);
+        disposeTexture(pauseItemInfoBtn);
+        disposeTexture(pauseExitBtn);
+
+        disposeTexture(inventoryBtnTex);
+        disposeTexture(pauseBtnTex);
+        disposeTexture(menuBtnTex);
 
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);

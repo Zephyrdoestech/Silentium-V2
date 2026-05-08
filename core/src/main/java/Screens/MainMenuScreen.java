@@ -28,7 +28,7 @@ public class MainMenuScreen extends BaseScreen {
     private float cursorTime = 0f;
 
     // Button dimensions
-    private final float BTN_WIDTH = 160f;
+    private final float BTN_WIDTH = 120f;
     private final float BTN_HEIGHT = 48f;
 
     public MainMenuScreen(Main game) { super(game); }
@@ -81,7 +81,7 @@ public class MainMenuScreen extends BaseScreen {
         float totalBlockHeight = (buttons.length * BTN_HEIGHT) + ((buttons.length - 1) * padding);
 
         // Pulled the menu UP by changing the offset to -40f (was -130f)
-        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - 40f;
+        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - 20f;
 
         // 3. Draw Buttons
         for (int i = 0; i < buttons.length; i++) {
@@ -138,12 +138,6 @@ public class MainMenuScreen extends BaseScreen {
         // 5. Restart batch for the final text and fade overlays
         game.batch.begin();
         game.batch.setColor(Color.WHITE);
-
-        // Hint Text
-        game.assets.font.setColor(new Color(0.7f, 0.7f, 0.7f, 0.85f));
-        game.assets.font.draw(game.batch,
-            "W/S or Arrows to navigate  |  Hover/Click to select", 185, 40);
-        game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
         game.batch.end();

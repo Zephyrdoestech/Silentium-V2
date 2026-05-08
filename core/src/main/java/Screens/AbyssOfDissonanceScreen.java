@@ -14,6 +14,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
     @Override
     protected void initMapData() {
         this.mapName = "Abyss of Dissonance";
+        game.ctx.mapName = GameContext.MapName.ABYSS_OF_DISSONANCE;
         game.ctx.MAP_SIZE = 1800f;
 
         game.ctx.rooms = new ArrayList<>();
@@ -79,8 +80,19 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
     public void show() {
         super.show();
 
-        // 2. Auto-Save the game!
         if (game.ctx != null) {
+            // Check if all enemies are defeated. Since this is the last screen (getNextScreen() is null),
+            // this means the player has won the game.
+            if (game.ctx.mapEnemies.isEmpty()) {
+                game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
+                Screens.LeaderBoard.LeaderboardScreen.promptForUsername(game, game.ctx, 3);
+                return;
+            }
+
+            // Player is on the 3rd map, so they have cleared 2 maps.
+            game.ctx.mapsCleared = 2;
+
+            // Auto-Save the game
             game.ctx.saveGame("AbyssOfDissonance", game.ctx.player.getX(), game.ctx.player.getY());
         }
     }

@@ -2,6 +2,7 @@ package Inventory.Consumables;
 
 import Entities.CharacterHero;
 import io.github.Zephyrdoestech.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Random;
 

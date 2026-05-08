@@ -129,6 +129,10 @@ public class SilentCavernsScreen extends ExploringScreen {
     public void show() {
         super.show();
 
+        if (game.ctx != null) {
+            game.ctx.mapsCleared = 0;
+        }
+
         // 2. Auto-Save the game!
         if (game.ctx != null) {
             game.ctx.saveGame("SilentCaverns", game.ctx.player.getX(), game.ctx.player.getY());
