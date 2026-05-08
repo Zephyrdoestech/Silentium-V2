@@ -290,6 +290,9 @@ public class Assets implements Disposable {
 
     public Animation<TextureRegion> lyronSelectAnim;
 
+    //Leaderboard
+    public Texture leaderboardBG;
+
     public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures

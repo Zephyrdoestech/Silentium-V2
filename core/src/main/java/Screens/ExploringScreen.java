@@ -2,6 +2,7 @@ package Screens;
 
 import Entities.CharacterHero;
 import Inventory.Inventory;
+import Screens.LeaderBoard.NameInputScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -418,10 +419,8 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player = null;
 
         if (game.ctx.lives <= 0) {
-            // Player is completely out of lives - reset the run completely and go back to map 1
-            game.ctx.lives = 3;
-            game.ctx.mapsCleared = 0;
-            game.setScreen(new TownOfEchoesScreen(game));
+            game.ctx.lives = 1;
+            game.setScreen(new NameInputScreen(game, game.ctx, 1));
         } else {
             // Player lost a life but has more, retry current map
             switch (game.ctx.mapName) {
