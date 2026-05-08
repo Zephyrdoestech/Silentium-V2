@@ -21,7 +21,7 @@ public class MainMenuScreen extends BaseScreen {
     private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     private static final String[] OPTIONS = {
-        "START GAME", "CONTINUE", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
+        "START GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
     };
 
     private int   selection  = 0;
@@ -67,7 +67,6 @@ public class MainMenuScreen extends BaseScreen {
 
         Texture[] buttons = {
             game.assets.startBtnTex,
-            game.assets.continueBtnTex,
             game.assets.tutorialBtnTex,
             game.assets.storyBtnTex,
             game.assets.creditsBtnTex,
@@ -182,51 +181,19 @@ public class MainMenuScreen extends BaseScreen {
                 game.setScreen(new LoreScreen(game));
                 break;
 
-            case 1: // CONTINUE
-                String savedMapId = game.ctx.loadGame();
-                if (savedMapId != null) {
-                    game.assets.stopAllMusic();
-
-                    // We stack the cases so it works perfectly whether the save file has spaces or not!
-                    switch (savedMapId) {
-                        case "Town of Echoes":
-                        case "TownOfEchoes":
-                            game.setScreen(new TownOfEchoesScreen(game));
-                            break;
-
-                        case "Silent Caverns":
-                        case "SilentCaverns":
-                            game.setScreen(new SilentCavernsScreen(game));
-                            break;
-
-                        case "Abyss of Dissonance":
-                        case "AbyssOfDissonance":
-                            game.setScreen(new AbyssOfDissonanceScreen(game));
-                            break;
-
-                        default:
-                            System.out.println("Unknown map string saved: " + savedMapId);
-                            game.setScreen(new TownOfEchoesScreen(game));
-                            break;
-                    }
-                } else {
-                    System.out.println("No save file found! Please hit Start Game.");
-                }
-                break;
-
-            case 2: // HOW TO PLAY
+            case 1: // HOW TO PLAY
                 game.setScreen(new HowToPlayScreen(game));
                 break;
 
-            case 3: // STORY
+            case 2: // STORY
                 game.setScreen(new LoreScreen(game));
                 break;
 
-            case 4: // CREDITS
+            case 3: // CREDITS
                 game.setScreen(new CreditsScreen(game));
                 break;
 
-            case 5: // EXIT
+            case 4: // EXIT
                 Gdx.app.exit();
                 break;
         }

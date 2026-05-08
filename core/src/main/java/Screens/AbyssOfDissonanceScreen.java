@@ -80,7 +80,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
     public void show() {
         super.show();
 
-        if (game.ctx != null) {
+        if (game.ctx != null && game.ctx.player != null) {
             // Check if all enemies are defeated. Since this is the last screen (getNextScreen() is null),
             // this means the player has won the game.
             if (game.ctx.mapEnemies.isEmpty()) {
