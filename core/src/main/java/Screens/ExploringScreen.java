@@ -53,6 +53,13 @@ public class ExploringScreen extends BaseScreen {
     private Rectangle noButtonRect = new Rectangle();
     private Rectangle okButtonRect = new Rectangle();
 
+    // ── Screen Layout ─────────────────────────────────────────────────────────
+
+    private final float screenLeft   = 0;
+    private final float screenRight  = Main.WORLD_WIDTH;
+    private final float screenTop    = Main.WORLD_HEIGHT;
+    private final float screenBottom = 0;
+
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
@@ -371,14 +378,13 @@ public class ExploringScreen extends BaseScreen {
         drawDarknessOverlay();
         game.batch.end();
 
-        // HUD (uses fixed uiCamera)
-        drawHUD();
+        if (isMonologueActive) { drawMonologueOverlay(delta); }
+        else{ drawHUD(); } // HUD (uses fixed uiCamera)
 
         if (showInventory) {
             drawInventoryOverlay();
         }
 
-        if (isMonologueActive) { drawMonologueOverlay(delta); }
 
         drawFadeOverlay();
 
@@ -713,26 +719,8 @@ public class ExploringScreen extends BaseScreen {
         CharacterHero c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
 
-        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        drawBar(game.shapeRenderer, 20, Main.WORLD_HEIGHT - 30, 200, 16,
-            (float) c.getHp() / c.getMaxHp(), Color.DARK_GRAY, Color.RED);
-        drawBar(game.shapeRenderer, 20, Main.WORLD_HEIGHT - 52, 200, 16,
-            c.getMaxShield() > 0 ? (float) c.getShield() / c.getMaxShield() : 0f,
-            Color.DARK_GRAY, Color.CYAN);
-        game.shapeRenderer.end();
-
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch,
-            c.getName() + "  HP: " + c.getHp() + "/" + c.getMaxHp(),
-            230, Main.WORLD_HEIGHT - 18);
-        game.assets.font.draw(game.batch,
-            "Shield: " + c.getShield() + "/" + c.getMaxShield(),
-            230, Main.WORLD_HEIGHT - 40);
-        game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
+        // Stats
+        renderPlayerStats();
 
         // Draw new HUD buttons vertically
         float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
@@ -744,6 +732,7 @@ public class ExploringScreen extends BaseScreen {
         // Inventory is at the bottom, Menu is on top
         float startY = 15f;
 
+        game.batch.begin();
         if (game.assets.inventoryBtnTex != null) {
             game.batch.draw(game.assets.inventoryBtnTex, currentX, startY, btnWidth, btnHeight);
         } else {
@@ -758,15 +747,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             game.assets.font.setColor(Color.GRAY);
             game.assets.font.draw(game.batch, "ESC – Menu", currentX, startY + btnHeight);
-        }
-
-        // Adjust LIVES text position so it doesn't overlap the new buttons
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch, "LIVES: " + game.ctx.lives, 20, Main.WORLD_HEIGHT - 85);
-
-        if (getRequiredKills() > 0) {
-            String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
-            game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
         }
 
         game.assets.font.setColor(Color.GOLD);
@@ -803,6 +783,107 @@ public class ExploringScreen extends BaseScreen {
                 }
             }
         }
+    }
+
+    private void renderPlayerStats(){
+        float playerStatsX = screenLeft + px(1.0f);
+        float playerStatsY = screenTop - px(1.0f);
+        float cardScale = 0.8f;
+        float cardWidth = 135 * cardScale;
+        float cardHeight = 177 * cardScale;
+        float cardX = playerStatsX;
+        float cardY = playerStatsY - cardHeight;
+
+        TextureRegion animFrame = null;
+        switch(game.ctx.selectedCharacter){
+            case SONARA:  animFrame = game.assets.sonaraCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+            case AURELIUS: animFrame = game.assets.aureliusCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+            case LYRON: animFrame = game.assets.lyronCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+        }
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        if (animFrame != null) { game.batch.draw(animFrame, cardX, cardY, cardWidth, cardHeight);}
+        game.batch.end();
+
+        renderStatsBars(cardX, cardY);
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.getData().setScale(1.6f);
+        String text = game.ctx.activeCharacterStats.getName();
+        float textX = cardX + cardWidth + px(0.8f);
+        float textY = cardY + cardHeight - px(0.8f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.getData().setScale(1.0f);
+        text = "Level " + game.ctx.activeCharacterStats.getLevel();
+        textX = cardX + cardWidth + px(4.0f);
+        textY = cardY + cardHeight - px(1.0f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        if (getRequiredKills() > 0) {
+            String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
+            game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
+        }
+        game.batch.end();
+    }
+
+    private void renderStatsBars(float baseX, float baseY) {
+        CharacterHero player = game.ctx.activeCharacterStats;
+
+        final float barWidth           = 144f;
+        final float barHeight          = 11.8f;
+        final float containerWidth     = 180f;
+        final float containerHeight    = 32f;
+        final float barOffsetX         = px(4.8f);
+        final float hpBarOffsetY       = px(2.4f);
+        final float shieldBarOffsetY   = px(1.6f);
+        final float containerOffsetX   = -27f;
+        final float containerOffsetY   = -21f;
+        final float textOffsetX        = barWidth + px(0.4f);
+
+        float playerHpBarX     = baseX + barOffsetX;
+        float playerHpBarY     = baseY + hpBarOffsetY;
+        float playerShieldBarX = baseX + barOffsetX;
+        float playerShieldBarY = baseY + shieldBarOffsetY;
+
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        drawBar(game.shapeRenderer,
+            playerHpBarX, playerHpBarY, barWidth, barHeight,
+            (float) player.getHp() / player.getMaxHp(),
+            Color.DARK_GRAY, Color.RED);
+
+        drawBar(game.shapeRenderer,
+            playerShieldBarX, playerShieldBarY, barWidth, barHeight,
+            player.getMaxShield() > 0 ? (float) player.getShield() / player.getMaxShield() : 0f,
+            Color.DARK_GRAY, new Color(0.07f, 0.58f, 0.93f, 1));
+        game.shapeRenderer.end();
+
+        // Stats Bar Border
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        game.batch.draw(game.assets.healthBar,
+            playerHpBarX + containerOffsetX, playerHpBarY + containerOffsetY,
+            containerWidth, containerHeight);
+        game.batch.draw(game.assets.shieldBar,
+            playerShieldBarX + containerOffsetX, playerShieldBarY + containerOffsetY,
+            containerWidth, containerHeight);
+        game.assets.font.getData().setScale(1.0f);
+
+        // Stats Text
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.draw(game.batch,
+            player.getHp() + " / " + player.getMaxHp(),
+            playerHpBarX + textOffsetX, playerHpBarY);
+        game.assets.font.draw(game.batch,
+            player.getShield() + " / " + player.getMaxShield(),
+            playerShieldBarX + textOffsetX, playerShieldBarY);
+        game.batch.end();
     }
 
     private float getMapNameWidth() {

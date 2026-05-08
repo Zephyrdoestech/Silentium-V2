@@ -118,7 +118,6 @@ public class CharSelectScreen extends BaseScreen {
                 animFrame = sel ? game.assets.lyronCardSelected.getKeyFrame(stateTime, true) :
                     game.assets.lyronCardDefault.getKeyFrame(stateTime, true);
             } else {
-                // Fallback to the square textures if animation is missing
                 staticFrame = staticTexs[i];
             }
 

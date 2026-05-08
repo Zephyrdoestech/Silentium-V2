@@ -196,6 +196,8 @@ public class Assets implements Disposable {
     public final Texture mapHeaderSilentCaverns;
     public final Texture mapHeaderAbyssOfDissonance;
 
+    public final Texture heart;
+
     public final Texture healthBar;
     public final Texture shieldBar;
     public final Texture staticHudBackground;
@@ -459,8 +461,10 @@ public class Assets implements Disposable {
         mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
-        healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
-        shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
+        heart                = new Texture("Sprites/Combat/Interface/Heart.png");
+
+        healthBar            = new Texture("Sprites/Combat/Interface/HealthBar.png");
+        shieldBar            = new Texture("Sprites/Combat/Interface/ShieldBar.png");
         staticHudBackground  = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
         timerBackground      = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
         dynamicHudBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");

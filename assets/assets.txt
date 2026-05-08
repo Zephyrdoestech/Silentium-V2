@@ -458,6 +458,7 @@ Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png
 Sprites/Combat/Interface/DynamicHUD/Skill.png
 Sprites/Combat/Interface/DynamicHUD/TurnMenu.png
 Sprites/Combat/Interface/HealthBar.png
+Sprites/Combat/Interface/Heart.png
 Sprites/Combat/Interface/Inventory/InventoryBG.png
 Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png
 Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png
