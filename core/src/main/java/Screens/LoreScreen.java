@@ -52,6 +52,12 @@ public class LoreScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Allow skipping the entire lore screen with ESC
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            finishLore();
+            return;
+        }
+
         // --- FADE LOGIC STATE MACHINE ---
         switch (fadeState) {
             case FADING_IN:
@@ -100,7 +106,7 @@ public class LoreScreen extends BaseScreen {
         // Only show the hint text when the slide is fully visible
         if (fadeState == FadeState.VIEWING) {
             game.assets.font.setColor(new Color(0.7f, 0.7f, 0.7f, 0.85f));
-            game.assets.font.draw(game.batch, "Press ENTER or Click to continue...", 20, 40);
+            game.assets.font.draw(game.batch, "Press ENTER or Click to continue... (ESC to skip entirely)", 20, 40);
             game.assets.font.setColor(Color.WHITE);
         }
 
