@@ -66,11 +66,10 @@ public class NameInputScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Creates a clean, dark blue background
-        Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1);
+        // Dark background to match the leaderboard
+        Gdx.gl.glClearColor(0.02f, 0.02f, 0.08f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Make the cursor blink every half second
         blinkTimer += delta;
         if (blinkTimer > 0.5f) {
             showCursor = !showCursor;
@@ -80,23 +79,39 @@ public class NameInputScreen implements Screen {
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
-        // Draw the Prompt Header
-        game.assets.titleFont.setColor(Color.GOLD);
-        String prompt = "ENTER YOUR NAME";
-        game.glyphLayout.setText(game.assets.titleFont, prompt);
-        game.assets.titleFont.draw(game.batch, prompt, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, Main.WORLD_HEIGHT / 2f + 70f);
+        // 1. Draw your custom Input Panel
+        float bgWidth = 500f;
+        float bgHeight = 200f;
+        float bgX = (Main.WORLD_WIDTH - bgWidth) / 2f;
+        float bgY = (Main.WORLD_HEIGHT - bgHeight) / 2f;
 
-        // Draw the typed name and the blinking cursor
+        if (game.assets.nameInputPanelBG != null) {
+            game.batch.setColor(Color.WHITE);
+            game.batch.draw(game.assets.nameInputPanelBG, bgX, bgY, bgWidth, bgHeight);
+        }
+
+        // 2. Draw the typed name with scaling
         game.assets.titleFont.setColor(Color.WHITE);
+
+        // --- START SCALE ---
+        game.assets.titleFont.getData().setScale(1.15f); // Adjust this (0.5f to 1.0f) for size
+
         String displayString = currentName + (showCursor ? "_" : " ");
         game.glyphLayout.setText(game.assets.titleFont, displayString);
-        game.assets.titleFont.draw(game.batch, displayString, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, Main.WORLD_HEIGHT / 2f - 10f);
 
-        // Draw the Footer
+        // Centering the text inside the dark inset box of your asset
+        float textY = bgY + 82f;
+        game.assets.titleFont.draw(game.batch, displayString, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, textY);
+
+        // --- RESET SCALE (CRITICAL!) ---
+        game.assets.titleFont.getData().setScale(1.0f);
+        // -------------------------------
+
+        // 3. Draw the Helper Footer underneath the panel
         game.assets.font.setColor(Color.GRAY);
         String hint = "Press ENTER to confirm";
         game.glyphLayout.setText(game.assets.font, hint);
-        game.assets.font.draw(game.batch, hint, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, Main.WORLD_HEIGHT / 2f - 90f);
+        game.assets.font.draw(game.batch, hint, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 30f);
 
         game.batch.end();
     }

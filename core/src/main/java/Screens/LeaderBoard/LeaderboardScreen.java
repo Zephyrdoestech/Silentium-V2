@@ -106,7 +106,7 @@ public class LeaderboardScreen extends BaseScreen {
         // ── Footer hint (Moved dynamically below the panel) ───────────────────
         game.assets.font.setColor(Color.GRAY);
         game.glyphLayout.setText(game.assets.font, "Press ENTER to return to main menu");
-        game.assets.font.draw(game.batch, "Press ENTER to return to main menu", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 30f);
+        game.assets.font.draw(game.batch, "Press ENTER to return to main menu", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
         game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
