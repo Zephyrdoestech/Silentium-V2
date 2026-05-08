@@ -4,10 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)">
+    <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="added leaderboard">
+      <change afterPath="$PROJECT_DIR$/assets/UI/Panels/LeaderBoard_Input.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/src/main/java/Screens/CreditsScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/core/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/HowToPlayScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/HowToPlayScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/LeaderBoard/LeaderboardScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/LeaderBoard/LeaderboardScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/LeaderBoard/NameInputScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/LeaderBoard/NameInputScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lwjgl3/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/lwjgl3/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,12 +71,12 @@
     &quot;assignee&quot;: &quot;dellisyoss&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Zephyrdoestech/Silentium-V2.git&quot;,
-    &quot;accountId&quot;: &quot;b4d5224b-3304-45bc-bae4-04e5913c2e18&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Zephyrdoestech/Silentium-V2.git",
+    "accountId": "13911e7b-9132-4404-809c-422fb83358e7"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-lwjgl3/1.14.0/25ee7eb0fb0bf8647f258e1500bf25ac02c5b37d/gdx-backend-lwjgl3-1.14.0-sources.jar!/com/badlogic/gdx/backends/lwjgl3/audio/OpenALLwjgl3Audio.java" root0="SKIP_INSPECTION" />
   </component>
@@ -90,24 +100,32 @@
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Gradle.Build GDX Silentium.executor": "Run",
+    "Gradle.Build Silentium.executor": "Run",
     "Gradle.Configure Daemon JVM Criteria.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
     "Gradle.GDX Silentium [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
     "Gradle.GDX Silentium [:lwjgl3:io.github.some_example_name.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
     "Gradle.GDX Silentium [:lwjgl3:run].executor": "Run",
+    "Gradle.Silentium [build].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "#1 on CombatUpdate",
+    "git-widget-placeholder": "game-save",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "to.speed.mode.migration.done": "true"
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -124,6 +142,11 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="Background.Map" />
     </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle build --refresh-dependencies" />
+    </option>
   </component>
   <component name="RunManager" selected="Gradle.GDX Silentium [:lwjgl3:run]">
     <configuration name="Game" type="Application" factoryName="Application">
@@ -158,6 +181,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="Silentium [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--refresh-dependencies" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <method v="2">
         <option name="Make" enabled="true" />
@@ -169,18 +214,21 @@
     </configuration>
     <list>
       <item itemvalue="Application.Game" />
+      <item itemvalue="Gradle.Silentium [build]" />
       <item itemvalue="Gradle.GDX Silentium [:lwjgl3:run]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.GDX Silentium [:lwjgl3:run]" />
+        <item itemvalue="Gradle.Silentium [build]" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
       </set>
     </attachedChunks>
   </component>
@@ -191,6 +239,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1774767168649</updated>
+      <workItem from="1778252857760" duration="5156000" />
     </task>
     <task id="LOCAL-00001" summary="map pngs">
       <option name="closed" value="true" />
@@ -344,8 +393,19 @@
       <option name="project" value="LOCAL" />
       <updated>1776095884465</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="added leaderboard">
+      <option name="closed" value="true" />
+      <created>1778242026772</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1778242026772</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -358,7 +418,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="bruh" />
+                        <option value="origin/bruh" />
                       </list>
                     </value>
                   </entry>
@@ -389,6 +449,7 @@
     <MESSAGE value="silent caverns done ish, and merged dars inventory + buttons update" />
     <MESSAGE value="2nd map cleaned" />
     <MESSAGE value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
-    <option name="LAST_COMMIT_MESSAGE" value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
+    <MESSAGE value="added leaderboard" />
+    <option name="LAST_COMMIT_MESSAGE" value="added leaderboard" />
   </component>
 </project>

@@ -295,6 +295,10 @@ public class Assets implements Disposable {
 
     public Animation<TextureRegion> lyronSelectAnim;
 
+    //Leaderboard
+    public Texture leaderboardBG;
+    public Texture nameInputPanelBG;
+
     public final Music titleBGM;
 
     // Internal list so dispose() can clean up animation textures
@@ -389,6 +393,7 @@ public class Assets implements Disposable {
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
         leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
+        nameInputPanelBG = safeLoadTexture("UI/Panels/LeaderBoard_Input.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
