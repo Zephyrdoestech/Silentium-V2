@@ -47,6 +47,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
+    private boolean isPaused = false;
     private boolean showingExitPrompt = false;
     private Rectangle yesButtonRect = new Rectangle();
     private Rectangle noButtonRect = new Rectangle();
@@ -75,6 +76,13 @@ public class ExploringScreen extends BaseScreen {
     private float lineDelayTimer = 0f;
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
+
+    // --- Pause Menu ---
+    private int             pauseMenuSelection   = 0;
+    private Texture[]       pauseButtons;
+    private boolean         showChordList        = false;
+    private boolean         showItemInfo         = false;
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     public ExploringScreen(Main game) {
         super(game);
@@ -168,6 +176,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
+        pauseButtons = new Texture[]{
+            game.assets.pauseContinueBtn,
+            game.assets.pauseChordInfoBtn,
+            game.assets.pauseItemInfoBtn,
+            game.assets.pauseExitBtn
+        };
+
         if (game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
             handlePlayerDeath();
@@ -258,6 +273,11 @@ public class ExploringScreen extends BaseScreen {
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
             return;
+        }
+
+        if (isPaused) {
+            renderPauseScreen(delta);
+            return; // Skip normal game rendering
         }
 
         game.ctx.totalPlaytime += delta;
@@ -715,13 +735,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
 
         // Draw new HUD buttons vertically
-        float btnWidth = 130f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
-        float btnHeight = 40f; // Adjusted height
-        float spacing = 15f;
+        float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
+        float btnHeight = 27f; // Adjusted height
+        float spacing = 10f;
         float currentX = 5f;
 
         // Calculate starting Y so they stack upwards from the bottom
-        // Inventory is at the bottom, then Pause, then Menu on top
+        // Inventory is at the bottom, Menu is on top
         float startY = 15f;
 
         if (game.assets.inventoryBtnTex != null) {
@@ -729,15 +749,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             game.assets.font.setColor(Color.GRAY);
             game.assets.font.draw(game.batch, "I – Inventory", currentX, startY + btnHeight);
-        }
-
-        startY += btnHeight + spacing;
-
-        if (game.assets.pauseBtnTex != null) {
-            game.batch.draw(game.assets.pauseBtnTex, currentX, startY, btnWidth, btnHeight);
-        } else {
-            game.assets.font.setColor(Color.GRAY);
-            game.assets.font.draw(game.batch, "P – Pause", currentX, startY + btnHeight);
         }
 
         startY += btnHeight + spacing;
@@ -783,15 +794,6 @@ public class ExploringScreen extends BaseScreen {
             }
             checkY += btnHeight + spacing;
 
-            // Pause button logic (simulating ESC for ExploringScreen for now, as ExploringScreen has no pause menu)
-            if (game.assets.pauseBtnTex != null) {
-                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
-                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
-                    // Optional: you can implement a pause screen for the overworld here if you want
-                }
-            }
-            checkY += btnHeight + spacing;
-
             // Menu button logic
             if (game.assets.menuBtnTex != null) {
                 if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
@@ -801,6 +803,143 @@ public class ExploringScreen extends BaseScreen {
                 }
             }
         }
+    }
+
+    // =========================================================================
+    // Pause Screen
+    // =========================================================================
+
+    private void handlePauseSelection() {
+        switch (pauseMenuSelection) {
+            case 0: // Continue
+                isPaused = false;
+                break;
+            case 1: // Exit to Menu
+                game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+                game.setScreen(new MainMenuScreen(game));
+                break;
+        }
+    }
+
+    private void renderPauseScreen(float delta) {
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA, com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        game.uiCamera.update();
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.uiCamera.unproject(mousePos);
+
+        // Draw overlay
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.7f); // Low opacity black background
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        game.shapeRenderer.end();
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+
+        // --- Main Pause Menu Logic ---
+
+        // Define button dimensions
+        float btnWidth = 250f;
+        float btnHeight = 60f;
+        float gap = 20f;
+        float totalHeight = (pauseButtons.length * btnHeight) + ((pauseButtons.length - 1) * gap);
+        float startY = (Main.WORLD_HEIGHT / 2f) + (totalHeight / 2f) - btnHeight - 30f;
+        float btnX = (Main.WORLD_WIDTH - btnWidth) / 2f;
+
+        // Input
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            pauseMenuSelection = (pauseMenuSelection > 0) ? pauseMenuSelection - 1 : pauseButtons.length - 1;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            pauseMenuSelection = (pauseMenuSelection < pauseButtons.length - 1) ? pauseMenuSelection + 1 : 0;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            handlePauseSelection();
+            return; // Avoid processing click on same frame
+        }
+
+        // Mouse hover detection
+        for (int i = 0; i < pauseButtons.length; i++) {
+            float currentBtnY = startY - (i * (btnHeight + gap));
+
+            if (mousePos.x >= btnX && mousePos.x <= btnX + btnWidth &&
+                mousePos.y >= currentBtnY && mousePos.y <= currentBtnY + btnHeight) {
+                pauseMenuSelection = i;
+                if (Gdx.input.justTouched()) {
+                    handlePauseSelection();
+                    return; // Exit to avoid other interactions
+                }
+            }
+        }
+
+        // Drawing
+        game.batch.begin();
+
+        game.assets.titleFont.setColor(Color.CYAN);
+        game.glyphLayout.setText(game.assets.titleFont, "PAUSED");
+        game.assets.titleFont.draw(game.batch, "PAUSED", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, startY + totalHeight + 20);
+        game.assets.titleFont.setColor(Color.WHITE);
+
+        // We only want 2 buttons on the ExploringScreen pause menu
+        for (int i = 0; i < 2; i++) {
+            float currentBtnY = startY - (i * (btnHeight + gap));
+            Texture btnTex = null;
+
+            if (i == 0) btnTex = game.assets.pauseContinueBtn;
+            if (i == 1) btnTex = game.assets.pauseExitBtn;
+
+            if (i == pauseMenuSelection) {
+                game.batch.setColor(Color.WHITE); // Bright for selected
+            } else {
+                game.batch.setColor(0.5f, 0.5f, 0.5f, 1f); // Dimmed for unselected
+            }
+
+            if (btnTex != null) {
+                game.batch.draw(btnTex, btnX, currentBtnY, btnWidth, btnHeight);
+            }
+        }
+
+        game.batch.setColor(Color.WHITE); // Reset batch color
+        game.batch.end();
+
+        // 4. DRAW THE CORNER BRACKETS AROUND THE SELECTED BUTTON
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        // Make the brackets pulse slightly to catch the eye
+        float pulse = (com.badlogic.gdx.math.MathUtils.sin(game.ctx.stateTime * 6f) + 1f) / 2f;
+        // Setting color to a nice light grey/white that matches your buttons
+        game.shapeRenderer.setColor(0.7f + pulse * 0.3f, 0.7f + pulse * 0.3f, 0.75f + pulse * 0.25f, 1f);
+
+        // Math for the brackets
+        float selY = startY - (pauseMenuSelection * (btnHeight + gap)); // The Y position of the currently selected button
+        float pad = 8f;       // Distance from the button edge
+        float t = 4f;         // Thickness of the bracket lines
+        float l = 16f;        // Length of the bracket arms
+
+        float boxX = btnX - pad;
+        float boxY = selY - pad;
+        float boxW = btnWidth + pad * 2;
+        float boxH = btnHeight + pad * 2;
+
+        // Top Left Corner ⌜
+        game.shapeRenderer.rect(boxX, boxY + boxH - t, l, t); // Horizontal
+        game.shapeRenderer.rect(boxX, boxY + boxH - l, t, l); // Vertical
+
+        // Top Right Corner ⌝
+        game.shapeRenderer.rect(boxX + boxW - l, boxY + boxH - t, l, t);
+        game.shapeRenderer.rect(boxX + boxW - t, boxY + boxH - l, t, l);
+
+        // Bottom Left Corner ⌞
+        game.shapeRenderer.rect(boxX, boxY, l, t);
+        game.shapeRenderer.rect(boxX, boxY, t, l);
+
+        // Bottom Right Corner ⌟
+        game.shapeRenderer.rect(boxX + boxW - l, boxY, l, t);
+        game.shapeRenderer.rect(boxX + boxW - t, boxY, t, l);
+
+        game.shapeRenderer.end();
     }
 
     private float getMapNameWidth() {

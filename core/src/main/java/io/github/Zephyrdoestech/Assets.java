@@ -23,7 +23,7 @@ public class Assets implements Disposable {
     public final Texture creditsBtnTex;
     public final Texture exitBtnTex;
 
-    public final Texture pauseMenuBG;
+    public Texture pauseMenuBG;
     public final Texture pauseContinueBtn;
     public final Texture pauseChordInfoBtn;
     public final Texture pauseItemInfoBtn;
@@ -343,6 +343,9 @@ public class Assets implements Disposable {
         if (townDecorFull != null) townDecorationsTex = new TextureRegion(townDecorFull);
         else townDecorationsTex = null;
 
+        // Pause Menu BG
+        pauseMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
+
 //        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
 //        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
 
@@ -368,7 +371,7 @@ public class Assets implements Disposable {
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
 
-        pauseMenuBG = new Texture("UI/Pause/pause.png");
+        pauseMenuBG = new Texture("Background/Texture/Cobblestone.png");
         pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
         pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
@@ -387,7 +390,6 @@ public class Assets implements Disposable {
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
         lyronSelectAnim = loadAnim("Lyron/Select", "lyronSelect", 10, 0.1f);
-
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);

@@ -709,6 +709,9 @@ Sprites/Combat/Tutorial/ChordTutorial.png
 Sprites/Combat/Tutorial/MetronomeTutorial.png
 Sprites/Combat/Tutorial/NoteTutorial.png
 Sprites/Combat/Tutorial/screen.png
+UI/Buttons/btn_inventory.png
+UI/Buttons/btn_menu.png
+UI/Buttons/btn_pause.png
 UI/Items/Battle/crimson_chorus_battle.png
 UI/Items/Battle/majors_blessing_battle.png
 UI/Items/Battle/minors_grace_battle.png
@@ -723,6 +726,11 @@ UI/Items/Inventory/ResolvedDissonance.png
 UI/Items/Inventory/SilentBarrier.png
 UI/Items/Inventory/TimeOrb.png
 UI/Panels/Inventory.png
+UI/Pause/btn_chordinfo.png
+UI/Pause/btn_continue.png
+UI/Pause/btn_exit.png
+UI/Pause/btn_iteminfo.png
+UI/Pause/pause.png
 UI/continue_btn.png
 UI/credits_btn.png
 UI/exit_btn.png
