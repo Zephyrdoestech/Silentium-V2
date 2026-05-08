@@ -111,6 +111,9 @@ public class CombatScreen extends BaseScreen {
     private final float screenTop    = Main.WORLD_HEIGHT;
     private final float screenBottom = 0;
 
+    private Texture playerHeader = null;
+    private Texture enemyHeader = null;
+
     // ── Entity Sprite Positions (set in renderEntities, read in renderStats) ──
 
     private float playerSpriteX = 0;
@@ -215,6 +218,22 @@ public class CombatScreen extends BaseScreen {
             case ABYSS_OF_DISSONANCE:   maxTurnTime = 18f; break;
             default:                    maxTurnTime = 25f; break;
         }
+
+        switch (game.ctx.selectedCharacter){
+            case SONARA: playerHeader = game.assets.playerHeaderSonara; break;
+            case AURELIUS: playerHeader = game.assets.playerHeaderAurelius; break;
+            case LYRON: playerHeader = game.assets.playerHeaderLyron; break;
+        }
+
+        switch (enemy.getName()){
+            case "Flesh Feeder": enemyHeader = game.assets.enemyHeaderFleshFeeder; break;
+            case "Darryllion": enemyHeader = game.assets.enemyHeaderDarryllion; break;
+            case "Gobninil": enemyHeader = game.assets.enemyHeaderGobninil; break;
+            case "Chimericks": enemyHeader = game.assets.enemyHeaderChimericks; break;
+            case "Labagoliath the Void Shaker": enemyHeader = game.assets.enemyHeaderLabagoliath; break;
+            case "Maestro Syozan": enemyHeader = game.assets.enemyHeaderSyozan; break;
+        }
+
 
         turnTime              = maxTurnTime;
         animTimer             = 0f;
@@ -903,27 +922,27 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void renderCombatHeader() {
-        float bgHeight  = px(4.0f);
-        float bgY       = screenTop - px(2.0f);
+        float headerWidth = playerHeader.getWidth() / 2;
+        float headerHeight = playerHeader.getHeight() / 2;
+        float headerX   = screenLeft + px(2.0f);
+        float headerY   = screenTop - headerHeight;
         float playerBgW = px(4.0f) + textWidth(player.getName());
         float enemyBgW  = px(4.0f) + textWidth(enemy.getName());
 
-        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(20f / 255f, 30f / 255f, 50f / 255f, 1f);
-        game.shapeRenderer.rect(screenLeft, bgY, playerBgW, bgHeight);
-        game.shapeRenderer.rect(screenRight - enemyBgW, bgY, enemyBgW, bgHeight);
-        game.shapeRenderer.end();
-
-        game.assets.font.getData().setScale(2.0f);
         beginUiBatch();
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch, player.getName(),
-            screenLeft + px(1.0f), screenTop - px(1.0f));
-        game.assets.font.draw(game.batch, enemy.getName(),
-            screenRight - px(1.0f) - textWidth(enemy.getName()), screenTop - px(1.0f));
+        game.batch.draw(playerHeader,
+            headerX, headerY, headerWidth, headerHeight);
+
+        headerWidth = enemyHeader.getWidth() / 2;
+        headerHeight = enemyHeader.getHeight() / 2;
+        headerX = screenRight - headerWidth - px(2.0f);
+        headerY = screenTop - headerHeight;
+
         game.batch.end();
-        game.assets.font.getData().setScale(1.0f);
+        beginUiBatch();
+        game.batch.draw(enemyHeader,
+            headerX, headerY, headerWidth, headerHeight);
+        game.batch.end();
 
         Texture mapHeader = null;
         switch (game.ctx.mapName) {
