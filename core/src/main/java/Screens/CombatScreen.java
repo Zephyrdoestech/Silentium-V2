@@ -433,8 +433,6 @@ public class CombatScreen extends BaseScreen {
         // --- Main Pause Menu Logic ---
 
         float btnWidth = 250f;
-        // Define button dimensions based on your actual texture dimensions
-        float btnWidth = 130f;
         float btnHeight = 60f;
         float gap = 20f;
         float totalHeight = (pauseButtons.length * btnHeight) + ((pauseButtons.length - 1) * gap);
