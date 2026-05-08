@@ -33,6 +33,8 @@ public class Assets implements Disposable {
     public final Texture pauseBtnTex;
     public final Texture menuBtnTex;
 
+    public final Texture leaderboardPanelBG;
+
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> aureliusSelectAnim;
 
@@ -214,7 +216,6 @@ public class Assets implements Disposable {
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
 
-    public final Texture continueBtnTex;
 
     // ── Item Textures ─────────────────────────────────────────────────────────
 
@@ -365,13 +366,12 @@ public class Assets implements Disposable {
         aureliusTex = new Texture("aurelius.png");
 
         this.startBtnTex = new Texture("UI/start_btn.png");
-        continueBtnTex = new Texture("UI/continue_btn.png");
         this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
 
-        pauseMenuBG = new Texture("Background/Texture/Cobblestone.png");
+        pauseMenuBG = new Texture("UI/Pause/pause.png");
         pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
         pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
@@ -380,6 +380,8 @@ public class Assets implements Disposable {
         inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
         pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
+
+        leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
@@ -390,6 +392,7 @@ public class Assets implements Disposable {
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
         aureliusSelectAnim = loadAnim("Aurelius/Select", "aureliusSelect", 11, 0.1f);
         lyronSelectAnim = loadAnim("Lyron/Select", "lyronSelect", 10, 0.1f);
+
 
         // Generated textures
         darknessOverlay = buildDarknessOverlay(1024, 0.12f, 0.45f);
@@ -529,7 +532,7 @@ public class Assets implements Disposable {
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
-        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.1f);
+        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Damaged",  "", 4, 0.2f);
 
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
@@ -783,7 +786,6 @@ public class Assets implements Disposable {
         disposeTexture(storyBtnTex);
         disposeTexture(creditsBtnTex);
         disposeTexture(exitBtnTex);
-        disposeTexture(continueBtnTex);
 
         disposeTexture(pauseMenuBG);
         disposeTexture(pauseContinueBtn);
@@ -794,6 +796,8 @@ public class Assets implements Disposable {
         disposeTexture(inventoryBtnTex);
         disposeTexture(pauseBtnTex);
         disposeTexture(menuBtnTex);
+
+        disposeTexture(leaderboardPanelBG);
 
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);
@@ -862,6 +866,7 @@ public class Assets implements Disposable {
         disposeTexture(silentBarrierBattleTex);
         disposeTexture(timeOrbBattleTex);
 
+        disposeTexture(inventoryPanelBackground);
         disposeTexture(inventoryBackground);
         disposeTexture(crimsonChorusSlotItem);
         disposeTexture(majorsBlessingSlotItem);
