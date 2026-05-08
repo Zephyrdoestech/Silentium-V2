@@ -54,7 +54,6 @@ public class Assets implements Disposable {
     public Texture storyPanel1;
     public Texture storyPanel2;
     public Texture storyPanel3;
-    public Texture storyPanel4;
 
     // Maps and Decorations (These must be TextureRegions!)
     public final TextureRegion townTex;
@@ -323,7 +322,6 @@ public class Assets implements Disposable {
         storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
         storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
         storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
-        storyPanel4 = new Texture(Gdx.files.internal("Background/Story/story_panel_4.png"));
 
         // Map Textures
         Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
@@ -781,7 +779,6 @@ public class Assets implements Disposable {
         disposeTexture(storyPanel1);
         disposeTexture(storyPanel2);
         disposeTexture(storyPanel3);
-        disposeTexture(storyPanel4);
 
         disposeTextureRegion(townTex);
         disposeTextureRegion(townExitTex);
