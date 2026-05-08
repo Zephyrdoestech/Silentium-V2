@@ -47,6 +47,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
+    private boolean isPaused = false;
     private boolean showingExitPrompt = false;
     private Rectangle yesButtonRect = new Rectangle();
     private Rectangle noButtonRect = new Rectangle();
@@ -75,6 +76,13 @@ public class ExploringScreen extends BaseScreen {
     private float lineDelayTimer = 0f;
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
+
+    // --- Pause Menu ---
+    private int             pauseMenuSelection   = 0;
+    private Texture[]       pauseButtons;
+    private boolean         showChordList        = false;
+    private boolean         showItemInfo         = false;
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     public ExploringScreen(Main game) {
         super(game);
@@ -168,6 +176,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
+        pauseButtons = new Texture[]{
+            game.assets.pauseContinueBtn,
+            game.assets.pauseChordInfoBtn,
+            game.assets.pauseItemInfoBtn,
+            game.assets.pauseExitBtn
+        };
+
         if (game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
             handlePlayerDeath();
@@ -255,6 +270,9 @@ public class ExploringScreen extends BaseScreen {
 
         if (game.ctx.player == null) return; // Safeguard to prevent NPE if rendered during transition
 
+        // If a fade out finishes this frame, don't do anything else (BaseScreen handles the transition)
+        if (updateFade(delta)) return;
+
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
             return;
@@ -270,12 +288,12 @@ public class ExploringScreen extends BaseScreen {
         } else if (!isMonologueActive && wasMonologueActive) {
             if (pendingExit) {
                 pendingExit = false;
-                performExit(getNextScreen());
+                startFadeOut(getNextScreen());
                 return;
             } else if (pendingCombat) {
                 pendingCombat = false;
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
-                game.setScreen(new CombatScreen(game));
+                startFadeOut(new CombatScreen(game));
                 return;
             }
         }
@@ -284,7 +302,7 @@ public class ExploringScreen extends BaseScreen {
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
             handleMonologueInput(delta);
-        } else {
+        } else if (!fadingOut) { // Only handle movement if we are not currently fading out
             handleMovement(delta);
         }
 
@@ -362,12 +380,14 @@ public class ExploringScreen extends BaseScreen {
 
         if (isMonologueActive) { drawMonologueOverlay(delta); }
 
+        drawFadeOverlay();
+
         // ESC → Save Game and return to main menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !fadingOut) {
             // Save exactly where they are standing right now!
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
 
-            game.setScreen(new MainMenuScreen(game));
+            startFadeOut(new MainMenuScreen(game));
         }
     }
 
@@ -481,7 +501,7 @@ public class ExploringScreen extends BaseScreen {
                                 isMonologueActive = true;
                                 pendingExit = true; // Wait for monologue to finish
                             } else {
-                                performExit(next);
+                                startFadeOut(next);
                             }
                         }
                         showingExitPrompt = false;
@@ -715,13 +735,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
 
         // Draw new HUD buttons vertically
-        float btnWidth = 130f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
-        float btnHeight = 40f; // Adjusted height
-        float spacing = 15f;
+        float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
+        float btnHeight = 27f; // Adjusted height
+        float spacing = 10f;
         float currentX = 5f;
 
         // Calculate starting Y so they stack upwards from the bottom
-        // Inventory is at the bottom, then Pause, then Menu on top
+        // Inventory is at the bottom, Menu is on top
         float startY = 15f;
 
         if (game.assets.inventoryBtnTex != null) {
@@ -729,15 +749,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             game.assets.font.setColor(Color.GRAY);
             game.assets.font.draw(game.batch, "I – Inventory", currentX, startY + btnHeight);
-        }
-
-        startY += btnHeight + spacing;
-
-        if (game.assets.pauseBtnTex != null) {
-            game.batch.draw(game.assets.pauseBtnTex, currentX, startY, btnWidth, btnHeight);
-        } else {
-            game.assets.font.setColor(Color.GRAY);
-            game.assets.font.draw(game.batch, "P – Pause", currentX, startY + btnHeight);
         }
 
         startY += btnHeight + spacing;
@@ -767,7 +778,7 @@ public class ExploringScreen extends BaseScreen {
         drawExitOverlay();
 
         // Handle HUD button clicks
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !fadingOut) {
             com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             game.uiCamera.unproject(mousePos);
 
@@ -783,21 +794,12 @@ public class ExploringScreen extends BaseScreen {
             }
             checkY += btnHeight + spacing;
 
-            // Pause button logic (simulating ESC for ExploringScreen for now, as ExploringScreen has no pause menu)
-            if (game.assets.pauseBtnTex != null) {
-                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
-                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
-                    // Optional: you can implement a pause screen for the overworld here if you want
-                }
-            }
-            checkY += btnHeight + spacing;
-
             // Menu button logic
             if (game.assets.menuBtnTex != null) {
                 if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
                     mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
                     game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
-                    game.setScreen(new MainMenuScreen(game));
+                    startFadeOut(new MainMenuScreen(game));
                 }
             }
         }
