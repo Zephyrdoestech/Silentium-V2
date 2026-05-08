@@ -17,7 +17,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import Entities.Enemy;
 import io.github.Zephyrdoestech.GameContext;
 import io.github.Zephyrdoestech.Main;
-import com.badlogic.gdx.math.Vector3;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -49,6 +48,7 @@ public class CombatScreen extends BaseScreen {
     private Texture[]       pauseButtons;
     private boolean         showChordList        = false;
     private boolean         showItemInfo         = false;
+    private int             infoIndex            = 0;
 
     // ── Timers ────────────────────────────────────────────────────────────────
 
@@ -103,6 +103,11 @@ public class CombatScreen extends BaseScreen {
     // ── Tutorial Screen  ─────────────────────────────────────────────────────────
 
     private Texture tutorialScreen = null;
+
+    // ── Tutorial Screen  ─────────────────────────────────────────────────────────
+
+    private Texture[] chordInfoScreen = null;
+    private Texture[] itemInfoScreen = null;
 
     // ── Screen Layout ─────────────────────────────────────────────────────────
 
@@ -275,6 +280,9 @@ public class CombatScreen extends BaseScreen {
             tutorialScreen = null;
         }
 
+        chordInfoScreen = game.assets.chordInfo;
+        itemInfoScreen = game.assets.itemInfo;
+
         // Turn time limit varies by map
 
         prepareAudio();
@@ -350,6 +358,8 @@ public class CombatScreen extends BaseScreen {
     }
 
     private void renderPauseScreen(float delta) {
+        int  infoIndex = 0;
+
         Gdx.gl.glClearColor(0, 0, 0, 0.9f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -361,77 +371,67 @@ public class CombatScreen extends BaseScreen {
 
 
         if (showChordList) {
-            game.batch.begin();
-            game.assets.titleFont.setColor(Color.CYAN);
-            game.glyphLayout.setText(game.assets.titleFont, "CHORD LIST");
-            game.assets.titleFont.draw(game.batch, "CHORD LIST", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 520);
-            game.assets.titleFont.setColor(Color.WHITE);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-            game.assets.font.getData().setScale(0.85f);
+            // 4. Draw
+            beginUiBatch();
+            game.batch.setColor(1f, 1f, 1f, 1f);
+            game.batch.draw(chordInfoScreen[infoIndex], screenLeft, screenBottom,
+                Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+            game.batch.setColor(0, 0, 0, 0.7f);
 
-            float leftX = 300f;
-            game.assets.font.setColor(Color.YELLOW);
-            game.assets.font.draw(game.batch, "CHORDS (Required Notes)", leftX, 440);
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "C Major (C-E-G): Heals 20% max HP", leftX, 400);
-            game.assets.font.draw(game.batch, "D Minor (D-F-A): +20% Damage Buff", leftX, 360);
-            game.assets.font.draw(game.batch, "E Minor (E-G-B): Heals 10% max HP, +10% Dmg Buff", leftX, 320);
-            game.assets.font.draw(game.batch, "F Major (F-A-C): Gains 25 Shield", leftX, 280);
-            game.assets.font.draw(game.batch, "G Major (G-B-D): Heals 15% max HP, 15 Shield", leftX, 240);
-            game.assets.font.draw(game.batch, "A Minor (A-C-E): Gains 35 Shield", leftX, 200);
-            game.assets.font.draw(game.batch, "B Diminished (B-D-F): +50% Dmg Buff, Lose 10% HP", leftX, 160);
 
-            game.assets.font.getData().setScale(1.0f);
-
+            // Draw Skip Hint (Always visible)
             game.assets.font.setColor(Color.GRAY);
-            game.glyphLayout.setText(game.assets.font, "Press ESC to go back");
-            game.assets.font.draw(game.batch, "Press ESC to go back", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 60);
-            game.assets.font.setColor(Color.WHITE);
+            String displayText = "Press ESC to go back.";
+            game.assets.font.draw(game.batch, displayText,
+                screenRight - px(2.0f) - textWidth(displayText),
+                screenBottom + px(2.0f));
             game.batch.end();
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                showChordList = false;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+                infoIndex -= infoIndex > 0 ? 1 : 0;
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                infoIndex += infoIndex < chordInfoScreen.length - 1 ? 1 : 0;
             }
-            return; // End here if in sub-menu
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){ showChordList = false; }
+            return;
         }
 
         if (showItemInfo) {
-            game.batch.begin();
-            game.assets.titleFont.setColor(Color.CYAN);
-            game.glyphLayout.setText(game.assets.titleFont, "ITEM INFO");
-            game.assets.titleFont.draw(game.batch, "ITEM INFO", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 520);
-            game.assets.titleFont.setColor(Color.WHITE);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-            game.assets.font.getData().setScale(0.85f);
+            // 4. Draw
+            beginUiBatch();
+            game.batch.setColor(1f, 1f, 1f, 1f);
+            game.batch.draw(itemInfoScreen[infoIndex], screenLeft, screenBottom,
+                Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+            game.batch.setColor(0, 0, 0, 0.7f);
 
-            float rightX = 260f;
-            game.assets.font.setColor(Color.YELLOW);
-            game.assets.font.draw(game.batch, "ITEMS", rightX, 440);
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Crimson Chorus: Converts Shield into Damage Buff ", rightX, 400);
-            game.assets.font.draw(game.batch, "Major's Blessing: Recovers a used Major chord", rightX, 360);
-            game.assets.font.draw(game.batch, "Minor's Grace: Recovers a used Minor chord", rightX, 320);
-            game.assets.font.draw(game.batch, "Resolved Dissonance: Heals 10% HP upon B Dim", rightX, 280);
-            game.assets.font.draw(game.batch, "Silent Barrier: Nullifies next enemy attack", rightX, 240);
-            game.assets.font.draw(game.batch, "Time Orb: Adds 20 seconds to turn timer", rightX, 200);
 
-            game.assets.font.getData().setScale(1.0f);
-
+            // Draw Skip Hint (Always visible)
             game.assets.font.setColor(Color.GRAY);
-            game.glyphLayout.setText(game.assets.font, "Press ESC to go back");
-            game.assets.font.draw(game.batch, "Press ESC to go back", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, 60);
-            game.assets.font.setColor(Color.WHITE);
+            String displayText = "Press ESC to go back.";
+            game.assets.font.draw(game.batch, displayText,
+                screenRight - px(2.0f) - textWidth(displayText),
+                screenBottom + px(2.0f));
             game.batch.end();
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                showItemInfo = false;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+                infoIndex -= infoIndex > 0 ? 1 : 0;
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                infoIndex += infoIndex < itemInfoScreen.length - 1 ? 1 : 0;
             }
-            return; // End here if in sub-menu
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){ showItemInfo = false; }
+            return;
         }
 
         // --- Main Pause Menu Logic ---
 
-        // Define button dimensions based on your actual texture dimensions
         float btnWidth = 250f;
         float btnHeight = 60f;
         float gap = 20f;
