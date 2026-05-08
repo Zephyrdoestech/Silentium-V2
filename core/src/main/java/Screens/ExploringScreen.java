@@ -261,7 +261,7 @@ public class ExploringScreen extends BaseScreen {
         updateCamera(); // Initialize camera position after player position is set
     }
 
-    private TextureRegion getEnemyFrame(Enemy e) { //pls commit
+    private TextureRegion getEnemyFrame(Enemy e) {
         com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> anim;
 
         switch (e.getName()) {
