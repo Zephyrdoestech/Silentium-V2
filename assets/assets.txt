@@ -628,7 +628,9 @@ Sprites/Combat/Pause/chord info.png
 Sprites/Combat/Pause/continue.png
 Sprites/Combat/Pause/exit.png
 Sprites/Combat/Pause/item info.png
+Sprites/Combat/Pause/leftButton.png
 Sprites/Combat/Pause/pause.png
+Sprites/Combat/Pause/rightButton.png
 Sprites/Combat/SplashScreen/Defeat/1.png
 Sprites/Combat/SplashScreen/Defeat/10.png
 Sprites/Combat/SplashScreen/Defeat/11.png

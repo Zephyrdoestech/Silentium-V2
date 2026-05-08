@@ -170,6 +170,9 @@ public class Assets implements Disposable {
     public final Texture[] chordInfo;
     public final Texture[] itemInfo;
 
+    public final Texture backButton;
+    public final Texture nextButton;
+
     // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
@@ -353,9 +356,6 @@ public class Assets implements Disposable {
         // Pause Menu BG
         pauseMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
 
-//        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
-//        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
-
         sonaraCardDefault = loadAnim("Sprites/Characters/Sonara/PlayerCard/default",   "",  10, 0.12f);
         sonaraCardSelected = loadAnim("Sprites/Characters/Sonara/PlayerCard/selected",   "",  10, 0.12f);
         aureliusCardDefault = loadAnim("Sprites/Characters/Aurelius/PlayerCard/default",   "",  10, 0.12f);
@@ -419,7 +419,7 @@ public class Assets implements Disposable {
         lyronWalkRight    = loadAnim("Sprites/Characters/Lyron/Walk",      "Movement",  6, 0.1f);
         lyronWalkLeft     = flipped(lyronWalkRight);
 
-        // ── Combat Backgrounds ────────────────────────────────────────────────
+        // ── Tutorial Screens ────────────────────────────────────────────────
 
         noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
         metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
@@ -433,7 +433,10 @@ public class Assets implements Disposable {
         chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
         itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
-        // ── Tutorial Screens ────────────────────────────────────────────────
+        backButton = new Texture("Sprites/Combat/Pause/leftButton.png");
+        nextButton = new Texture("Sprites/Combat/Pause/rightButton.png");
+
+        // ── Map Background ────────────────────────────────────────────────
 
         townCombatBackground    = new Texture("Background/Combat/Town.png");
         cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");

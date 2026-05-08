@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +95,7 @@
     "Gradle.Download Sources.executor": "Run",
     "Gradle.GDX Silentium [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
     "Gradle.GDX Silentium [:lwjgl3:io.github.some_example_name.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
-    "Gradle.GDX Silentium [:lwjgl3:run].executor": "Run",
+    "Gradle.GDX Silentium [:lwjgl3:run].executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
