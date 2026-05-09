@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import Mechanics.MapTraversalSystem.Room;
-import org.w3c.dom.Text;
 
 /**
  * The overworld map screen.
@@ -224,6 +223,30 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
+        // Handle level up monologue if returning from combat and leveled up
+        if (game.ctx.leveledUpTo > 0 && !isMonologueActive) {
+            switch(game.ctx.leveledUpTo) {
+                case 2:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;
+                    break;
+                case 3:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp;
+                    break;
+                case 4:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().thirdLevelUp;
+                    break;
+                case 5:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().fourthLevelUp;
+                    break;
+            }
+            if (currentMonologue != null) {
+                isMonologueActive = true;
+                prepareMonologue();
+            }
+            game.ctx.leveledUpTo = 0; // Reset after setting up monologue
+        }
+
+
         // --- 2. PLAYER POSITIONING LOGIC ---
 
         // SCENARIO A: We just clicked "Continue" and have specific saved coordinates!
@@ -264,6 +287,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setX(fallback.getBounds().x + (fallback.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
                 game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
+
         }
 
         game.ctx.stateTime = 0f;
@@ -881,6 +905,18 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.setColor(Color.YELLOW);
         game.assets.font.getData().setScale(0.8f);
         game.assets.font.draw(game.batch, text, textX, textY);
+
+
+        // IF ROOM IS LOCKED
+        if(lockedRoom != null){
+            text = "Room Locked! You must defeat the monster.";
+            textWidth = textWidth(text);
+            textX = screenLeft + ((Main.WORLD_WIDTH - textWidth) / 2);
+            textY = screenTop + px(2.4f);
+            game.assets.font.setColor(Color.RED);
+            game.assets.font.getData().setScale(1.0f);
+            game.assets.font.draw(game.batch, text, textX, textY);
+        }
         game.batch.end();
     }
 
