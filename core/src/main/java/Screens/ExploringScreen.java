@@ -71,6 +71,14 @@ public class ExploringScreen extends BaseScreen {
         return game.glyphLayout.width;
     }
 
+    // ── PostCombat Variables ────────────────────────────────────────────────────
+
+    private boolean showVictoryPopup  = false;
+    private String  droppedItemName   = null;
+    private Texture droppedItemIcon   = null;
+    private boolean leveledUp         = false;
+    private int     newLevel          = 0;
+
     // --- Monologue Variables ---
     private boolean isMonologueActive = false;
     private boolean wasMonologueActive = false;
@@ -188,6 +196,8 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
+        startFadeIn();
+
         pauseButtons = new Texture[]{
             game.assets.pauseContinueBtn,
             game.assets.pauseChordInfoBtn,
@@ -221,29 +231,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             restoreInstanceFields();
             initWalkable();
-        }
-
-        // Handle level up monologue if returning from combat and leveled up
-        if (game.ctx.leveledUpTo > 0 && !isMonologueActive) {
-            switch(game.ctx.leveledUpTo) {
-                case 2:
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;
-                    break;
-                case 3:
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp;
-                    break;
-                case 4:
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().thirdLevelUp;
-                    break;
-                case 5:
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().fourthLevelUp;
-                    break;
-            }
-            if (currentMonologue != null) {
-                isMonologueActive = true;
-                prepareMonologue();
-            }
-            game.ctx.leveledUpTo = 0; // Reset after setting up monologue
         }
 
 
@@ -290,6 +277,13 @@ public class ExploringScreen extends BaseScreen {
 
         }
 
+        // Post-combat items dropping and leveling up logic
+        if (game.ctx.playerWon) {
+            game.ctx.playerWon = false;
+            triggerVictoryPopup();
+        }
+
+
         game.ctx.stateTime = 0f;
 
         this.lockedRoom = null;
@@ -335,10 +329,10 @@ public class ExploringScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-        if (game.ctx.player == null) return;
-
         // If a fade out finishes this frame, don't do anything else (BaseScreen handles the transition)
         if (updateFade(delta)) return;
+
+        if (game.ctx.player == null) return;
 
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
@@ -353,11 +347,21 @@ public class ExploringScreen extends BaseScreen {
         } else if (!isMonologueActive && wasMonologueActive) {
             if (pendingExit) {
                 pendingExit = false;
+                // Reset state before transitioning to new map
+                game.ctx.player = null;
+                game.ctx.enemiesDefeatedInCurrentMap = 0;
+                game.ctx.rooms.clear();
+                game.ctx.mapEnemies.clear();
+                game.ctx.exitRoom = null;
                 startFadeOut(getNextScreen());
                 return;
             } else if (pendingCombat) {
                 pendingCombat = false;
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+
+                // Do NOT set player won yet! We are just entering combat.
+                game.ctx.playerWon = false;
+
                 startFadeOut(new CombatScreen(game));
                 return;
             }
@@ -420,6 +424,7 @@ public class ExploringScreen extends BaseScreen {
         else{ drawHUD(); } // HUD (uses fixed uiCamera)
 
         if (showInventory) {drawInventoryOverlay();}
+        if (showVictoryPopup) { drawVictoryPopup(); }
 
         drawFadeOverlay();
 
@@ -464,6 +469,8 @@ public class ExploringScreen extends BaseScreen {
 
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
+        if (showVictoryPopup) return;
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             showInventory = !showInventory;
         }
@@ -540,6 +547,12 @@ public class ExploringScreen extends BaseScreen {
                                 isMonologueActive = true;
                                 pendingExit = true; // Wait for monologue to finish
                             } else {
+                                // Reset state before transitioning to new map
+                                game.ctx.player = null;
+                                game.ctx.enemiesDefeatedInCurrentMap = 0;
+                                game.ctx.rooms.clear();
+                                game.ctx.mapEnemies.clear();
+                                game.ctx.exitRoom = null;
                                 startFadeOut(next);
                             }
                         }
@@ -570,8 +583,6 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setY(prevY);
                 game.ctx.currentEnemy = e;
                 game.ctx.noteHandler.noteCount    = 0;
-
-                game.ctx.enemiesDefeatedInCurrentMap++;
 
                 // ENEMY ENCOUNTER MONOLOGUE
                 String[][] encounters = {
@@ -851,6 +862,7 @@ public class ExploringScreen extends BaseScreen {
         text = "Level " + game.ctx.activeCharacterStats.getLevel();
         textX = playerStatsX + px(4.0f);
         textY = playerStatsY + cardHeight - px(0.2f);
+        game.assets.font.draw(game.batch, text, textX, textY);
 
         // Lives
         game.assets.font.setColor(Color.WHITE);
@@ -878,7 +890,6 @@ public class ExploringScreen extends BaseScreen {
         }
 
 
-        // Level
         text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
         float textWidth = textWidth(text);
         float textHeight = px(1.6f);
@@ -901,7 +912,7 @@ public class ExploringScreen extends BaseScreen {
         if(isInEnemyRoom()){
             text = "Room Locked! You must defeat the monster.";
             textWidth = textWidth(text);
-            textX = screenLeft - textWidth - px(2.0f);
+            textX = screenRight - textWidth - px(4.0f);
             textY = px(3.0f); // Changed Y position to be visible at the bottom of the screen
             game.assets.font.setColor(Color.RED);
             game.assets.font.getData().setScale(1.2f); // Increased scale
@@ -954,6 +965,212 @@ public class ExploringScreen extends BaseScreen {
             containerWidth, containerHeight);
         game.assets.font.getData().setScale(1.0f);
         game.batch.end();
+    }
+
+    private void drawVictoryPopup() {
+        if (!showVictoryPopup) return;
+
+        float boxW = 420f;
+        float boxH = leveledUp && droppedItemName != null ? 340f
+            : leveledUp || droppedItemName != null ? 280f
+            : 200f;
+        float boxX = (Main.WORLD_WIDTH  - boxW) / 2f;
+        float boxY = (Main.WORLD_HEIGHT - boxH) / 2f;
+
+        // Dim background
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(
+            com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA,
+            com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.6f);
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+
+        // Panel background
+        game.shapeRenderer.setColor(0.08f, 0.08f, 0.15f, 0.97f);
+        game.shapeRenderer.rect(boxX, boxY, boxW, boxH);
+
+        // Gold border
+        float t = 2f;
+        game.shapeRenderer.setColor(Color.GOLD);
+        game.shapeRenderer.rect(boxX,           boxY + boxH - t, boxW, t); // top
+        game.shapeRenderer.rect(boxX,           boxY,            boxW, t); // bottom
+        game.shapeRenderer.rect(boxX,           boxY,            t,    boxH); // left
+        game.shapeRenderer.rect(boxX + boxW - t, boxY,           t,    boxH); // right
+        game.shapeRenderer.end();
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+
+        float cx      = boxX + boxW / 2f;
+        float currentY = boxY + boxH - px(1.2f);
+        float padding = px(1.0f);
+
+        // Title
+        game.assets.font.getData().setScale(2.0f);
+        game.assets.font.setColor(Color.GOLD);
+        String title = "Victory!";
+        game.glyphLayout.setText(game.assets.font, title);
+        game.assets.font.draw(game.batch, title,
+            cx - game.glyphLayout.width / 2f, currentY);
+        currentY -= px(1.6f);
+
+        // Divider hint
+        game.assets.font.getData().setScale(0.8f);
+        game.assets.font.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
+        String sub = "─────────────────────────────";
+        game.glyphLayout.setText(game.assets.font, sub);
+        game.assets.font.draw(game.batch, sub, cx - game.glyphLayout.width / 2f, currentY);
+        currentY -= px(1.2f);
+
+        // Level-up line
+        if (leveledUp) {
+            game.assets.font.getData().setScale(1.4f);
+            game.assets.font.setColor(Color.YELLOW);
+            String lvlText = "Level Up!  Level " + (newLevel - 1) + "  →  " + newLevel;
+            game.glyphLayout.setText(game.assets.font, lvlText);
+            game.assets.font.draw(game.batch, lvlText,
+                cx - game.glyphLayout.width / 2f, currentY);
+            currentY -= px(1.6f);
+        }
+
+        // Item drop
+        game.assets.font.getData().setScale(1.2f);
+        if (droppedItemName != null) {
+            game.assets.font.setColor(Color.WHITE);
+            String dropLabel = "Item obtained:";
+            game.glyphLayout.setText(game.assets.font, dropLabel);
+            game.assets.font.draw(game.batch, dropLabel,
+                cx - game.glyphLayout.width / 2f, currentY);
+            currentY -= px(1.4f);
+
+            // Icon + name side by side
+            float iconSize = px(2.0f);
+            float iconX    = cx - iconSize / 2f;
+            float iconY    = currentY - iconSize;
+            if (droppedItemIcon != null) {
+                game.batch.draw(droppedItemIcon, iconX, iconY, iconSize, iconSize);
+            }
+            currentY = iconY - px(0.4f);
+
+            game.assets.font.getData().setScale(1.4f);
+            game.assets.font.setColor(Color.CYAN);
+            game.glyphLayout.setText(game.assets.font, droppedItemName);
+            game.assets.font.draw(game.batch, droppedItemName,
+                cx - game.glyphLayout.width / 2f, currentY);
+            currentY -= px(1.4f);
+
+        } else {
+            game.assets.font.setColor(Color.GRAY);
+            String noDrop = "No item dropped.";
+            game.glyphLayout.setText(game.assets.font, noDrop);
+            game.assets.font.draw(game.batch, noDrop,
+                cx - game.glyphLayout.width / 2f, currentY);
+            currentY -= px(1.4f);
+        }
+
+        // Continue prompt
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.LIGHT_GRAY);
+        String prompt = "Press ENTER to continue";
+        game.glyphLayout.setText(game.assets.font, prompt);
+        game.assets.font.draw(game.batch, prompt,
+            cx - game.glyphLayout.width / 2f,
+            boxY + padding);
+
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.WHITE);
+        game.batch.end();
+
+        // Input
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+            || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            showVictoryPopup = false;
+            if (leveledUp && currentMonologue != null) {
+                isMonologueActive = true;
+                prepareMonologue();
+            }
+        }
+    }
+
+
+    private void triggerVictoryPopup() {
+        CharacterHero player = game.ctx.activeCharacterStats;
+
+        // Level-up check
+        int kills        = player.getMonstersDefeated();
+        int currentLevel = player.getLevel();
+        int targetLevel  = currentLevel;
+
+        if      (kills >= 7) targetLevel = 5;
+        else if (kills >= 4) targetLevel = 4;
+        else if (kills >= 2) targetLevel = 3;
+        else if (kills >= 1) targetLevel = 2;
+
+        int mapLevelCap = 5;
+        if (game.ctx.mapName != null) {
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:      mapLevelCap = 3; break;
+                case SILENT_CAVERNS:      mapLevelCap = 5; break;
+                case ABYSS_OF_DISSONANCE: mapLevelCap = 5; break;
+            }
+        }
+
+        leveledUp = false;
+        newLevel  = 0;
+        if (targetLevel > currentLevel && targetLevel <= mapLevelCap) {
+            player.levelUp(targetLevel);
+            leveledUp = true;
+            newLevel  = targetLevel;
+        }
+
+        // Item drop (50% chance)
+        droppedItemName = null;
+        droppedItemIcon = null;
+        if (RNG.nextFloat() < 0.5f) {
+            Inventory inv = player.getPlayerInventory();
+            int itemType = RNG.nextInt(6);
+            switch (itemType) {
+                case 0: inv.gainCrimsonChorus(game.assets);
+                    droppedItemName = "Crimson Chorus";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+                case 1: inv.gainMajorBlessing(game.assets);
+                    droppedItemName = "Major's Blessing";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+                case 2: inv.gainMinorsGrace(game.assets);
+                    droppedItemName = "Minor's Grace";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+                case 3: inv.gainResolvedDissonance(game.assets);
+                    droppedItemName = "Resolved Dissonance";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+                case 4: inv.gainSilentBarrier(game.assets);
+                    droppedItemName = "Silent Barrier";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+                case 5: inv.gainTimeOrb(game.assets);
+                    droppedItemName = "Time Orb";
+                    droppedItemIcon = inv.getItem(inv.getInventorySize() - 1).getSlotIcon();
+                    break;
+            }
+        }
+
+        game.ctx.enemiesDefeatedInCurrentMap++;
+        showVictoryPopup = true;
+
+        if (leveledUp) {
+            switch (newLevel) {
+                case 2: currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;  break;
+                case 3: currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp; break;
+                case 4: currentMonologue = game.ctx.activeCharacterStats.getMonologues().thirdLevelUp;  break;
+                case 5: currentMonologue = game.ctx.activeCharacterStats.getMonologues().fourthLevelUp; break;
+            }
+        }
     }
 
     private float getMapNameWidth() {
