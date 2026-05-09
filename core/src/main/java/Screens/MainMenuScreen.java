@@ -178,19 +178,19 @@ public class MainMenuScreen extends BaseScreen {
         switch (selection) {
             case 0: // START GAME (New Game)
                 game.assets.stopAllMusic();
-                game.setScreen(new LoreScreen(game));
+                startFadeOut(new LoreScreen(game));
                 break;
 
             case 1: // HOW TO PLAY
-                game.setScreen(new HowToPlayScreen(game));
+                startFadeOut(new HowToPlayScreen(game));
                 break;
 
             case 2: // STORY
-                game.setScreen(new LoreScreen(game));
+                startFadeOut(new LoreScreen(game));
                 break;
 
             case 3: // CREDITS
-                game.setScreen(new CreditsScreen(game));
+                startFadeOut(new CreditsScreen(game));
                 break;
 
             case 4: // EXIT

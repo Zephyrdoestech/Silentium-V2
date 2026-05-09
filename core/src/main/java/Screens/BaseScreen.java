@@ -63,8 +63,10 @@ public abstract class BaseScreen implements Screen {
         nextScreenAfterFade = nextScreen;
     }
 
-    /** Advances the fade each frame. Call at the top of render(). */
-    protected void updateFade(float delta) {
+    /** Advances the fade each frame. Call at the top of render().
+     * @return true if a screen transition happened this frame, false otherwise.
+     */
+    protected boolean updateFade(float delta) {
         if (fadingIn) {
             fadeAlpha -= delta * fadeSpeed;
             if (fadeAlpha <= 0f) {
@@ -77,8 +79,10 @@ public abstract class BaseScreen implements Screen {
                 fadeAlpha = 1f;
                 fadingOut = false;
                 onFadeOutComplete();
+                return true;
             }
         }
+        return false;
     }
 
     /** Called when the fade-out animation completes. */

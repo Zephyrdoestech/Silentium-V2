@@ -1,0 +1,56 @@
+Index: assets/assets.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.gitkeep\nAudio/banjo.wav\nAudio/flute.wav\nAudio/harp.wav\nAurelius/idle1.png\nAurelius/idle2.png\nAurelius/idle3.png\nAurelius/idle4.png\nAurelius/left1.png\nAurelius/left2.png\nAurelius/left3.png\nAurelius/rIght1.png\nAurelius/right2.png\nAurelius/right3.png\nBackground/Map/Dungeon.png\nBackground/Title_Screen/Title_Screen_Placeholder.png\nSprites/Characters/Aurelius/Idle/Idle1.png\nSprites/Characters/Aurelius/Idle/Idle2.png\nSprites/Characters/Aurelius/Idle/Idle3.png\nSprites/Characters/Aurelius/Idle/Idle4.png\nSprites/Characters/Aurelius/Walk/Movement1.png\nSprites/Characters/Aurelius/Walk/Movement2.png\nSprites/Characters/Aurelius/Walk/Movement3.png\nSprites/Characters/Aurelius/Walk/Movement4.png\nSprites/Characters/Aurelius/Walk/Movement5.png\nSprites/Characters/Aurelius/Walk/Movement6.png\nSprites/Characters/Lyron/Idle/Idle1.png\nSprites/Characters/Lyron/Idle/Idle2.png\nSprites/Characters/Lyron/Idle/Idle3.png\nSprites/Characters/Lyron/Idle/Idle4.png\nSprites/Characters/Lyron/Walk/Movement1.png\nSprites/Characters/Lyron/Walk/Movement2.png\nSprites/Characters/Lyron/Walk/Movement3.png\nSprites/Characters/Lyron/Walk/Movement4.png\nSprites/Characters/Lyron/Walk/Movement5.png\nSprites/Characters/Lyron/Walk/Movement6.png\nSprites/Characters/Sonara/Idle/Idle1.png\nSprites/Characters/Sonara/Idle/Idle2.png\nSprites/Characters/Sonara/Idle/Idle3.png\nSprites/Characters/Sonara/Idle/Idle4.png\naurelius.png\ncave.png\nlyron.png\nscreen.png\nsonara.png\ntown-of-echoes.png\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/assets/assets.txt b/assets/assets.txt
+--- a/assets/assets.txt	(revision eae36a94731ec9703408d5c9ad5410f03118583b)
++++ b/assets/assets.txt	(date 1774890087375)
+@@ -2,6 +2,7 @@
+ Audio/banjo.wav
+ Audio/flute.wav
+ Audio/harp.wav
++Audio/title_music.wav
+ Aurelius/idle1.png
+ Aurelius/idle2.png
+ Aurelius/idle3.png
+@@ -12,7 +13,9 @@
+ Aurelius/rIght1.png
+ Aurelius/right2.png
+ Aurelius/right3.png
++Background/Map/Abyss_Of_Dissonance.png
+ Background/Map/Dungeon.png
++Background/Map/Town_Of_Echoes.png
+ Background/Title_Screen/Title_Screen_Placeholder.png
+ Sprites/Characters/Aurelius/Idle/Idle1.png
+ Sprites/Characters/Aurelius/Idle/Idle2.png
+Index: lwjgl3/build/resources/main/assets.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>.gitkeep\nAudio/banjo.wav\nAudio/flute.wav\nAudio/harp.wav\nAurelius/idle1.png\nAurelius/idle2.png\nAurelius/idle3.png\nAurelius/idle4.png\nAurelius/left1.png\nAurelius/left2.png\nAurelius/left3.png\nAurelius/rIght1.png\nAurelius/right2.png\nAurelius/right3.png\nBackground/Map/Dungeon.png\nBackground/Title_Screen/Title_Screen_Placeholder.png\nSprites/Characters/Aurelius/Idle/Idle1.png\nSprites/Characters/Aurelius/Idle/Idle2.png\nSprites/Characters/Aurelius/Idle/Idle3.png\nSprites/Characters/Aurelius/Idle/Idle4.png\nSprites/Characters/Aurelius/Walk/Movement1.png\nSprites/Characters/Aurelius/Walk/Movement2.png\nSprites/Characters/Aurelius/Walk/Movement3.png\nSprites/Characters/Aurelius/Walk/Movement4.png\nSprites/Characters/Aurelius/Walk/Movement5.png\nSprites/Characters/Aurelius/Walk/Movement6.png\nSprites/Characters/Lyron/Idle/Idle1.png\nSprites/Characters/Lyron/Idle/Idle2.png\nSprites/Characters/Lyron/Idle/Idle3.png\nSprites/Characters/Lyron/Idle/Idle4.png\nSprites/Characters/Lyron/Walk/Movement1.png\nSprites/Characters/Lyron/Walk/Movement2.png\nSprites/Characters/Lyron/Walk/Movement3.png\nSprites/Characters/Lyron/Walk/Movement4.png\nSprites/Characters/Lyron/Walk/Movement5.png\nSprites/Characters/Lyron/Walk/Movement6.png\nSprites/Characters/Sonara/Idle/Idle1.png\nSprites/Characters/Sonara/Idle/Idle2.png\nSprites/Characters/Sonara/Idle/Idle3.png\nSprites/Characters/Sonara/Idle/Idle4.png\naurelius.png\ncave.png\nlyron.png\nscreen.png\nsonara.png\ntown-of-echoes.png\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lwjgl3/build/resources/main/assets.txt b/lwjgl3/build/resources/main/assets.txt
+--- a/lwjgl3/build/resources/main/assets.txt	(revision eae36a94731ec9703408d5c9ad5410f03118583b)
++++ b/lwjgl3/build/resources/main/assets.txt	(date 1774889624269)
+@@ -2,6 +2,7 @@
+ Audio/banjo.wav
+ Audio/flute.wav
+ Audio/harp.wav
++Audio/title_music.wav
+ Aurelius/idle1.png
+ Aurelius/idle2.png
+ Aurelius/idle3.png
+@@ -12,7 +13,9 @@
+ Aurelius/rIght1.png
+ Aurelius/right2.png
+ Aurelius/right3.png
++Background/Map/Abyss_Of_Dissonance.png
+ Background/Map/Dungeon.png
++Background/Map/Town_Of_Echoes.png
+ Background/Title_Screen/Title_Screen_Placeholder.png
+ Sprites/Characters/Aurelius/Idle/Idle1.png
+ Sprites/Characters/Aurelius/Idle/Idle2.png

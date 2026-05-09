@@ -163,6 +163,13 @@ public class Assets implements Disposable {
     public final Texture metronomeTutorial;
     public final Texture chordTutorial;
 
+    public final Texture chordInfoPage1;
+    public final Texture chordInfoPage2;
+    public final Texture itemInfoPage1;
+    public final Texture itemInfoPage2;
+    public final Texture[] chordInfo;
+    public final Texture[] itemInfo;
+
     // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
@@ -215,7 +222,6 @@ public class Assets implements Disposable {
     public final Texture gMajorUsed;
     public final Texture aMinorUsed;
     public final Texture bDimUsed;
-
 
     // ── Item Textures ─────────────────────────────────────────────────────────
 
@@ -283,6 +289,10 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> syozanCombatDamaged;
 
     public Animation<TextureRegion> lyronSelectAnim;
+
+    //Leaderboard
+    public Texture leaderboardBG;
+    public Texture nameInputPanelBG;
 
     public final Music titleBGM;
 
@@ -382,6 +392,7 @@ public class Assets implements Disposable {
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
         leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
+        nameInputPanelBG = safeLoadTexture("UI/Panels/LeaderBoard_Input.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
@@ -419,6 +430,13 @@ public class Assets implements Disposable {
         metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
         chordTutorial = new Texture("Sprites/Combat/Tutorial/ChordTutorial.png");
         tutorials = new Texture[] {noteTutorial, metronomeTutorial, chordTutorial};
+
+        chordInfoPage1 = new Texture("Sprites/Combat/Pause/ChordInfo/1.png");
+        chordInfoPage2 = new Texture("Sprites/Combat/Pause/ChordInfo/2.png");
+        itemInfoPage1 = new Texture("Sprites/Combat/Pause/ItemInfo/1.png");
+        itemInfoPage2 = new Texture("Sprites/Combat/Pause/ItemInfo/2.png");
+        chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
+        itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
         // ── Tutorial Screens ────────────────────────────────────────────────
 
@@ -529,7 +547,7 @@ public class Assets implements Disposable {
 
         chimericksCombatIdle     = flipped(loadAnim("Sprites/Combat/Monster/Chimericks/Idle",     "",   16, 0.12f));
         chimericksCombatAttack   = (loadAnim("Sprites/Combat/Monster/Chimericks/Attack",   "", 9, 0.1f));
-        chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 6, 0.2f);
+        chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 4, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
         labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);

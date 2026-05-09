@@ -141,8 +141,8 @@ public class CharacterHero {
     public CharacterHero(String name, String instrument, int maxHp, int maxShield) {
         this.name          = name;
         this.instrument    = instrument;
-        this.maxHp         = maxHp;
-        this.currentHp     = maxHp;   // Start at full health
+        this.maxHp         = 1;
+        this.currentHp     = 1;   // Start at full health
         this.maxShield     = maxShield;
         this.currentShield = 0;       // Shield starts empty until a chord grants it
         this.level         = 1;
@@ -200,15 +200,15 @@ public class CharacterHero {
         switch (name) {
             case "Sonara":
                 this.passiveSkill = new PassiveSkill("Body of Thorns",
-                    "Sonara's passive skill reflects 15% of incoming damage back to the attacker.");
+                    "Sonara\'s passive skill reflects 15% of incoming damage back to the attacker.");
                 break;
             case "Aurelius":
                 this.passiveSkill = new PassiveSkill("Melodic Remedy",
-                    "Aurelius's passive skill heals him for 5% of his max HP at the start of each turn.");
+                    "Aurelius\'s passive skill heals him for 5% of his max HP at the start of each turn.");
                 break;
             case "Lyron":
                 this.passiveSkill = new PassiveSkill("Winner Takes It All",
-                    "Lyron's passive skill grants him a shield equal to 25% of the damage he deals.");
+                    "Lyron\'s passive skill grants him a shield equal to 25% of the damage he deals.");
                 break;
             default:
                 this.passiveSkill = new PassiveSkill("", "");
@@ -220,15 +220,15 @@ public class CharacterHero {
         switch (name) {
             case "Sonara":
                 this.activeSkill = new ActiveSkill("Melodic Impromptu",
-                    "Sonara's active skill adds one (1) point to her initial damage.");
+                    "Sonara\'s active skill adds one (1) point to her initial damage.");
                 break;
             case "Aurelius":
                 this.activeSkill = new ActiveSkill("Conservation",
-                    "Aurelius's active skill preserves the notes' current damage for next turn.");
+                    "Aurelius\'s active skill preserves the notes\' current damage for next turn.");
                 break;
             case "Lyron":
                 this.activeSkill = new ActiveSkill("Musical Roulette",
-                    "Lyron's active skill rerolls the current damage of the notes.");
+                    "Lyron\'s active skill rerolls the current damage of the notes.");
                 break;
             default:
                 this.activeSkill = new ActiveSkill("", "");
@@ -241,30 +241,30 @@ public class CharacterHero {
             case "Sonara":
                 this.monologues = new Monologues(
                     // Map Entries
-                    new String[]{"They were gone this whole time and I didn't even know.",
+                    new String[]{"They were gone this whole time and I didn\'t even know.",
                         "I don't know what I'm doing.",
-                        "I just know this instrument hurt one of them and I'm not putting it down."},
+                        "I just know this instrument hurt one of them and I\'m not putting it down."},
                     new String[]{"The instrument works.",
-                        "I've seen it work. I'm not just swinging blindly anymore.",
-                        "I'm scared but the anger is louder."},
-                    new String[]{"I know what I'm doing now. The anger is still there but it's mine.",
-                        "I'm using it.",
-                        "It's not using me anymore."},
+                        "I\'ve seen it work. I\'m not just swinging blindly anymore.",
+                        "I\'m scared but the anger is louder."},
+                    new String[]{"I know what I\'m doing now. The anger is still there but it\'s mine.",
+                        "I\'m using it.",
+                        "It\'s not using me anymore."},
 
                     // Enemy Encounter
-                    new String[]{"I’ve had enough of this dull.",
-                        "I'm not going to let it take anyone else."},
-                    new String[]{"There’s a debt of emptiness in this town, and I’m here to collect it."},
+                    new String[]{"I\'ve had enough of this dull.",
+                        "I\'m not going to let it take anyone else."},
+                    new String[]{"There\'s a debt of emptiness in this town, and I’m here to collect it."},
                     new String[]{"One more time.",
-                        "That’s all it’s going to take to wipe that void off your face."},
-                    new String[]{"You’re blocking my view.",
+                        "That\'s all it\'s going to take to wipe that void off your face."},
+                    new String[]{"You\'re blocking my view.",
                         "I have a world to wake up and a family to avenge.",
                         "Move."},
 
                     // Level Ups
                     new String[]{"The strings are cleaner now.",
-                        "I won't lose this clarity again; this feeling of striking back.",
-                        "I won't stop until there's nowhere left for the shadows to hide."},
+                        "I won\'t lose this clarity again; this feeling of striking back.",
+                        "I won\'t stop until there's nowhere left for the shadows to hide."},
                     new String[]{"This feeling is getting stronger.",
                         "I know where to hit them.",
                         "Vengeance is clean and sharp.",
@@ -280,32 +280,32 @@ public class CharacterHero {
 
                     // Map Exits
                     new String[]{"Don't think.",
-                        "Don't stop.",
+                        "Don\'t stop.",
                         "Find the next one.",
                         "If I stop moving that empty feeling is going to swallow me again."},
                     new String[]{"The void down here feels like the one I grew up in.",
                         "Blank and shivering.",
-                        "I spent my whole life inside that lie and I didn't even know."},
+                        "I spent my whole life inside that lie and I didn\'t even know."},
                     new String[]{"This place dug into the grief I've been burying under all the rage.",
                         "It hurt.",
                         "But I felt it and kept going.",
-                        "I didn't know I could do that."},
+                        "I didn\'t know I could do that."},
 
                     // Pre Final Battle
                     new String[]{"I came here only for my family.",
                         "But somewhere along the way I started caring about everyone this void took from.",
-                        "I didn't plan for that. But it's real."},
+                        "I didn\'t plan for that. But it\'s real."},
                     // Post Final Battle Victory
                     new String[]{"Do you feel that?",
-                        "That’s not just a sound — it’s my heart beating.",
+                        "That\'s not just a sound — it\'s my heart beating.",
                         "I spent so long drowning in my own anger, but this experience...",
-                        "It’s different.",
-                        "It’s life.",
+                        "It\'s different.",
+                        "It\'s life.",
                         "The emptiness is filled, and for the first time, my thoughts go beyond the void.",
-                        "I’m finally free."},
+                        "I\'m finally free."},
                     // Post Final Battle Defeat
                     new String[]{"No... not like this.",
-                        "I can’t let the emptiness take over again.",
+                        "I can\'t let the emptiness take over again.",
                         "Everything is getting so cold...",
                         "I just wanted to feel...",
                         "one last...",
@@ -317,16 +317,16 @@ public class CharacterHero {
                     // Map Entries
                     new String[]{"I'm not a fighter.",
                         "But people got hurt while I was safe inside and my family didn't flinch.",
-                        "I can't be that.",
-                        "I'm going out there."},
-                    new String[]{"I'm still here.",
-                        "I haven't turned back.",
+                        "I can\'t be that.",
+                        "I\'m going out there."},
+                    new String[]{"I\'m still here.",
+                        "I haven\'t turned back.",
                         "A week ago I was watching this from a window.",
-                        "I don't fully recognize myself and I think that's okay."},
+                        "I don\'t fully recognize myself and I think that\'s okay."},
                     new String[]{"I used to do this out of guilt.",
                         "But the guilt is lighter now and I'm still here.",
                         "Still choosing this.",
-                        "That means it's not about the debt anymore.",
+                        "That means it\'s not about the debt anymore.",
                         "It's just who I am."},
 
                     // Enemy Encounter
@@ -343,7 +343,7 @@ public class CharacterHero {
                     // Level Ups
                     new String[]{"I can see the fear, and my breath pushes it away.",
                         "This instrument is a boundary.",
-                        "I will keep playing for those who can't."},
+                        "I will keep playing for those who can\'t."},
                     new String[]{"This feeling is lighter now, less burdened by my past."
                         ,"This is more than debt; it's hope.",
                         "The cruelty of my family ends with every breath I give."},
@@ -357,21 +357,21 @@ public class CharacterHero {
                         "I play for a world that knows the truth of justice."},
 
                     // Map Exits
-                    new String[]{"We weren't better off.",
+                    new String[]{"We weren\'t better off.",
                         "We were just further from the consequences.",
-                        "I didn't understand that before.",
+                        "I didn\'t understand that before.",
                         "Not really."},
                     new String[]{"Dad said what I choose defines me.",
                         "I used to think that was just something nice he said.",
                         "Standing here still going, I think I finally get it."},
-                    new String[]{"I didn't leave everything behind just to stop here.",
-                        "And I'm not moving because I'm scared of my family's legacy anymore.",
-                        "I'm moving because I actually want to."},
+                    new String[]{"I didn\'t leave everything behind just to stop here.",
+                        "And I\'m not moving because I\'m scared of my family's legacy anymore.",
+                        "I\'m moving because I actually want to."},
 
                     // Pre Final Battle
-                    new String[]{"I'm not the kid sneaking out of a mansion to fix what his family broke.",
+                    new String[]{"I\'m not the kid sneaking out of a mansion to fix what his family broke.",
                         "I don't know when that changed but it did.",
-                        "I'm here because I choose to be."},
+                        "I\'m here because I choose to be."},
                     // Post Final Battle Victory
                     new String[]{"The sound of apathy is finished.",
                         "You tried to turn the world into a grave, but this experience is meant to be lived, not feared.",
@@ -380,58 +380,58 @@ public class CharacterHero {
                     // Post Final Battle Defeat
                     new String[]{"My strength... it wavered.",
                         "I failed to protect the people.",
-                        "The weight of this stillness... It’s too heavy.",
+                        "The weight of this stillness... It\'s too heavy.",
                         "My legacy can't go on..."}
                 );
                 break;
             case "Lyron":
                 this.monologues = new Monologues(
                     // Map Entries
-                    new String[]{"They made me hide and I let them and now they're gone.",
+                    new String[]{"They made me hide and I let them and now they\'re gone.",
                         "I grabbed the instrument because it was next to her.",
-                        "I didn't know what else to do."},
+                        "I didn\'t know what else to do."},
                     new String[]{"I got one.",
                         "Eyes closed, hands shaking, but I got one.",
                         "The instrument feels just like how she held my hand.",
                         "I think that means keep going."},
-                    new String[]{"Something changed and I didn't notice it happening.",
+                    new String[]{"Something changed and I didn\'t notice it happening.",
                         "I stopped just surviving and started actually fighting.",
-                        "My eyes are still half closed but I'm swinging first now."},
+                        "My eyes are still half closed but I\'m swinging first now."},
 
                     // Enemy Encounter
                     new String[]{"Ugh, not again!",
                         "Just... stay back!"},
-                    new String[]{"It’s just a shadow...",
-                        "it’s just a shadow...",
-                        "I’ve done this before, it’ll be easy."},
-                    new String[]{"I... I’m not hiding anymore!",
+                    new String[]{"It\'s just a shadow...",
+                        "it\'s just a shadow...",
+                        "I\'ve done this before, it\'ll be easy."},
+                    new String[]{"I... I\'m not hiding anymore!",
                         "This instrument says I can do this!"},
                     new String[]{"One more sound and I can go back to being safe.",
-                        "Let’s make it quick!"},
+                        "Let\'s make it quick!"},
 
                     // Level Ups
                     new String[]{"I watched it vanish.",
                         "The guilt is heavy, but this feeling reminds me of my mother.",
-                        "I can't be a coward if I have this.",
+                        "I can\'t be a coward if I have this.",
                         "I have to be strong enough to see the next shadow fall."},
                     new String[]{"The guilt is a weapon, a promise.",
                         "This instrument threatens them.",
-                        "I'll use every trick to avoid fighting face-to-face."},
-                    new String[]{"I couldn't run.",
+                        "I\'ll use every trick to avoid fighting face-to-face."},
+                    new String[]{"I couldn\'t run.",
                         "The fear is there, but I played through it.",
                         "This instrument is my witness.",
                         "I will make the thing that ruined my life suffer."},
-                    new String[]{"I can't undo what happened, but I can finish this.",
-                        "I'm afraid, yes, but the need to see this through is louder than my fear.",
+                    new String[]{"I can\'t undo what happened, but I can finish this.",
+                        "I\'m afraid, yes, but the need to see this through is louder than my fear.",
                         "This final music is for them."},
 
                     // Map Exits
-                    new String[]{"I don't feel brave.",
+                    new String[]{"I don\'t feel brave.",
                         "I feel like the reason this happened.",
                         "But if I stop moving I have to sit with all of it and I'm not ready for that."},
                     new String[]{"She never once made me feel like a burden",
                         "Not once.",
-                        "I'm starting to think that means something I haven't let myself believe yet."},
+                        "I\'m starting to think that means something I haven\\'t let myself believe yet."},
                     new String[]{"This place wants me to feel like that kid hiding in the dark.",
                         "But that kid got up.",
                         "That kid came all the way here.",
@@ -439,20 +439,20 @@ public class CharacterHero {
                         "Maybe I just never had a reason big enough."},
 
                     // Pre Final Battle
-                    new String[]{"I can't bring them back.",
-                        "I'm saying it out loud now. I can't.",
+                    new String[]{"I can\'t bring them back.",
+                        "I\'m saying it out loud now. I can\'t.",
                         "But I can finish this and I can stop punishing myself for being the one who lived."},
                     // Post Final Battle Victory
                     new String[]{"I did it.",
-                        "I didn't run.",
-                        "They told me I was too small, too quiet, but this instrument made a moment that can't be erased.",
+                        "I didn\'t run.",
+                        "They told me I was too small, too quiet, but this instrument made a moment that can\'t be erased.",
                         "They are can rest now.",
-                        "The fear is gone, and I’ll make sure the world never has to be afraid of the dark or the silence ever again."},
+                        "The fear is gone, and I\'ll make sure the world never has to be afraid of the dark or the silence ever again."},
                     // Post Final Battle Defeat
-                    new String[]{"I'm sorry...",
-                        "I wasn't brave enough.",
-                        "I couldn’t use it properly... and I can't... I can't hear them anymore.",
-                        "Please, don't let it go... empty..."});
+                    new String[]{"I\'m sorry...",
+                        "I wasn\'t brave enough.",
+                        "I couldn\'t use it properly... and I can\'t... I can\'t hear them anymore.",
+                        "Please, don\'t let it go... empty..."});
                 break;
         }
     }

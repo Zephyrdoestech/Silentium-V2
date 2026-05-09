@@ -620,6 +620,10 @@ Sprites/Combat/Monster/Syozan/Idle/Idle1.png
 Sprites/Combat/Monster/Syozan/Idle/Idle2.png
 Sprites/Combat/Monster/Syozan/Idle/Idle3.png
 Sprites/Combat/Monster/Syozan/Idle/Idle4.png
+Sprites/Combat/Pause/ChordInfo/1.png
+Sprites/Combat/Pause/ChordInfo/2.png
+Sprites/Combat/Pause/ItemInfo/1.png
+Sprites/Combat/Pause/ItemInfo/2.png
 Sprites/Combat/Pause/chord info.png
 Sprites/Combat/Pause/continue.png
 Sprites/Combat/Pause/exit.png
@@ -727,6 +731,7 @@ UI/Items/Inventory/SilentBarrier.png
 UI/Items/Inventory/TimeOrb.png
 UI/Panels/Inventory.png
 UI/Panels/LeaderBoard.png
+UI/Panels/LeaderBoard_Input.png
 UI/Pause/btn_chordinfo.png
 UI/Pause/btn_continue.png
 UI/Pause/btn_exit.png
@@ -739,6 +744,7 @@ UI/story_btn.png
 UI/tutorial_btn.png
 aurelius.png
 cave.png
+credits.webm
 lyron.png
 screen.png
 sonara.png
