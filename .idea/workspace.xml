@@ -5,13 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)">
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/14.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/15.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/16.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/9.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/Entities/CharacterHero.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Entities/CharacterHero.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/MainMenuScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/io/github/Zephyrdoestech/GameContext.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,12 +40,21 @@
   <component name="CopilotChats">
     <option name="panelChat">
       <chat>
-        <option name="activeSessionId" value="c03a0fc4-f7bf-4557-a0b3-7aed3c6c8df0" />
+        <option name="activeSessionId" value="efd952a1-76bf-43de-95a0-755db412e9e2" />
         <option name="sessions">
           <session>
             <option name="chatType" value="PANEL" />
             <option name="id" value="c03a0fc4-f7bf-4557-a0b3-7aed3c6c8df0" />
-            <option name="modeId" value="Ask" />
+            <option name="modeId" value="Agent" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="status" value="Stopped" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="efd952a1-76bf-43de-95a0-755db412e9e2" />
+            <option name="modeId" value="Agent" />
             <option name="modelType" value="builtin_family" />
             <option name="modelValue" value="auto" />
             <option name="targetType" value="LOCAL" />
@@ -40,6 +68,12 @@
     <persistenceIdMap>
       <entry key="_C:/Users/RICKSMER CABATINGAN/Documents/College/BSIT-Year2-2ndSem/CSIT228/Silentium-V2/Documents/Silentium" value="3BboX8oyr2kzR1rMwPbf9Lf0KQk" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="agent-panel" value="Auto" />
+      <entry key="chat-panel" value="Auto" />
+    </selectedModels>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -111,7 +145,7 @@
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.14.0/4c0cf80420b4a1cc3b06167789f0768fbc12608b/gdx-1.14.0-sources.jar!/com/badlogic/gdx/graphics/g2d/SpriteBatch.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -119,6 +153,20 @@
   <component name="ProjectId" id="3BboX8oyr2kzR1rMwPbf9Lf0KQk" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectSessionTemplates">
+    <option name="panelTemplate">
+      <template>
+        <option name="modeId" value="Agent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="LOCAL" />
+      </template>
+    </option>
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -154,7 +202,7 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "terminal",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -480,7 +528,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/game-save" />
+                        <option value="origin/CombatUpdate" />
                       </list>
                     </value>
                   </entry>

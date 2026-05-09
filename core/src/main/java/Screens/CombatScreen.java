@@ -265,6 +265,7 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
+        enemy.setMaxHp((int)(1));
 
 
         if (player.getLevel() <= 3) {
@@ -362,7 +363,6 @@ public class CombatScreen extends BaseScreen {
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         game.uiCamera.unproject(mousePos);
 
-
         if (showChordList) {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
@@ -442,8 +442,8 @@ public class CombatScreen extends BaseScreen {
 
         // --- Main Pause Menu Logic ---
 
-        float btnWidth = 250f;
-        float btnHeight = 60f;
+        float btnWidth = px(3.2f);
+        float btnHeight = px(1.6f);
         float gap = 20f;
         float totalHeight = (pauseButtons.length * btnHeight) + ((pauseButtons.length - 1) * gap);
         float startY = (Main.WORLD_HEIGHT / 2f) + (totalHeight / 2f) - btnHeight - 30f;
@@ -476,14 +476,19 @@ public class CombatScreen extends BaseScreen {
         }
 
         // Drawing
-        game.batch.begin();
+        beginUiBatch();
 
         // Draw the background texture first, centered on screen
-        if (game.assets.pauseMenuBG != null) {
-            float bgWidth = 600f; // adjust to match texture scaling
-            float bgHeight = 500f; // adjust to match texture scaling
-            game.batch.draw(game.assets.pauseMenuBG, (Main.WORLD_WIDTH - bgWidth) / 2f, (Main.WORLD_HEIGHT - bgHeight) / 2f, bgWidth, bgHeight);
+        Texture background = game.assets.pauseMenuBG;
+        if (background != null) {
+            game.batch.draw(background, screenLeft, screenBottom, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        } else {
+            // Fallback: Draw a semi-transparent dark overlay if background texture is missing
+            game.batch.setColor(0f, 0f, 0f, 0.7f);
+            game.batch.draw(game.assets.darknessOverlay, screenLeft, screenBottom, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+            game.batch.setColor(Color.WHITE);
         }
+
 
         // Now draw the buttons
         for (int i = 0; i < pauseButtons.length; i++) {
@@ -491,7 +496,7 @@ public class CombatScreen extends BaseScreen {
             Texture btnTex = pauseButtons[i];
 
             if (i == pauseMenuSelection) {
-                game.batch.setColor(Color.WHITE); // Bright for selected
+                game.batch.setColor(Color.WHITE);
             } else {
                 game.batch.setColor(0.5f, 0.5f, 0.5f, 1f); // Dimmed for unselected
             }
@@ -673,6 +678,21 @@ public class CombatScreen extends BaseScreen {
         renderTimerPanel(delta);
         renderChords();
         renderActionPanel(delta);
+        renderPauseOption();
+    }
+
+    // =========================================================================
+    // Background
+    // =========================================================================
+
+    private void renderPauseOption(){
+        beginUiBatch();
+        Texture pauseAsset = game.assets.pauseBtnTex;
+        game.batch.draw(pauseAsset,
+            notesPanelLeft + px(0.2f),
+            notesPanelTop + px(0.2f),
+            pauseAsset.getWidth() * (0.2f), pauseAsset.getHeight() * (0.2f));
+        game.batch.end();
     }
 
     // =========================================================================
