@@ -54,11 +54,22 @@ public class ExploringScreen extends BaseScreen {
     private Rectangle noButtonRect = new Rectangle();
     private Rectangle okButtonRect = new Rectangle();
 
+    // ── Screen Layout ─────────────────────────────────────────────────────────
+
+    private final float screenLeft   = 0;
+    private final float screenRight  = Main.WORLD_WIDTH;
+    private final float screenTop    = Main.WORLD_HEIGHT;
+    private final float screenBottom = 0;
+
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
     private static final float GAP = 32f;
     private float px(float factor) { return GAP * factor; }
+    private float textWidth(String text) {
+        game.glyphLayout.setText(game.assets.font, text);
+        return game.glyphLayout.width;
+    }
 
     // --- Monologue Variables ---
     private boolean isMonologueActive = false;
@@ -212,6 +223,30 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
+        // Handle level up monologue if returning from combat and leveled up
+        if (game.ctx.leveledUpTo > 0 && !isMonologueActive) {
+            switch(game.ctx.leveledUpTo) {
+                case 2:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;
+                    break;
+                case 3:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp;
+                    break;
+                case 4:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().thirdLevelUp;
+                    break;
+                case 5:
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().fourthLevelUp;
+                    break;
+            }
+            if (currentMonologue != null) {
+                isMonologueActive = true;
+                prepareMonologue();
+            }
+            game.ctx.leveledUpTo = 0; // Reset after setting up monologue
+        }
+
+
         // --- 2. PLAYER POSITIONING LOGIC ---
 
         // SCENARIO A: We just clicked "Continue" and have specific saved coordinates!
@@ -252,6 +287,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.player.setX(fallback.getBounds().x + (fallback.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
                 game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
+
         }
 
         game.ctx.stateTime = 0f;
@@ -378,26 +414,12 @@ public class ExploringScreen extends BaseScreen {
 
         // Darkness overlay
         drawDarknessOverlay();
-
         game.batch.end(); // END OF WORLD DRAWING
 
-        // 2. DRAW SHAPES (Debug Outlines)
-        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-        game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : getActiveWalkableZones())
-            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-        game.shapeRenderer.end();
-
-        // 3. DRAW UI (Fixed screen-space)
-        drawHUD();
-        if (showInventory) drawInventoryOverlay();
-        if (isMonologueActive) drawMonologueOverlay(delta);
-
         if (isMonologueActive) { drawMonologueOverlay(delta); }
+        else{ drawHUD(); } // HUD (uses fixed uiCamera)
+
+        if (showInventory) {drawInventoryOverlay();}
 
         drawFadeOverlay();
 
@@ -549,16 +571,6 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.currentEnemy = e;
                 game.ctx.noteHandler.noteCount    = 0;
 
-                // TEST TRAVERSAL
-//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-//                if (game.ctx.rooms != null) {
-//                    for (Room r : game.ctx.rooms) {
-//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-//                            break;
-//                        }
-//                    }
-//                }
                 game.ctx.enemiesDefeatedInCurrentMap++;
 
                 // ENEMY ENCOUNTER MONOLOGUE
@@ -730,26 +742,8 @@ public class ExploringScreen extends BaseScreen {
         CharacterHero c = game.ctx.activeCharacterStats;
         game.uiCamera.update();
 
-        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        drawBar(game.shapeRenderer, 20, Main.WORLD_HEIGHT - 30, 200, 16,
-            (float) c.getHp() / c.getMaxHp(), Color.DARK_GRAY, Color.RED);
-        drawBar(game.shapeRenderer, 20, Main.WORLD_HEIGHT - 52, 200, 16,
-            c.getMaxShield() > 0 ? (float) c.getShield() / c.getMaxShield() : 0f,
-            Color.DARK_GRAY, Color.CYAN);
-        game.shapeRenderer.end();
-
-        game.batch.setProjectionMatrix(game.uiCamera.combined);
-        game.batch.begin();
-
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch,
-            c.getName() + "  HP: " + c.getHp() + "/" + c.getMaxHp(),
-            230, Main.WORLD_HEIGHT - 18);
-        game.assets.font.draw(game.batch,
-            "Shield: " + c.getShield() + "/" + c.getMaxShield(),
-            230, Main.WORLD_HEIGHT - 40);
-        game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
+        // Stats
+        renderPlayerStats();
 
         // Draw new HUD buttons vertically
         float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
@@ -761,6 +755,7 @@ public class ExploringScreen extends BaseScreen {
         // Inventory is at the bottom, Menu is on top
         float startY = 15f;
 
+        game.batch.begin();
         if (game.assets.inventoryBtnTex != null) {
             game.batch.draw(game.assets.inventoryBtnTex, currentX, startY, btnWidth, btnHeight);
         } else {
@@ -775,15 +770,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             game.assets.font.setColor(Color.GRAY);
             game.assets.font.draw(game.batch, "ESC – Menu", currentX, startY + btnHeight);
-        }
-
-        // Adjust LIVES text position so it doesn't overlap the new buttons
-        game.assets.font.setColor(Color.WHITE);
-        game.assets.font.draw(game.batch, "LIVES: " + game.ctx.lives, 20, Main.WORLD_HEIGHT - 85);
-
-        if (getRequiredKills() > 0) {
-            String progress = "Kills: " + game.ctx.enemiesDefeatedInCurrentMap + "/" + getRequiredKills();
-            game.assets.font.draw(game.batch, progress, 20, Main.WORLD_HEIGHT - 110);
         }
 
         game.assets.font.setColor(Color.GOLD);
@@ -820,6 +806,154 @@ public class ExploringScreen extends BaseScreen {
                 }
             }
         }
+    }
+
+    private void renderPlayerStats(){
+        float cardScale = 0.64f;
+        float cardWidth = 135 * cardScale;
+        float cardHeight = 177 * cardScale;
+        float cardX = screenLeft + px(1.0f);
+        float cardY = screenTop - px(1.0f) - cardHeight;
+        float statsOffsetX = px(0.8f);
+        float playerStatsX = cardX + cardWidth + statsOffsetX;
+        float playerStatsY = cardY;
+
+        // Player Card
+        TextureRegion animFrame = null;
+        switch(game.ctx.selectedCharacter){
+            case SONARA:  animFrame = game.assets.sonaraCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+            case AURELIUS: animFrame = game.assets.aureliusCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+            case LYRON: animFrame = game.assets.lyronCardSelected.getKeyFrame(game.ctx.stateTime, true); break;
+        }
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        if (animFrame != null) { game.batch.draw(animFrame, cardX, cardY, cardWidth, cardHeight);}
+        game.batch.end();
+
+        // Status Bars
+        renderStatsBars(playerStatsX, playerStatsY);
+
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+
+        // Name
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.getData().setScale(1.2f);
+        String text = game.ctx.activeCharacterStats.getName();
+        float textX = playerStatsX;
+        float textY = playerStatsY + cardHeight - px(0.16f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        // Level
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.getData().setScale(1.0f);
+        text = "Level " + game.ctx.activeCharacterStats.getLevel();
+        textX = playerStatsX + px(4.0f);
+        textY = playerStatsY + cardHeight - px(0.2f);
+
+        // Lives
+        game.assets.font.setColor(Color.WHITE);
+        game.assets.font.getData().setScale(1.0f);
+        text = "Lives: ";
+        textX = playerStatsX;
+        textY = playerStatsY + px(0.4f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        // Hearts
+        int heartsRender = game.ctx.lives;
+        Texture heart = null;
+
+        float heartX        = textX + textWidth(text) + px(0.2f);
+        float heartY        = playerStatsY;
+        float heartWidth    = px(0.6f);
+        float heartHeight   = px(0.6f);
+        float heartGap      = px(0.2f);
+
+        for(int i = 0; i < game.ctx.maxLives; i++){
+            heart = (i < heartsRender ? game.assets.heart : game.assets.heartEmpty);
+            game.batch.draw(heart,
+                heartX + i * (heartWidth + heartGap), heartY,
+                heartWidth, heartHeight);
+        }
+
+
+        // Level
+        text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        float textWidth = textWidth(text);
+        float textHeight = px(1.6f);
+        textX = screenRight - textWidth - px(1.6f);
+        textY = screenTop - textHeight;
+        game.assets.font.setColor(Color.RED);
+        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) game.assets.font.setColor(Color.GREEN);
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+        text = "Objectives: ";
+        textX = textX;
+        textY += px(0.48f);
+        game.assets.font.setColor(Color.YELLOW);
+        game.assets.font.getData().setScale(0.8f);
+        game.assets.font.draw(game.batch, text, textX, textY);
+
+
+        // IF ROOM IS LOCKED
+        if(isInEnemyRoom()){
+            text = "Room Locked! You must defeat the monster.";
+            textWidth = textWidth(text);
+            textX = screenLeft - textWidth - px(2.0f);
+            textY = px(3.0f); // Changed Y position to be visible at the bottom of the screen
+            game.assets.font.setColor(Color.RED);
+            game.assets.font.getData().setScale(1.2f); // Increased scale
+            game.assets.font.draw(game.batch, text, textX, textY);
+        }
+        game.batch.end();
+    }
+
+    private void renderStatsBars(float baseX, float baseY) {
+        CharacterHero player = game.ctx.activeCharacterStats;
+
+        final float barWidth           = 144f;
+        final float barHeight          = 11.8f;
+        final float containerWidth     = 180f;
+        final float containerHeight    = 32f;
+        final float barOffsetX         = px(0.4f);
+        final float hpBarOffsetY       = px(2.4f);
+        final float shieldBarOffsetY   = px(1.6f);
+        final float containerOffsetX   = -27f;
+        final float containerOffsetY   = -21f;
+        final float textOffsetX        = barWidth + px(0.4f);
+
+        float playerHpBarX     = baseX + barOffsetX;
+        float playerHpBarY     = baseY + hpBarOffsetY;
+        float playerShieldBarX = baseX + barOffsetX;
+        float playerShieldBarY = baseY + shieldBarOffsetY;
+
+        game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        drawBar(game.shapeRenderer,
+            playerHpBarX, playerHpBarY, barWidth, barHeight,
+            (float) player.getHp() / player.getMaxHp(),
+            Color.DARK_GRAY, Color.RED);
+
+        drawBar(game.shapeRenderer,
+            playerShieldBarX, playerShieldBarY, barWidth, barHeight,
+            player.getMaxShield() > 0 ? (float) player.getShield() / player.getMaxShield() : 0f,
+            Color.DARK_GRAY, new Color(0.07f, 0.58f, 0.93f, 1));
+        game.shapeRenderer.end();
+
+        // Stats Bar Border
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        game.batch.draw(game.assets.healthBar,
+            playerHpBarX + containerOffsetX, playerHpBarY + containerOffsetY,
+            containerWidth, containerHeight);
+        game.batch.draw(game.assets.shieldBar,
+            playerShieldBarX + containerOffsetX, playerShieldBarY + containerOffsetY,
+            containerWidth, containerHeight);
+        game.assets.font.getData().setScale(1.0f);
+        game.batch.end();
     }
 
     private float getMapNameWidth() {

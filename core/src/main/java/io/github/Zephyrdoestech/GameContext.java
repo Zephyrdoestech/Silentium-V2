@@ -70,7 +70,8 @@ public class GameContext {
 
     public List<Enemy> mapEnemies = new ArrayList<>();
     public List<Room> rooms = new ArrayList<>();
-    public int lives = 1;
+    public int maxLives = 3;
+    public int lives = maxLives;
     public int enemiesDefeatedInCurrentMap = 0;
     public Room exitRoom = null;
     public ExploringScreen currentMapScreen = null;
@@ -97,6 +98,7 @@ public class GameContext {
     public String combatLog = "";
 
     public boolean playerDefeated = false;
+    public int leveledUpTo = 0;
 
     // ── CharacterHero-select audio ─────────────────────────────────────────────────
 

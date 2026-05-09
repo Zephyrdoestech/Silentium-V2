@@ -54,7 +54,6 @@ public class Assets implements Disposable {
     public Texture storyPanel1;
     public Texture storyPanel2;
     public Texture storyPanel3;
-    public Texture storyPanel4;
 
     // Maps and Decorations (These must be TextureRegions!)
     public final TextureRegion townTex;
@@ -170,6 +169,9 @@ public class Assets implements Disposable {
     public final Texture[] chordInfo;
     public final Texture[] itemInfo;
 
+    public final Texture backButton;
+    public final Texture nextButton;
+
     // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
@@ -192,6 +194,9 @@ public class Assets implements Disposable {
     public final Texture mapHeaderTownOfEchoes;
     public final Texture mapHeaderSilentCaverns;
     public final Texture mapHeaderAbyssOfDissonance;
+
+    public final Texture heart;
+    public final Texture heartEmpty;
 
     public final Texture healthBar;
     public final Texture shieldBar;
@@ -327,7 +332,6 @@ public class Assets implements Disposable {
         storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
         storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
         storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
-        storyPanel4 = new Texture(Gdx.files.internal("Background/Story/story_panel_4.png"));
 
         // Map Textures
         Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
@@ -356,9 +360,6 @@ public class Assets implements Disposable {
 
         // Pause Menu BG
         pauseMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
-
-//        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
-//        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
 
         sonaraCardDefault = loadAnim("Sprites/Characters/Sonara/PlayerCard/default",   "",  10, 0.12f);
         sonaraCardSelected = loadAnim("Sprites/Characters/Sonara/PlayerCard/selected",   "",  10, 0.12f);
@@ -424,7 +425,7 @@ public class Assets implements Disposable {
         lyronWalkRight    = loadAnim("Sprites/Characters/Lyron/Walk",      "Movement",  6, 0.1f);
         lyronWalkLeft     = flipped(lyronWalkRight);
 
-        // ── Combat Backgrounds ────────────────────────────────────────────────
+        // ── Tutorial Screens ────────────────────────────────────────────────
 
         noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
         metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
@@ -438,7 +439,10 @@ public class Assets implements Disposable {
         chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
         itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
-        // ── Tutorial Screens ────────────────────────────────────────────────
+        backButton = new Texture("Sprites/Combat/Pause/leftButton.png");
+        nextButton = new Texture("Sprites/Combat/Pause/rightButton.png");
+
+        // ── Map Background ────────────────────────────────────────────────
 
         townCombatBackground    = new Texture("Background/Combat/Town.png");
         cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
@@ -461,8 +465,11 @@ public class Assets implements Disposable {
         mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
-        healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
-        shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
+        heart                = new Texture("Sprites/Combat/Interface/Heart.png");
+        heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");
+
+        healthBar            = new Texture("Sprites/Combat/Interface/HealthBar.png");
+        shieldBar            = new Texture("Sprites/Combat/Interface/ShieldBar.png");
         staticHudBackground  = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
         timerBackground      = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
         dynamicHudBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
@@ -786,7 +793,6 @@ public class Assets implements Disposable {
         disposeTexture(storyPanel1);
         disposeTexture(storyPanel2);
         disposeTexture(storyPanel3);
-        disposeTexture(storyPanel4);
 
         disposeTextureRegion(townTex);
         disposeTextureRegion(townExitTex);

@@ -199,15 +199,6 @@ public class CombatScreen extends BaseScreen {
             game.assets.pauseExitBtn
         };
 
-        //temporary  items
-        player.getPlayerInventory().gainCrimsonChorus(game.assets);
-        player.getPlayerInventory().gainMajorBlessing(game.assets);
-        player.getPlayerInventory().gainMinorsGrace(game.assets);
-        player.getPlayerInventory().gainResolvedDissonance(game.assets);
-        player.getPlayerInventory().gainTimeOrb(game.assets);
-        player.getPlayerInventory().gainSilentBarrier(game.assets);
-
-
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
 
@@ -216,6 +207,7 @@ public class CombatScreen extends BaseScreen {
         game.ctx.combatLog    = "";
         game.ctx.chordSystem.resetChords();
         game.ctx.metronome.reset();
+        game.ctx.leveledUpTo = 0; // Reset level up tracking
 
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:        maxTurnTime = 25f; break;
@@ -346,9 +338,11 @@ public class CombatScreen extends BaseScreen {
                 break;
             case 1: // Chord List
                 showChordList = true;
+                infoIndex = 0;
                 break;
             case 2: // Item Info
                 showItemInfo = true;
+                infoIndex = 0;
                 break;
             case 3: // Exit
                 game.assets.stopAllMusic();
@@ -358,8 +352,6 @@ public class CombatScreen extends BaseScreen {
     }
 
     private void renderPauseScreen(float delta) {
-        int  infoIndex = 0;
-
         Gdx.gl.glClearColor(0, 0, 0, 0.9f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -374,7 +366,7 @@ public class CombatScreen extends BaseScreen {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-            // 4. Draw
+            // Draw
             beginUiBatch();
             game.batch.setColor(1f, 1f, 1f, 1f);
             game.batch.draw(chordInfoScreen[infoIndex], screenLeft, screenBottom,
@@ -388,7 +380,16 @@ public class CombatScreen extends BaseScreen {
             game.assets.font.draw(game.batch, displayText,
                 screenRight - px(2.0f) - textWidth(displayText),
                 screenBottom + px(2.0f));
+
+            displayText = "Arrows key to switch pages.";
+            game.assets.font.draw(game.batch, displayText,
+                screenLeft + px(2.0f),
+                screenBottom + px(2.0f));
             game.batch.end();
+
+            displayText = "Page " + (infoIndex + 1) + "   |   2";
+            drawCenteredText(displayText, screenLeft, screenBottom + px(1.6f),
+                Main.WORLD_WIDTH, px(1.0f), Color.YELLOW, 1.0f);
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
                 infoIndex -= infoIndex > 0 ? 1 : 0;
@@ -404,13 +405,12 @@ public class CombatScreen extends BaseScreen {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-            // 4. Draw
+            // Draw
             beginUiBatch();
             game.batch.setColor(1f, 1f, 1f, 1f);
             game.batch.draw(itemInfoScreen[infoIndex], screenLeft, screenBottom,
                 Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
             game.batch.setColor(0, 0, 0, 0.7f);
-
 
             // Draw Skip Hint (Always visible)
             game.assets.font.setColor(Color.GRAY);
@@ -418,7 +418,16 @@ public class CombatScreen extends BaseScreen {
             game.assets.font.draw(game.batch, displayText,
                 screenRight - px(2.0f) - textWidth(displayText),
                 screenBottom + px(2.0f));
+
+            displayText = "Arrows key to switch pages.";
+            game.assets.font.draw(game.batch, displayText,
+                screenLeft + px(2.0f),
+                screenBottom + px(2.0f));
             game.batch.end();
+
+            displayText = "Page " + (infoIndex + 1) + "   |   2";
+            drawCenteredText(displayText, screenLeft, screenBottom + px(1.6f),
+                Main.WORLD_WIDTH, px(1.0f), Color.YELLOW, 1.0f);
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
                 infoIndex -= infoIndex > 0 ? 1 : 0;
@@ -2127,14 +2136,35 @@ public class CombatScreen extends BaseScreen {
 
         // Level-up progression
         player.defeatedMonster();
-        int kills    = player.getMonstersDefeated();
-        int newLevel = 1;
-        if      (kills >= 7) newLevel = 5;
+        int currentLevel = player.getLevel();
+        int kills = player.getMonstersDefeated();
+        int newLevel = currentLevel;
+
+        if (kills >= 7) newLevel = 5;
         else if (kills >= 4) newLevel = 4;
         else if (kills >= 2) newLevel = 3;
         else if (kills >= 1) newLevel = 2;
 
-        if (newLevel > player.getLevel()) player.levelUp(newLevel);
+        int maxLevelForMap = 5;
+        if (game.ctx.mapName != null) {
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:
+                    maxLevelForMap = 3;
+                    break;
+                case SILENT_CAVERNS:
+                    maxLevelForMap = 5;
+                    break;
+                case ABYSS_OF_DISSONANCE:
+                    maxLevelForMap = 5; // Assuming global max level is 5
+                    break;
+            }
+        }
+
+        // Only level up if the new level is below or equal to the map's cap.
+        if (newLevel > currentLevel && newLevel <= maxLevelForMap) {
+            player.levelUp(newLevel);
+            game.ctx.leveledUpTo = newLevel;
+        }
 
         game.assets.stopAllMusic();
 
