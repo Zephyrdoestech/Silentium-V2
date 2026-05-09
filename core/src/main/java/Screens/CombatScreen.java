@@ -1244,7 +1244,7 @@ public class CombatScreen extends BaseScreen {
         if((game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD ||
             game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT)
             && message.equalsIgnoreCase("null")){
-            advanceBattleLogState();}
+            advanceCombatState();}
         else if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD){
             if(!chordPlayed){
                 switch(chordUsedThisTurn){
@@ -1280,7 +1280,7 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.resultTimer >= DISPLAY_TIME) {
             game.ctx.resultTimer = 0f;
-            advanceBattleLogState();
+            advanceCombatState();
         }
     }
 
@@ -1311,6 +1311,8 @@ public class CombatScreen extends BaseScreen {
                 return "Beat Sync! Total Damage Dealt: " + finalDamage;
             case ENEMY_ATTACK:
                 if (!enemyAttacked) { executeEnemyAttack(); enemyAttacked = true; }
+                if(enemy.getName().equals("Labagoliath the Void Shaker")) return " Labagoliath used " + enemy.getLastAttackName();
+                if(enemy.getName().equals("Maestro Syozan")) return " Syozan used " + enemy.getLastAttackName();
                 return enemy.getName() + " used " + enemy.getLastAttackName();
             case DISPLAY_ENEMY_DAMAGE:
                 return "You received " + enemyDamage + " damage!";
@@ -1340,7 +1342,7 @@ public class CombatScreen extends BaseScreen {
      * Drives the state-machine transitions that follow each timed battle log message.
      * Rendering only calls this; all flow logic lives here.
      */
-    private void advanceBattleLogState() {
+    private void advanceCombatState() {
         game.assets.stateTransition.play(1.0f);
         switch (game.ctx.combatState) {
             case ITEM_USED:
@@ -1384,7 +1386,10 @@ public class CombatScreen extends BaseScreen {
                 finishRound();
                 if (player.isAlive()) {
                     game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-                } else {
+                } else if (enemy.isDefeated()){
+                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;;
+                }
+                else {
                     game.ctx.combatState = GameContext.CombatState.DEFEAT;
                     splashTimer = 0f;
                     splashSFX = false;
@@ -2093,6 +2098,8 @@ public class CombatScreen extends BaseScreen {
         handleItemEffects(new SilentBarrier(game.assets), null);
 
         player.takeDamage(enemyDamage);
+
+        // Sonara Passive
         player.onDamageReceived(enemy, enemyDamage);
     }
 
