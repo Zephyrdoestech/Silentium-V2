@@ -2118,6 +2118,7 @@ public class CombatScreen extends BaseScreen {
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
         game.ctx.playerWon = true;
+        player.defeatedMonster();
 
         // Remove defeated enemy from the world
         game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
