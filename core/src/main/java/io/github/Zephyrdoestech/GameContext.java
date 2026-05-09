@@ -98,6 +98,7 @@ public class GameContext {
     public String combatLog = "";
 
     public boolean playerDefeated = false;
+    public int leveledUpTo = 0;
 
     // ── CharacterHero-select audio ─────────────────────────────────────────────────
 

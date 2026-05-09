@@ -571,16 +571,6 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.currentEnemy = e;
                 game.ctx.noteHandler.noteCount    = 0;
 
-                // TEST TRAVERSAL
-//                game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
-//                if (game.ctx.rooms != null) {
-//                    for (Room r : game.ctx.rooms) {
-//                        if (r.getEnemies().remove(game.ctx.currentEnemy)) {
-//                            if (r.getEnemies().isEmpty()) r.setCleared(true);
-//                            break;
-//                        }
-//                    }
-//                }
                 game.ctx.enemiesDefeatedInCurrentMap++;
 
                 // ENEMY ENCOUNTER MONOLOGUE
@@ -908,13 +898,13 @@ public class ExploringScreen extends BaseScreen {
 
 
         // IF ROOM IS LOCKED
-        if(lockedRoom != null){
+        if(isInEnemyRoom()){
             text = "Room Locked! You must defeat the monster.";
             textWidth = textWidth(text);
-            textX = screenLeft + ((Main.WORLD_WIDTH - textWidth) / 2);
-            textY = screenTop + px(2.4f);
+            textX = screenLeft - textWidth - px(2.0f);
+            textY = px(3.0f); // Changed Y position to be visible at the bottom of the screen
             game.assets.font.setColor(Color.RED);
-            game.assets.font.getData().setScale(1.0f);
+            game.assets.font.getData().setScale(1.2f); // Increased scale
             game.assets.font.draw(game.batch, text, textX, textY);
         }
         game.batch.end();
