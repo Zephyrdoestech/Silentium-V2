@@ -1,9 +1,12 @@
 package Screens;
 
 import Entities.CharacterHero;
+import Inventory.Inventory;
+import Screens.LeaderBoard.NameInputScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -45,6 +48,7 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
+    private boolean isPaused = false;
     private boolean showingExitPrompt = false;
     private Rectangle yesButtonRect = new Rectangle();
     private Rectangle noButtonRect = new Rectangle();
@@ -73,6 +77,13 @@ public class ExploringScreen extends BaseScreen {
     private float lineDelayTimer = 0f;
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
+
+    // --- Pause Menu ---
+    private int             pauseMenuSelection   = 0;
+    private Texture[]       pauseButtons;
+    private boolean         showChordList        = false;
+    private boolean         showItemInfo         = false;
+    private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     public ExploringScreen(Main game) {
         super(game);
@@ -166,6 +177,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
 
+        pauseButtons = new Texture[]{
+            game.assets.pauseContinueBtn,
+            game.assets.pauseChordInfoBtn,
+            game.assets.pauseItemInfoBtn,
+            game.assets.pauseExitBtn
+        };
+
         if (game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
             handlePlayerDeath();
@@ -244,6 +262,36 @@ public class ExploringScreen extends BaseScreen {
         updateCamera(); // Initialize camera position after player position is set
     }
 
+    private TextureRegion getEnemyFrame(Enemy e) {
+        com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> anim;
+
+        switch (e.getName()) {
+            case "Flesh Feeder":
+                anim = game.assets.fleshfeederCombatIdle;
+                break;
+            case "Darryllion":
+                anim = game.assets.darryllionCombatIdle;
+                break;
+            case "Gobninil":
+                anim = game.assets.gobninilCombatIdle;
+                break;
+            case "Chimericks":
+                anim = game.assets.chimericksCombatIdle;
+                break;
+            case "Labagoliath the Void Shaker":
+                anim = game.assets.labagoliathCombatIdle;
+                break;
+            case "Maestro Syozan":
+                anim = game.assets.syozanCombatIdle;
+                break;
+            default:
+                // Fallback if name doesn't match
+                anim = game.assets.fleshfeederCombatIdle;
+                break;
+        }
+
+        return (anim != null) ? anim.getKeyFrame(game.ctx.stateTime, true) : null;
+    }
 
     // ── Render ────────────────────────────────────────────────────────────────
     @Override
@@ -251,7 +299,10 @@ public class ExploringScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-        if (game.ctx.player == null) return; // Safeguard to prevent NPE if rendered during transition
+        if (game.ctx.player == null) return;
+
+        // If a fade out finishes this frame, don't do anything else (BaseScreen handles the transition)
+        if (updateFade(delta)) return;
 
         if (game.ctx.activeCharacterStats.getHp() <= 0) {
             handlePlayerDeath();
@@ -259,21 +310,19 @@ public class ExploringScreen extends BaseScreen {
         }
 
         game.ctx.totalPlaytime += delta;
-
         game.ctx.stateTime += delta;
 
-        // Auto-initialize the typewriter effect whenever isMonologueActive flips to true
         if (isMonologueActive && !wasMonologueActive) {
             prepareMonologue();
         } else if (!isMonologueActive && wasMonologueActive) {
             if (pendingExit) {
                 pendingExit = false;
-                performExit(getNextScreen());
+                startFadeOut(getNextScreen());
                 return;
             } else if (pendingCombat) {
                 pendingCombat = false;
                 game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
-                game.setScreen(new CombatScreen(game));
+                startFadeOut(new CombatScreen(game));
                 return;
             }
         }
@@ -282,38 +331,58 @@ public class ExploringScreen extends BaseScreen {
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
             handleMonologueInput(delta);
-        } else {
+        } else if (!fadingOut) { // Only handle movement if we are not currently fading out
             handleMovement(delta);
         }
 
         updateCamera();
 
+        // 1. DRAW ALL WORLD SPRITES (The "Main Batch")
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
-
-        // Ensure batch color is white before drawing textures
-        game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+        game.batch.setColor(Color.WHITE);
 
         // Map
         if (mapTexture != null) {
             game.batch.draw(mapTexture, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
-        } else {
-            System.err.println("Warning: Map texture is null in ExploringScreen.java. Check asset loading.");
         }
+
+        // Exit Portal
         if (game.ctx.exitRoom != null && exitTexture != null) {
             float exitSize = 104f;
+            float exitY = game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f;
+            if (game.ctx.mapName == GameContext.MapName.SILENT_CAVERNS) exitY -= 50f;
+
             game.batch.draw(exitTexture,
                 game.ctx.exitRoom.getBounds().x + (game.ctx.exitRoom.getBounds().width - exitSize) / 2f,
-                game.ctx.exitRoom.getBounds().y + (game.ctx.exitRoom.getBounds().height) / 1.16f,
-                exitSize, exitSize);
+                exitY, exitSize, exitSize);
         }
-        game.batch.end();
 
-        // Debug room outlines (ShapeRenderer)
+        // Enemies
+        for (Enemy e : game.ctx.mapEnemies) {
+            if (!e.isDefeated()) {
+                TextureRegion enemyFrame = getEnemyFrame(e);
+                if (enemyFrame != null) {
+                    game.batch.draw(enemyFrame, e.getX(), e.getY(), 64f, 64f);
+                }
+            }
+        }
+        game.assets.font.setColor(Color.WHITE);
+
+        // Player sprite
+        drawPlayerSprite();
+
+        // Map Decor
+        if (mapDecor != null)
+            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+
+        // Darkness overlay
+        drawDarknessOverlay();
+
+        game.batch.end(); // END OF WORLD DRAWING
+
+        // 2. DRAW SHAPES (Debug Outlines)
         game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-
-
-        // Debug room outlines + enemy rects (ShapeRenderer)
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         game.shapeRenderer.setColor(Color.GREEN);
         for (Room r : game.ctx.rooms)
@@ -323,49 +392,21 @@ public class ExploringScreen extends BaseScreen {
             game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
         game.shapeRenderer.end();
 
-
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated())
-                game.shapeRenderer.rect(e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        }
-        game.shapeRenderer.end();
-
-        game.batch.begin();
-        game.assets.font.setColor(Color.RED);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated()) {
-                game.assets.font.draw(game.batch, e.getName(),
-                    e.getX() - 10, e.getY() + GameContext.CHAR_SIZE + 18);
-            }
-        }
-        game.assets.font.setColor(Color.WHITE);
-        // Player sprite
-        drawPlayerSprite();
-        //MAP DECORS
-        if (mapDecor != null)
-            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
-
-        // Darkness overlay (world space, centred on player)
-        drawDarknessOverlay();
-        game.batch.end();
-
-        // HUD (uses fixed uiCamera)
+        // 3. DRAW UI (Fixed screen-space)
         drawHUD();
-
-        if (showInventory) {
-            drawInventoryOverlay();
-        }
+        if (showInventory) drawInventoryOverlay();
+        if (isMonologueActive) drawMonologueOverlay(delta);
 
         if (isMonologueActive) { drawMonologueOverlay(delta); }
 
+        drawFadeOverlay();
+
         // ESC → Save Game and return to main menu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !fadingOut) {
             // Save exactly where they are standing right now!
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
 
-            game.setScreen(new MainMenuScreen(game));
+            startFadeOut(new MainMenuScreen(game));
         }
     }
 
@@ -378,10 +419,8 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.player = null;
 
         if (game.ctx.lives <= 0) {
-            // Player is completely out of lives - reset the run completely and go back to map 1
-            game.ctx.lives = 3;
-            game.ctx.mapsCleared = 0;
-            game.setScreen(new TownOfEchoesScreen(game));
+            game.ctx.lives = 1;
+            game.setScreen(new NameInputScreen(game, game.ctx, 1));
         } else {
             // Player lost a life but has more, retry current map
             switch (game.ctx.mapName) {
@@ -479,7 +518,7 @@ public class ExploringScreen extends BaseScreen {
                                 isMonologueActive = true;
                                 pendingExit = true; // Wait for monologue to finish
                             } else {
-                                performExit(next);
+                                startFadeOut(next);
                             }
                         }
                         showingExitPrompt = false;
@@ -520,7 +559,7 @@ public class ExploringScreen extends BaseScreen {
 //                        }
 //                    }
 //                }
-//                game.ctx.enemiesDefeatedInCurrentMap++;
+                game.ctx.enemiesDefeatedInCurrentMap++;
 
                 // ENEMY ENCOUNTER MONOLOGUE
                 String[][] encounters = {
@@ -713,13 +752,13 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.draw(game.batch, "Lv " + c.getLevel(), 20, Main.WORLD_HEIGHT - 62);
 
         // Draw new HUD buttons vertically
-        float btnWidth = 130f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
-        float btnHeight = 40f; // Adjusted height
-        float spacing = 15f;
+        float btnWidth = 100f; // Adjusted width for larger horizontal text-based buttons to fit the texture well
+        float btnHeight = 27f; // Adjusted height
+        float spacing = 10f;
         float currentX = 5f;
 
         // Calculate starting Y so they stack upwards from the bottom
-        // Inventory is at the bottom, then Pause, then Menu on top
+        // Inventory is at the bottom, Menu is on top
         float startY = 15f;
 
         if (game.assets.inventoryBtnTex != null) {
@@ -727,15 +766,6 @@ public class ExploringScreen extends BaseScreen {
         } else {
             game.assets.font.setColor(Color.GRAY);
             game.assets.font.draw(game.batch, "I – Inventory", currentX, startY + btnHeight);
-        }
-
-        startY += btnHeight + spacing;
-
-        if (game.assets.pauseBtnTex != null) {
-            game.batch.draw(game.assets.pauseBtnTex, currentX, startY, btnWidth, btnHeight);
-        } else {
-            game.assets.font.setColor(Color.GRAY);
-            game.assets.font.draw(game.batch, "P – Pause", currentX, startY + btnHeight);
         }
 
         startY += btnHeight + spacing;
@@ -765,7 +795,7 @@ public class ExploringScreen extends BaseScreen {
         drawExitOverlay();
 
         // Handle HUD button clicks
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && !fadingOut) {
             com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             game.uiCamera.unproject(mousePos);
 
@@ -781,21 +811,12 @@ public class ExploringScreen extends BaseScreen {
             }
             checkY += btnHeight + spacing;
 
-            // Pause button logic (simulating ESC for ExploringScreen for now, as ExploringScreen has no pause menu)
-            if (game.assets.pauseBtnTex != null) {
-                if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
-                    mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
-                    // Optional: you can implement a pause screen for the overworld here if you want
-                }
-            }
-            checkY += btnHeight + spacing;
-
             // Menu button logic
             if (game.assets.menuBtnTex != null) {
                 if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
                     mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
                     game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
-                    game.setScreen(new MainMenuScreen(game));
+                    startFadeOut(new MainMenuScreen(game));
                 }
             }
         }
@@ -808,51 +829,59 @@ public class ExploringScreen extends BaseScreen {
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
     private void drawInventoryOverlay() {
-        float overlayX = Main.WORLD_WIDTH * 0.2f;
-        float overlayY = Main.WORLD_HEIGHT * 0.18f;
-        float overlayW = Main.WORLD_WIDTH * 0.6f;
-        float overlayH = Main.WORLD_HEIGHT * 0.64f;
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA, com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0f, 0f, 0f, 0.75f);
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.7f); // Low opacity black background
         game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
-        game.shapeRenderer.setColor(0.1f, 0.12f, 0.18f, 0.95f);
-        game.shapeRenderer.rect(overlayX, overlayY, overlayW, overlayH);
         game.shapeRenderer.end();
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+
+        Texture inventoryPanelBackground = game.assets.inventoryPanelBackground;
+        Inventory inventory = game.ctx.activeCharacterStats.getPlayerInventory();
+
+        float inventoryPanelWidth = inventoryPanelBackground.getWidth();
+        float inventoryPanelHeight =  inventoryPanelBackground.getHeight();
+        float inventoryPanelX = (Main.WORLD_WIDTH - inventoryPanelWidth)/ 2f;
+        float inventoryPanelY = (Main.WORLD_HEIGHT - inventoryPanelHeight) /2f;
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
+        game.batch.draw(inventoryPanelBackground,
+            inventoryPanelX, inventoryPanelY, inventoryPanelWidth, inventoryPanelHeight);
+        game.batch.end();
 
-        float titleX = overlayX + 24f;
-        float titleY = overlayY + overlayH - 24f;
-        game.assets.font.getData().setScale(1.2f);
-        game.assets.font.setColor(Color.YELLOW);
-        game.assets.font.draw(game.batch, "Inventory", titleX, titleY);
+        float Xgap = px(0.1f);
+        float Ygap = px(0.1f);
+        float itemSlotWidth = px(2.0f);
+        float itemSlotHeight = px(2.0f);
+        float itemSlotsWidth = itemSlotWidth * 5 + (4 * Xgap);
+        float itemSlotsHeight = itemSlotHeight * 2 + Ygap;
 
-        game.assets.font.getData().setScale(0.9f);
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        game.assets.font.draw(game.batch, "[I] Close", overlayX + overlayW - 90f, titleY);
+        // Render Item Slots
+        game.batch.setProjectionMatrix(game.uiCamera.combined);
+        game.batch.begin();
+        float itemXPosition = inventoryPanelX + ((inventoryPanelWidth - itemSlotsWidth) / 2f);
+        float itemYPosition = (inventoryPanelY + inventoryPanelHeight) - ((inventoryPanelHeight - itemSlotsHeight) / 2f) - px(0.6f);
+        int capacity = inventory.getCapacity();
+        int cols = capacity / 2; // 5
+        Texture item = game.assets.emptySlotItem;
 
-        float itemY = titleY - 36f;
-        float lineGap = 26f;
+        for(int i = 0; i < inventory.getCapacity(); i++){
+            if(i < inventory.getInventorySize()){ item = inventory.getItem(i).getSlotIcon(); }
+            else{ item = game.assets.emptySlotItem; }
 
-        java.util.Map<String, Integer> inventory = game.ctx.activeCharacterStats.inventory;
-        if (inventory == null || inventory.isEmpty()) {
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Inventory is empty", titleX, itemY);
-        } else {
-            game.assets.font.setColor(Color.WHITE);
-            for (java.util.Map.Entry<String, Integer> entry : inventory.entrySet()) {
-                String line = "- " + entry.getKey() + " x" + entry.getValue();
-                game.assets.font.draw(game.batch, line, titleX, itemY);
-                itemY -= lineGap;
-                if (itemY < overlayY + 24f) break;
-            }
+            int col = i % cols;
+            int row = i / cols;
+            game.batch.draw(item,
+                itemXPosition + col * (itemSlotWidth + Xgap),
+                itemYPosition - itemSlotHeight - row * (itemSlotHeight + Ygap),
+                itemSlotWidth,
+                itemSlotHeight
+            );
         }
-
-        game.assets.font.getData().setScale(1.0f);
-        game.assets.font.setColor(Color.WHITE);
         game.batch.end();
     }
 
@@ -931,8 +960,9 @@ public class ExploringScreen extends BaseScreen {
         }
 
         game.assets.font.setColor(Color.GRAY);
+        game.assets.font.getData().setScale(0.8f);
         game.assets.font.draw(game.batch, "Press ENTER to skip.",
-            Main.WORLD_WIDTH - (6.0f),
+            Main.WORLD_WIDTH - px(5.0f),
             px(1.6f));
 
         game.assets.font.getData().setScale(1.0f);

@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import io.github.Zephyrdoestech.GameContext;
-import Screens.LeaderBoard.LeaderboardEntry;
-import Screens.LeaderBoard.LeaderboardManager;
 import io.github.Zephyrdoestech.Main;
 import java.util.List;
 
@@ -21,63 +19,15 @@ public class LeaderboardScreen extends BaseScreen {
     /** Total number of maps in the game (for displaying "X/3" format). */
     private final int totalMaps;
 
+    /** Timer to prevent "Input Bleed" from the NameInputScreen */
+    private float screenTimer = 0f;
+
     // ── Constructor ───────────────────────────────────────────────────────────
 
-    /**
-     * @param game      the {@link Main} instance
-     * @param totalMaps total map count (e.g. 3)
-     */
     public LeaderboardScreen(Main game, int totalMaps) {
         super(game);
         this.entries   = LeaderboardManager.loadEntries();
         this.totalMaps = totalMaps;
-    }
-
-    // ── Static entry point (call this from death or completion) ──────────────
-
-    /**
-     * Prompts the user for their username, then saves their score to the
-     * leaderboard and transitions to {@link LeaderboardScreen}.
-     *
-     * This is the method you call from:
-     *  - CombatScreen (when player dies and lives == 0)
-     *  - ExploringScreen (when player clears the final map)
-     *
-     * @param game      the {@link Main} instance
-     * @param ctx       the current {@link GameContext} (contains playtime & maps cleared)
-     * @param totalMaps total map count (e.g. 3)
-     */
-    public static void promptForUsername(final Main game, final GameContext ctx, final int totalMaps) {
-        Gdx.input.getTextInput(new Input.TextInputListener() {
-            @Override
-            public void input(String text) {
-                // User submitted a name
-                String username = text.trim().isEmpty() ? "Unknown" : text.trim();
-
-                // Create and save the entry
-                LeaderboardEntry entry = new LeaderboardEntry(
-                    username,
-                    ctx.mapsCleared,
-                    ctx.totalPlaytime
-                );
-                LeaderboardManager.addEntry(entry);
-
-                // Show the leaderboard
-                game.setScreen(new LeaderboardScreen(game, totalMaps));
-            }
-
-            @Override
-            public void canceled() {
-                // User pressed Cancel — still show leaderboard with "Unknown" as name
-                LeaderboardEntry entry = new LeaderboardEntry(
-                    "Unknown",
-                    ctx.mapsCleared,
-                    ctx.totalPlaytime
-                );
-                LeaderboardManager.addEntry(entry);
-                game.setScreen(new LeaderboardScreen(game, totalMaps));
-            }
-        }, "Enter Your Name", "", "Your name here");
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -102,40 +52,35 @@ public class LeaderboardScreen extends BaseScreen {
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
 
-        // ── Background (reuse title screen texture at low brightness) ─────────
-        if (game.assets.titleScreenTex != null) {
-            game.batch.setColor(0.1f, 0.05f, 0.15f, 1f);
-            game.batch.draw(game.assets.titleScreenTex, 0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        // 1. Draw your custom background panel centered on the screen
+        float bgWidth = 700f;
+        float bgHeight = 400f;
+        float bgX = (Main.WORLD_WIDTH - bgWidth) / 2f;
+        float bgY = (Main.WORLD_HEIGHT - bgHeight) / 2f;
+
+        if (game.assets.leaderboardPanelBG != null) {
             game.batch.setColor(Color.WHITE);
+            game.batch.draw(game.assets.leaderboardPanelBG, bgX, bgY, bgWidth, bgHeight);
         }
 
-        // ── Title ─────────────────────────────────────────────────────────────
+        // 2. Draw the Title above the panel (Nudged up to +90f)
         game.assets.titleFont.setColor(Color.GOLD);
-        game.assets.titleFont.draw(game.batch, "LEADERBOARD", 250f, 440f);
+        game.glyphLayout.setText(game.assets.titleFont, "LEADERBOARD");
+        game.assets.titleFont.draw(game.batch, "LEADERBOARD", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY + bgHeight + 90f);
         game.assets.titleFont.setColor(Color.WHITE);
 
-        game.assets.font.setColor(Color.LIGHT_GRAY);
-        game.assets.font.draw(game.batch, "(Top " + LeaderboardManager.getMaxEntries() + ")", 350f, 410f);
+        // 3. Draw the Entries aligned to your custom image columns
+        float rankX = bgX + 120f;
+        float nameX = bgX + 210f;
+        float levelX = bgX + 350f;
+        float timeX = bgX + 510f;
 
-        // ── Column headers ────────────────────────────────────────────────────
-        float headerY = 370f;
-        game.assets.font.setColor(Color.CYAN);
-        game.assets.font.draw(game.batch, "Rank", 100f, headerY);
-        game.assets.font.draw(game.batch, "Name", 200f, headerY);
-        game.assets.font.draw(game.batch, "Maps", 450f, headerY);
-        game.assets.font.draw(game.batch, "Time", 580f, headerY);
-
-        // ── Divider line ──────────────────────────────────────────────────────
-        game.assets.font.setColor(Color.DARK_GRAY);
-        game.assets.font.draw(game.batch, "──────────────────────────────────────────────────────────", 95f, 360f);
-
-        // ── Entries ───────────────────────────────────────────────────────────
-        float startY = 340f;
-        float lineHeight = 28f;
+        float startY = bgY + bgHeight - 160f;
+        float lineHeight = 21f; // Squished to comfortably fit 10 scores
 
         if (entries.isEmpty()) {
             game.assets.font.setColor(Color.GRAY);
-            game.assets.font.draw(game.batch, "No scores yet — be the first!", 240f, startY);
+            game.assets.font.draw(game.batch, "No scores yet — be the first!", bgX + 220f, startY);
         } else {
             for (int i = 0; i < entries.size(); i++) {
                 LeaderboardEntry e = entries.get(i);
@@ -143,32 +88,39 @@ public class LeaderboardScreen extends BaseScreen {
 
                 // Rank number (1, 2, 3, ...)
                 game.assets.font.setColor(i < 3 ? Color.YELLOW : Color.WHITE);
-                game.assets.font.draw(game.batch, (i + 1) + ".", 105f, y);
+                game.assets.font.draw(game.batch, (i + 1) + ".", rankX, y);
 
                 // Username
                 game.assets.font.setColor(Color.WHITE);
-                game.assets.font.draw(game.batch, e.username, 200f, y);
+                game.assets.font.draw(game.batch, e.username, nameX, y);
 
-                // Maps cleared (e.g. "1/3")
+                // Maps cleared
                 String mapsText = e.mapsCleared + "/" + totalMaps;
-                game.assets.font.draw(game.batch, mapsText, 460f, y);
+                game.assets.font.draw(game.batch, mapsText, levelX, y);
 
                 // Time (formatted)
-                game.assets.font.draw(game.batch, e.formatTime(), 590f, y);
+                game.assets.font.draw(game.batch, e.formatTime(), timeX, y);
             }
         }
 
-        // ── Footer hint ───────────────────────────────────────────────────────
+        // ── Footer hint (Moved dynamically below the panel) ───────────────────
         game.assets.font.setColor(Color.GRAY);
-        game.assets.font.draw(game.batch, "Press ENTER to return to main menu", 230f, 60f);
+        game.glyphLayout.setText(game.assets.font, "Press ENTER to return to main menu");
+        game.assets.font.draw(game.batch, "Press ENTER to return to main menu", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
         game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
         game.batch.end();
 
         // ── Input ─────────────────────────────────────────────────────────────
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new MainMenuScreen(game));
+        screenTimer += delta; // Count how long the screen has been open
+
+        // ONLY allow exit if the screen has been open for half a second!
+        if (screenTimer > 0.5f) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                game.assets.stopAllMusic();
+                game.setScreen(new MainMenuScreen(game));
+            }
         }
     }
 
@@ -176,6 +128,9 @@ public class LeaderboardScreen extends BaseScreen {
         game.uiViewport.update(w, h, true);
     }
 
-    @Override public void hide()    {}
+    @Override public void hide() {
+        game.assets.stopAllMusic();
+    }
+
     @Override public void dispose() {}
 }

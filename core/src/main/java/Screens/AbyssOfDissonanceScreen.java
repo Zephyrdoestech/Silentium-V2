@@ -80,12 +80,14 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
     public void show() {
         super.show();
 
-        if (game.ctx != null) {
+        if (game.ctx != null && game.ctx.player != null) {
             // Check if all enemies are defeated. Since this is the last screen (getNextScreen() is null),
             // this means the player has won the game.
             if (game.ctx.mapEnemies.isEmpty()) {
                 game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
-                Screens.LeaderBoard.LeaderboardScreen.promptForUsername(game, game.ctx, 3);
+
+                // --- FIXED: Call the new Name Input Screen instead of the deleted method! ---
+                game.setScreen(new Screens.LeaderBoard.NameInputScreen(game, game.ctx, 3));
                 return;
             }
 
