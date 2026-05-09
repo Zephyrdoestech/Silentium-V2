@@ -199,15 +199,6 @@ public class CombatScreen extends BaseScreen {
             game.assets.pauseExitBtn
         };
 
-        //temporary  items
-        player.getPlayerInventory().gainCrimsonChorus(game.assets);
-        player.getPlayerInventory().gainMajorBlessing(game.assets);
-        player.getPlayerInventory().gainMinorsGrace(game.assets);
-        player.getPlayerInventory().gainResolvedDissonance(game.assets);
-        player.getPlayerInventory().gainTimeOrb(game.assets);
-        player.getPlayerInventory().gainSilentBarrier(game.assets);
-
-
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
 
@@ -260,11 +251,18 @@ public class CombatScreen extends BaseScreen {
         splashSFX             = false;
         chordUsedThisTurn     = null;
         selectedItem          = null;
+
         inventory = player.getPlayerInventory();
+        usedItems.put("Crimson Chorus", 0);
+        usedItems.put("Major's Blessing", 0);
+        usedItems.put("Minor's Grace", 0);
+        usedItems.put("Resolved Dissonance", 0);
+        usedItems.put("Silent Barrier", 0);
+        usedItems.put("Time Orb", 0);
 
         // First enemy encountered gets 30% health (tutorial difficulty reduction)
         if (player.getMonstersDefeated() == 0) {
-            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
+            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
         }
 
 
