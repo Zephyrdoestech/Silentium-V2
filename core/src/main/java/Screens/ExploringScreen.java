@@ -390,55 +390,12 @@ public class ExploringScreen extends BaseScreen {
 
         // Darkness overlay
         drawDarknessOverlay();
-
         game.batch.end(); // END OF WORLD DRAWING
-
-        // 2. DRAW SHAPES (Debug Outlines)
-        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        game.shapeRenderer.setColor(Color.GREEN);
-        for (Room r : game.ctx.rooms)
-            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-        game.shapeRenderer.setColor(Color.YELLOW);
-        for (Rectangle h : getActiveWalkableZones())
-            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-        game.shapeRenderer.end();
-
-
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.7f, 0.1f, 0.1f, 1f);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated())
-                game.shapeRenderer.rect(e.getX(), e.getY(), GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
-        }
-        game.shapeRenderer.end();
-
-        game.batch.begin();
-        game.assets.font.setColor(Color.RED);
-        for (Enemy e : game.ctx.mapEnemies) {
-            if (!e.isDefeated()) {
-                game.assets.font.draw(game.batch, e.getName(),
-                    e.getX() - 10, e.getY() + GameContext.CHAR_SIZE + 18);
-            }
-        }
-        game.assets.font.setColor(Color.WHITE);
-        // Player sprite
-        drawPlayerSprite();
-        //MAP DECORS
-        if (mapDecor != null)
-            game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
-
-        // Darkness overlay (world space, centred on player)
-        drawDarknessOverlay();
-        game.batch.end();
 
         if (isMonologueActive) { drawMonologueOverlay(delta); }
         else{ drawHUD(); } // HUD (uses fixed uiCamera)
 
-        if (showInventory) {
-            drawInventoryOverlay();
-        }
-
+        if (showInventory) {drawInventoryOverlay();}
 
         drawFadeOverlay();
 
