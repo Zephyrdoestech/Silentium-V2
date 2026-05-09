@@ -208,6 +208,7 @@ public class CombatScreen extends BaseScreen {
         game.ctx.chordSystem.resetChords();
         game.ctx.metronome.reset();
         game.ctx.leveledUpTo = 0; // Reset level up tracking
+        game.ctx.playerWon = false; // Reset player won tracking
 
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:        maxTurnTime = 25f; break;
@@ -262,7 +263,7 @@ public class CombatScreen extends BaseScreen {
 
         // First enemy encountered gets 30% health (tutorial difficulty reduction)
         if (player.getMonstersDefeated() == 0) {
-            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
+            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
 
 
@@ -2116,6 +2117,8 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
+        game.ctx.playerWon = true;
+
         // Remove defeated enemy from the world
         game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
         if (game.ctx.rooms != null) {
@@ -2133,38 +2136,6 @@ public class CombatScreen extends BaseScreen {
         game.ctx.noteHandler.noteCount     = 0;
         game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
-
-        // Level-up progression
-        player.defeatedMonster();
-        int currentLevel = player.getLevel();
-        int kills = player.getMonstersDefeated();
-        int newLevel = currentLevel;
-
-        if (kills >= 7) newLevel = 5;
-        else if (kills >= 4) newLevel = 4;
-        else if (kills >= 2) newLevel = 3;
-        else if (kills >= 1) newLevel = 2;
-
-        int maxLevelForMap = 5;
-        if (game.ctx.mapName != null) {
-            switch (game.ctx.mapName) {
-                case TOWN_OF_ECHOES:
-                    maxLevelForMap = 3;
-                    break;
-                case SILENT_CAVERNS:
-                    maxLevelForMap = 5;
-                    break;
-                case ABYSS_OF_DISSONANCE:
-                    maxLevelForMap = 5; // Assuming global max level is 5
-                    break;
-            }
-        }
-
-        // Only level up if the new level is below or equal to the map's cap.
-        if (newLevel > currentLevel && newLevel <= maxLevelForMap) {
-            player.levelUp(newLevel);
-            game.ctx.leveledUpTo = newLevel;
-        }
 
         game.assets.stopAllMusic();
 
