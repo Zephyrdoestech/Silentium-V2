@@ -195,6 +195,8 @@ public class Assets implements Disposable {
     public final Texture mapHeaderSilentCaverns;
     public final Texture mapHeaderAbyssOfDissonance;
 
+    public final Texture victoryPopupBg;
+
     public final Texture heart;
     public final Texture heartEmpty;
 
@@ -463,6 +465,8 @@ public class Assets implements Disposable {
         mapHeaderTownOfEchoes       = new Texture("Sprites/Combat/Interface/BattleHeader/Map/TownOfEchoes.png");
         mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
+
+        victoryPopupBg              = new Texture("UI/Panels/VictoryPopupBG.png");
 
         heart                = new Texture("Sprites/Combat/Interface/Heart.png");
         heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");
