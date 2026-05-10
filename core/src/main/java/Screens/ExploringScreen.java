@@ -44,11 +44,9 @@ public class ExploringScreen extends BaseScreen {
     protected TextureRegion mapTexture;
     protected TextureRegion mapDecor;
     protected String mapName = "Unknown";
-    //    protected Room exitRoom;
     protected TextureRegion exitTexture;
     private boolean atExit = false;
     private boolean showInventory = false;
-    private boolean isPaused = false;
     private boolean showingExitPrompt = false;
     private Rectangle yesButtonRect = new Rectangle();
     private Rectangle noButtonRect = new Rectangle();
@@ -192,8 +190,8 @@ public class ExploringScreen extends BaseScreen {
 
     @Override
     public void show() {
-        game.assets.font.getData().setScale(1.0f);       // ← add this
-        game.assets.titleFont.getData().setScale(1.0f);  // ← and this
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.titleFont.getData().setScale(1.0f);
         game.ctx.currentMapScreen = this;
 
         startFadeIn();
@@ -206,25 +204,32 @@ public class ExploringScreen extends BaseScreen {
         };
 
         if (game.ctx.playerDefeated) {
-            game.ctx.playerDefeated = false; // Reset the flag FIRST to prevent infinite recursion loop
+            game.ctx.playerDefeated = false;
             handlePlayerDeath();
             return;
         }
 
-        // 1. Initialize or restore the map
+        boolean returningFromCombatVictory = game.ctx.playerWon;
+
         if (game.ctx.rooms.isEmpty()) {
             initMapData();
             initWalkable();
 
-            switch(mapName){
-                case "Town of Echoes": mapEntry = game.ctx.activeCharacterStats.getMonologues().firstMapEntry;
-                    mapExit = game.ctx.activeCharacterStats.getMonologues().firstMapExit; break;
-                case "Silent Caverns": mapEntry = game.ctx.activeCharacterStats.getMonologues().secondMapEntry;
-                    mapExit = game.ctx.activeCharacterStats.getMonologues().secondMapExit; break;
-                case "Abyss of Dissonance": mapEntry = game.ctx.activeCharacterStats.getMonologues().thirdMapEntry;
-                    mapExit = game.ctx.activeCharacterStats.getMonologues().thirdMapExit; break;
+            switch (mapName) {
+                case "Town of Echoes":
+                    mapEntry = game.ctx.activeCharacterStats.getMonologues().firstMapEntry;
+                    mapExit = game.ctx.activeCharacterStats.getMonologues().firstMapExit;
+                    break;
+                case "Silent Caverns":
+                    mapEntry = game.ctx.activeCharacterStats.getMonologues().secondMapEntry;
+                    mapExit = game.ctx.activeCharacterStats.getMonologues().secondMapExit;
+                    break;
+                case "Abyss of Dissonance":
+                    mapEntry = game.ctx.activeCharacterStats.getMonologues().thirdMapEntry;
+                    mapExit = game.ctx.activeCharacterStats.getMonologues().thirdMapExit;
+                    break;
             }
-            // Show dialogue when first entering the map
+
             isMonologueActive = true;
             currentMonologue = mapEntry;
             prepareMonologue();
@@ -233,63 +238,52 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-
-        // --- 2. PLAYER POSITIONING LOGIC ---
-
-        // SCENARIO A: We just clicked "Continue" and have specific saved coordinates!
         if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
-
-            // If the player object doesn't exist yet, create it using your init method
             if (game.ctx.player == null) {
                 initPlayerPosition();
             }
 
-            // Override their location with the exact saved coordinates
             game.ctx.player.setX(game.ctx.savedPlayerX);
             game.ctx.player.setY(game.ctx.savedPlayerY);
 
-            // Reset the saved coordinates so we don't accidentally teleport here later!
             game.ctx.savedPlayerX = -1f;
             game.ctx.savedPlayerY = -1f;
-
-        }
-        // SCENARIO B: Brand new game / First time walking into this map
-        else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
+        } else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
             game.ctx.activeCharacterStats.resetStats();
             initPlayerPosition();
-        }
-        // SCENARIO C: Returning from Combat (Your existing room-snapping logic)
-        else {
+        } else if (!returningFromCombatVictory) {
             boolean placed = false;
+
+            float playerCenterX = game.ctx.player.getX() + GameContext.CHAR_SIZE / 2f;
+            float playerCenterY = game.ctx.player.getY() + GameContext.CHAR_SIZE / 2f;
+
             for (Room r : game.ctx.rooms) {
-                if (r.getBounds().contains(game.ctx.player.getX(), game.ctx.player.getY())) {
-                    game.ctx.player.setX(r.getBounds().x + (r.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
+                if (r.getBounds().contains(playerCenterX, playerCenterY)) {
+                    game.ctx.player.setX(r.getBounds().x + (r.getBounds().width - GameContext.CHAR_SIZE) / 2f);
                     game.ctx.player.setY(r.getBounds().y + (r.getBounds().height - GameContext.CHAR_SIZE) / 2f);
                     placed = true;
                     break;
                 }
             }
+
             if (!placed && !game.ctx.rooms.isEmpty()) {
                 Room fallback = game.ctx.rooms.get(0);
-                game.ctx.player.setX(fallback.getBounds().x + (fallback.getBounds().width  - GameContext.CHAR_SIZE) / 2f);
+                game.ctx.player.setX(fallback.getBounds().x + (fallback.getBounds().width - GameContext.CHAR_SIZE) / 2f);
                 game.ctx.player.setY(fallback.getBounds().y + (fallback.getBounds().height - GameContext.CHAR_SIZE) / 2f);
             }
-
         }
 
-        // Post-combat items dropping and leveling up logic
         if (game.ctx.playerWon) {
             game.ctx.playerWon = false;
             triggerVictoryPopup();
         }
-
 
         game.ctx.stateTime = 0f;
 
         this.lockedRoom = null;
         isInEnemyRoom();
 
-        updateCamera(); // Initialize camera position after player position is set
+        updateCamera();
     }
 
     private TextureRegion getEnemyFrame(Enemy e) {
