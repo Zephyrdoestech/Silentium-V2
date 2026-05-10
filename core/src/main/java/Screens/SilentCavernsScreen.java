@@ -78,7 +78,7 @@ public class SilentCavernsScreen extends ExploringScreen {
 
     @Override
     protected int getRequiredKills() {
-        return 0;
+        return 3;
     }
 
     @Override

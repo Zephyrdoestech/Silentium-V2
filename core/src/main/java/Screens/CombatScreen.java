@@ -265,8 +265,6 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
-        enemy.setMaxHp((int)(1));
-
 
         if (player.getLevel() <= 3) {
             tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
