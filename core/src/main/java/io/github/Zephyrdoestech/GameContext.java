@@ -132,17 +132,30 @@ public class GameContext {
 
     public void createNewSaveSlot() {
         com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
-        int saveCount = global.getInteger("saveCount", 0);
 
-        if (saveCount >= 3) {
-            // Overwrite the 3rd save slot if we hit the limit
-            currentSaveSlot = "ZephyrSave_3";
-        } else {
-            saveCount++;
-            currentSaveSlot = "ZephyrSave_" + saveCount;
-            global.putInteger("saveCount", saveCount);
-            global.putString("save_" + saveCount, currentSaveSlot);
+        // Find the first empty slot out of the 3 available
+        int availableSlot = -1;
+        for (int i = 1; i <= 3; i++) {
+            String slotName = "ZephyrSave_" + i;
+            com.badlogic.gdx.Preferences slotPrefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+            if (!slotPrefs.contains("currentMap")) {
+                availableSlot = i;
+                break;
+            }
+        }
+
+        if (availableSlot != -1) {
+            // Found an empty slot, use it
+            currentSaveSlot = "ZephyrSave_" + availableSlot;
+            int saveCount = global.getInteger("saveCount", 0);
+            if (availableSlot > saveCount) {
+                global.putInteger("saveCount", availableSlot);
+            }
+            global.putString("save_" + availableSlot, currentSaveSlot);
             global.flush();
+        } else {
+            // No empty slots, overwrite the 3rd slot as fallback
+            currentSaveSlot = "ZephyrSave_3";
         }
     }
 
