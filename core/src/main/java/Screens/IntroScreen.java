@@ -29,15 +29,13 @@ public class IntroScreen extends BaseScreen {
             "The world fell silent to let a guardian rest.",
             "But silence birthed Shadow Beasts.",
             "A lone bell has shattered the quiet...",
-            "Sound is your only weapon now."
         };
 
         // Placeholder array for 4 images.
         storyImages = new Texture[] {
             game.assets.story1Tex,
             game.assets.story2Tex,
-            game.assets.story3Tex,
-            game.assets.story4Tex
+            game.assets.story3Tex
         };
     }
 

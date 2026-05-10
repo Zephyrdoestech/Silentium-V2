@@ -101,8 +101,7 @@ class StoryScreen extends BaseScreen {
         storyScreens = new Texture[]{
             game.assets.story1Tex,
             game.assets.story2Tex,
-            game.assets.story3Tex,
-            game.assets.story4Tex
+            game.assets.story3Tex
         };
     }
 

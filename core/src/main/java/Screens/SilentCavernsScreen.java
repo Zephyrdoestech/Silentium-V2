@@ -130,7 +130,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         super.show();
 
         if (game.ctx != null) {
-            game.ctx.mapsCleared = 0;
+            game.ctx.mapsCleared = 1;
         }
 
         // Start the town music when the screen is shown

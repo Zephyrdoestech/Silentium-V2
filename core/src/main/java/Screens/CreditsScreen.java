@@ -12,33 +12,48 @@ import java.io.FileNotFoundException;
 public class CreditsScreen extends BaseScreen {
     private VideoPlayer videoPlayer;
     private boolean isLoaded = false;
+    private boolean fromEnding = false;
+    private boolean loadingStarted = false;
 
     public CreditsScreen(Main game) {
         super(game);
+    }
+
+    public CreditsScreen(Main game, boolean fromEnding) {
+        super(game);
+        this.fromEnding = fromEnding;
     }
 
     @Override
     public void show() {
         startFadeIn();
 
-        // Center the camera just like your other screens!
+        // Make the fade transition nice and fast
+        this.fadeSpeed = 4.0f;
+
+        // CRITICAL FIX: Reset the zoom! ExploringScreen sets this to 0.6f,
+        // which causes the extreme stretching if not reset to 1.0f!
+        game.gameCamera.zoom = 1.0f;
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
 
         videoPlayer = VideoPlayerCreator.createVideoPlayer();
 
-        try {
-            videoPlayer.load(Gdx.files.internal("credits.webm"));
-            videoPlayer.play();
+        // Load asynchronously so the screen transitions immediately without a harsh freeze
+        Gdx.app.postRunnable(() -> {
+            try {
+                videoPlayer.load(Gdx.files.internal("credits.webm"));
+                videoPlayer.play();
 
-            // MUTE THE VIDEO! (0f is 0%, 1f is 100%)
-            videoPlayer.setVolume(0f);
+                // MUTE THE VIDEO! (0f is 0%, 1f is 100%)
+                videoPlayer.setVolume(0f);
 
-            isLoaded = true;
-        } catch (FileNotFoundException e) {
-            Gdx.app.error("CREDITS", "Video file not found! Skipping to menu.");
-            exitToMenu();
-        }
+                isLoaded = true;
+            } catch (FileNotFoundException e) {
+                Gdx.app.error("CREDITS", "Video file not found! Skipping to menu.");
+                exitToMenu();
+            }
+        });
     }
 
     @Override
@@ -48,15 +63,22 @@ public class CreditsScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        game.gameViewport.apply();
+        game.batch.setProjectionMatrix(game.gameCamera.combined);
+
         if (isLoaded && videoPlayer != null) {
             videoPlayer.update();
             Texture frame = videoPlayer.getTexture();
 
             if (frame != null) {
-                // Tell the batch to use your centered camera
-                game.batch.setProjectionMatrix(game.gameCamera.combined);
                 game.batch.begin();
 
+                // IMPORTANT: Reset the batch color to WHITE!
+                // ExploringScreen might have left the batch color darkened (e.g. for fading/overlays)
+                // which causes the entire video to be drawn with a dark tint if we don't reset it.
+                game.batch.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+
+                // EXACTLY COPYING THE ORIGINAL MATH FROM GIT COMMIT:
                 // Dynamic Centering Math (Keeps aspect ratio perfect)
                 float videoWidth = videoPlayer.getVideoWidth();
                 float videoHeight = videoPlayer.getVideoHeight();
@@ -68,7 +90,7 @@ public class CreditsScreen extends BaseScreen {
                     float drawX = (Main.WORLD_WIDTH - drawWidth) / 2f;
                     float drawY = (Main.WORLD_HEIGHT - drawHeight) / 2f;
 
-                    // Draw the perfectly centered frame
+                    // Draw the perfectly centered frame exactly as it originally was
                     game.batch.draw(frame, drawX, drawY, drawWidth, drawHeight);
                 }
 
@@ -79,6 +101,11 @@ public class CreditsScreen extends BaseScreen {
             if (!videoPlayer.isPlaying()) {
                 exitToMenu();
             }
+        } else {
+            // Fallback drawing if video isn't ready
+            game.batch.begin();
+            drawFadeOverlay();
+            game.batch.end();
         }
 
         // Allow skipping
@@ -88,7 +115,11 @@ public class CreditsScreen extends BaseScreen {
     }
 
     private void exitToMenu() {
-        game.setScreen(new MainMenuScreen(game));
+        if (fromEnding) {
+            game.setScreen(new Screens.LeaderBoard.NameInputScreen(game, game.ctx, 3));
+        } else {
+            game.setScreen(new MainMenuScreen(game));
+        }
     }
 
     @Override
@@ -104,9 +135,10 @@ public class CreditsScreen extends BaseScreen {
         }
     }
 
-    // Required by BaseScreen
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        game.gameViewport.update(width, height, true);
+    }
 
     @Override
     public void pause() {}
