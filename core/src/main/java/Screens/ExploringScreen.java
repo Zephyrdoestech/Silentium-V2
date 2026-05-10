@@ -364,7 +364,7 @@ public class ExploringScreen extends BaseScreen {
                 pendingBossDialogue = false;
                 pendingCombat = true;
 
-                currentMonologue = game.ctx.bossDialogueLines;
+                currentMonologue = game.ctx.bossPreCombatLines;
                 currentMonologueRightAligned = true;
 
                 isMonologueActive = true;
@@ -506,34 +506,37 @@ public class ExploringScreen extends BaseScreen {
             return;
         }
 
+        if (showingExitPrompt) {
+            game.ctx.playerState = GameContext.PlayerState.IDLE;
+            return;
+        }
+
         float move = GameContext.SPEED * delta;
         float prevX = game.ctx.player.getX();
         float prevY = game.ctx.player.getY();
 
         game.ctx.playerState = GameContext.PlayerState.IDLE;
 
-        if (!showingExitPrompt) {
-            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.ctx.player.setY(game.ctx.player.getY() + move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_UP;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                game.ctx.player.setY(game.ctx.player.getY() - move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                game.ctx.player.setX(game.ctx.player.getX() - move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
-                game.ctx.facing = GameContext.Facing.LEFT;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                game.ctx.player.setX(game.ctx.player.getX() + move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
-                game.ctx.facing = GameContext.Facing.RIGHT;
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            game.ctx.player.setY(game.ctx.player.getY() + move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_UP;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            game.ctx.player.setY(game.ctx.player.getY() - move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            game.ctx.player.setX(game.ctx.player.getX() - move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
+            game.ctx.facing = GameContext.Facing.LEFT;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            game.ctx.player.setX(game.ctx.player.getX() + move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
+            game.ctx.facing = GameContext.Facing.RIGHT;
         }
 
-        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY()) || showingExitPrompt) {
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
             game.ctx.player.setX(prevX);
             game.ctx.player.setY(prevY);
         }
@@ -657,51 +660,153 @@ public class ExploringScreen extends BaseScreen {
 
     private void drawExitOverlay() {
         if (!showingExitPrompt) return;
+        
+        Texture promptBg = game.assets.exitPromptBg;
+        Texture yesBtn = game.assets.exitPromptYesBtn;
+        Texture noBtn = game.assets.exitPromptNoBtn;
 
-        float boxW = 400, boxH = 200;
-        float boxX = (Main.WORLD_WIDTH - boxW) / 2f;
-        float boxY = (Main.WORLD_HEIGHT - boxH) / 2f;
+        boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
+
+        float boxW = promptBg.getWidth();
+        float boxH = promptBg.getHeight();
+        float boxX = screenLeft + ((Main.WORLD_WIDTH - boxW) / 2f);
+        float boxY = screenBottom + ((Main.WORLD_HEIGHT - boxH) / 2f);
+        float boxTop = boxY + boxH;
+
+        // Dim background
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(
+            com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA,
+            com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.1f, 0.1f, 0.15f, 0.95f);
-        game.shapeRenderer.rect(boxX, boxY, boxW, boxH);
-
-        game.shapeRenderer.setColor(Color.DARK_GRAY);
-        if (game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) {
-            yesButtonRect.set(boxX + 50, boxY + 40, 120, 50);
-            noButtonRect.set(boxX + boxW - 170, boxY + 40, 120, 50);
-            game.shapeRenderer.rect(yesButtonRect.x, yesButtonRect.y, yesButtonRect.width, yesButtonRect.height);
-            game.shapeRenderer.rect(noButtonRect.x, noButtonRect.y, noButtonRect.width, noButtonRect.height);
-        } else {
-            okButtonRect.set(boxX + (boxW - 120) / 2f, boxY + 40, 120, 50);
-            game.shapeRenderer.rect(okButtonRect.x, okButtonRect.y, okButtonRect.width, okButtonRect.height);
-        }
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.6f);
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
         game.shapeRenderer.end();
+
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
+        game.batch.setColor(Color.WHITE);
 
-        if (game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) {
+        // Prompt background container. Header "Leave Room" is assumed to be part of this asset.
+        game.batch.draw(promptBg, boxX, boxY, boxW, boxH);
+
+        if (canExit) {
+            // Player can leave: show confirmation text and Yes/No buttons.
+            game.assets.font.getData().setScale(1.1f);
             game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Proceed to next area?", boxX, boxY + 160, boxW, com.badlogic.gdx.utils.Align.center, false);
 
-            game.assets.font.setColor(Color.GREEN);
-            game.assets.font.draw(game.batch, "YES", yesButtonRect.x, yesButtonRect.y + 35, yesButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            String prompt = "Do you want to explore the next area?";
+            float promptX = screenLeft + ((Main.WORLD_WIDTH - textWidth(prompt)) / 2f);
+            float promptY = boxTop - px(7f);
+            game.assets.font.draw(game.batch, prompt, promptX, promptY);
 
-            game.assets.font.setColor(Color.RED);
-            game.assets.font.draw(game.batch, "NO", noButtonRect.x, noButtonRect.y + 35, noButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            float btnW = yesBtn.getWidth();
+            float btnH = yesBtn.getHeight();
+            float gap = px(1.0f);
+            float totalBtnW = btnW + gap + noBtn.getWidth();
+
+            float yesX = screenLeft + ((Main.WORLD_WIDTH - totalBtnW) / 2f);
+            float noX = yesX + btnW + gap;
+            float btnY = promptY - px(1.6f) - btnH;
+
+            yesButtonRect.set(yesX, btnY, btnW, btnH);
+            noButtonRect.set(noX, btnY, noBtn.getWidth(), noBtn.getHeight());
+
+            game.batch.draw(yesBtn, yesButtonRect.x, yesButtonRect.y, yesButtonRect.width, yesButtonRect.height);
+            game.batch.draw(noBtn, noButtonRect.x, noButtonRect.y, noButtonRect.width, noButtonRect.height);
         } else {
-            game.assets.font.setColor(Color.ORANGE);
-            game.assets.font.draw(game.batch, "AREA LOCKED", boxX, boxY + 165, boxW, com.badlogic.gdx.utils.Align.center, false);
+            // Player cannot leave yet: show locked message and an OK/continue hint.
+            game.assets.font.getData().setScale(1.1f);
+            game.assets.font.setColor(Color.RED);
 
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Defeat " + getRequiredKills() + " enemies!", boxX, boxY + 125, boxW, com.badlogic.gdx.utils.Align.center, false);
-            game.assets.font.draw(game.batch, "OK", okButtonRect.x, okButtonRect.y + 35, okButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            String lockedText = "The path ahead is still sealed.";
+            float lockedX = screenLeft + ((Main.WORLD_WIDTH - textWidth(lockedText)) / 2f);
+            float lockedY = boxTop - px(7f);
+            game.assets.font.draw(game.batch, lockedText, lockedX, lockedY);
+
+            game.assets.font.getData().setScale(0.8f);
+            game.assets.font.setColor(Color.LIGHT_GRAY);
+
+            String hint = "Press ENTER to continue";
+            float hintX = screenLeft + ((Main.WORLD_WIDTH - textWidth(hint)) / 2f);
+            float hintY = boxY + px(0.8f);
+            game.assets.font.draw(game.batch, hint, hintX, hintY);
+
+            // Keep an OK rect around the whole prompt input area for mouse support too.
+            okButtonRect.set(boxX, boxY, boxW, boxH);
+
+            // Optional: draw an OK button asset if you want one later.
+            // game.batch.draw(okBtn, okX, okY, okBtn.getWidth(), okBtn.getHeight());
         }
 
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.WHITE);
+        game.batch.setColor(Color.WHITE);
         game.batch.end();
+
+        handleExitOverlayInput(canExit);
     }
+
+    private void handleExitOverlayInput(boolean canExit) {
+        com.badlogic.gdx.math.Vector3 touch =
+            new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.uiCamera.unproject(touch);
+
+        if (canExit) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && yesButtonRect.contains(touch.x, touch.y)) {
+                confirmExitToNextMap();
+                return;
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && noButtonRect.contains(touch.x, touch.y)) {
+                cancelExitPrompt();
+                return;
+            }
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+                || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                showingExitPrompt = false;
+                atExit = false;
+                game.ctx.player.setY(game.ctx.player.getY() - 30f);
+            }
+        }
+    }
+
+    private void confirmExitToNextMap() {
+        ExploringScreen next = getNextScreen();
+        if (next != null) {
+            if (mapExit != null && mapExit.length > 0) {
+                // EXIT MONOLOGUE
+                currentMonologue = mapExit;
+                isMonologueActive = true;
+                pendingExit = true;
+            } else {
+                // Reset state before transitioning to new map
+                game.ctx.player = null;
+                game.ctx.enemiesDefeatedInCurrentMap = 0;
+                game.ctx.rooms.clear();
+                game.ctx.mapEnemies.clear();
+                game.ctx.exitRoom = null;
+                startFadeOut(next);
+            }
+        }
+
+        showingExitPrompt = false;
+    }
+
+    private void cancelExitPrompt() {
+        showingExitPrompt = false;
+        atExit = false;
+        game.ctx.player.setY(game.ctx.player.getY() - 15f);
+    }
+
 
     private boolean isInWalkableZone(float x, float y) {
         Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
@@ -1226,6 +1331,8 @@ public class ExploringScreen extends BaseScreen {
         showVictoryPopup = true;
 
         if (leveledUp) {
+            game.assets.levelUpSFX.play(1.0f);
+
             switch (newLevel) {
                 case 2: currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;  break;
                 case 3: currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp; break;

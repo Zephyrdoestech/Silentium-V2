@@ -1196,8 +1196,23 @@ public class CombatScreen extends BaseScreen {
 
     private void renderDialogue(float delta) {
         switch (game.ctx.combatState) {
-            case ENEMY_INTRODUCTION:        game.ctx.combatLog = enemy.getName() + " encountered!";       break;
-            case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = enemy.getName() + " has been defeated!";     break;
+            case ENEMY_INTRODUCTION:
+                if(enemy.getName().equals("Labagoliath the Void Shaker")){
+                    game.ctx.combatLog = "Labagoliath has appeared!";
+                } else if(enemy.getName().equals("Maestro Syozan")){
+                    game.ctx.combatLog = "Maestro Syozan has appeared!";
+                } else {
+                    game.ctx.combatLog = enemy.getName() + " encountered!";
+                }
+                break;
+            case CHARACTER_POSTCOMBAT_LINE:
+                if(enemy.getName().equals("Labagoliath the Void Shaker")){
+                    game.ctx.combatLog = "Labagoliath has been slain!";
+                } else if(enemy.getName().equals("Maestro Syozan")){
+                    game.ctx.combatLog = "Maestro Syozan is defeated!";
+                } else {
+                    game.ctx.combatLog = enemy.getName() + " eliminated!";
+                }
             default: break;
         }
 
@@ -1383,16 +1398,19 @@ public class CombatScreen extends BaseScreen {
                 break;
 
             case DISPLAY_ENEMY_DAMAGE:
-                finishRound();
-                if (player.isAlive()) {
-                    game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-                } else if (enemy.isDefeated()){
-                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;;
-                }
-                else {
-                    game.ctx.combatState = GameContext.CombatState.DEFEAT;
-                    splashTimer = 0f;
-                    splashSFX = false;
+                if (enemy.isDefeated()) {
+                    finishRound();
+                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;
+                } else {
+                    finishRound();
+
+                    if (player.isAlive()) {
+                        game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+                    } else {
+                        game.ctx.combatState = GameContext.CombatState.DEFEAT;
+                        splashTimer = 0f;
+                        splashSFX = false;
+                    }
                 }
                 break;
 
@@ -2097,6 +2115,15 @@ public class CombatScreen extends BaseScreen {
         // Silent Barrier check is handled inside handleItemEffects
         handleItemEffects(new SilentBarrier(game.assets), null);
 
+        // Play enemy attack SFX
+        Sound[] enemyAttackSFX = {
+            game.assets.enemyAttackv1,
+            game.assets.enemyAttackv2,
+            game.assets.enemyAttackv3,
+            game.assets.enemyAttackv4
+        };
+        Sound sfx = enemyAttackSFX[rd.nextInt(enemyAttackSFX.length)];
+        if (sfx != null) sfx.play(1.0f);
         player.takeDamage(enemyDamage);
 
         // Sonara Passive

@@ -33,6 +33,10 @@ public class Assets implements Disposable {
     public final Texture pauseBtnTex;
     public final Texture menuBtnTex;
 
+    public final Texture exitPromptBg;
+    public final Texture exitPromptYesBtn;
+    public final Texture exitPromptNoBtn;
+
     public final Texture leaderboardPanelBG;
 
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
@@ -80,6 +84,7 @@ public class Assets implements Disposable {
     public final Texture aureliusTex;
     public final Texture darknessOverlay;
     public final Texture[] noteTextures;
+
 
     public Music storyBGM;
     public Music townOfEchoesBGM;
@@ -137,6 +142,13 @@ public class Assets implements Disposable {
     public Sound chordAttackHarpEmin;
     public Sound chordAttackHarpFmaj;
     public Sound chordAttackHarpGmaj;
+
+    public Sound enemyAttackv1;
+    public Sound enemyAttackv2;
+    public Sound enemyAttackv3;
+    public Sound enemyAttackv4;
+
+    public Sound levelUpSFX;
 
     public final Texture story1Tex;
     public final Texture story2Tex;
@@ -395,6 +407,10 @@ public class Assets implements Disposable {
         pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
+        exitPromptBg        = new Texture("UI/Panels/ExitMap/BG.png");
+        exitPromptYesBtn    = new Texture("UI/Panels/ExitMap/yes_btn.png");;
+        exitPromptNoBtn     = new Texture("UI/Panels/ExitMap/no_btn.png");;
+
         leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
         nameInputPanelBG = safeLoadTexture("UI/Panels/LeaderBoard_Input.png");
 
@@ -566,7 +582,7 @@ public class Assets implements Disposable {
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Damaged",  "", 4, 0.2f);
 
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "",   16, 0.1f));
-        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.4f));
+        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.03f));
         syozanCombatDamaged       = loadAnim("Sprites/Combat/Monster/Syozan/Damaged",       "", 4, 0.2f);
 
         // ── Audio ─────────────────────────────────────────────────────────────
@@ -639,6 +655,8 @@ public class Assets implements Disposable {
         chordAttackHarpEmin = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - E MINOR.wav"));
         chordAttackHarpFmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - F MAJOR.wav"));
         chordAttackHarpGmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - G MAJOR.wav"));
+
+        levelUpSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/SFX_levelup.wav"));
 
         // Set Loops
         titleBGM.setLooping(true);
