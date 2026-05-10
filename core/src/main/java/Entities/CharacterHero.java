@@ -87,27 +87,6 @@ public class CharacterHero {
             this.postFinalBattleVictory = postFinalBattleVictory;
             this.postFinalBattleDefeat = postFinalBattleDefeat;
         }
-        public String[] getFirstMapEntry() { return firstMapEntry; }
-        public String[] getSecondMapEntry() { return secondMapEntry; }
-        public String[] getThirdMapEntry() { return thirdMapEntry; }
-
-        public String[] getEnemyEncounterV1() { return enemyEncounterV1; }
-        public String[] getEnemyEncounterV2() { return enemyEncounterV2; }
-        public String[] getEnemyEncounterV3() { return enemyEncounterV3; }
-        public String[] getEnemyEncounterV4() { return enemyEncounterV4; }
-
-        public String[] getFirstLevelUp() { return firstLevelUp;}
-        public String[] getSecondLevelUp() { return secondLevelUp;}
-        public String[] getThirdLevelUp() { return thirdLevelUp;}
-        public String[] getFourthLevelUp() { return fourthLevelUp;}
-
-        public String[] getFirstMapExit() { return firstMapExit; }
-        public String[] getSecondMapExit() { return secondMapExit; }
-        public String[] getThirdMapExit() { return thirdMapExit; }
-
-        public String[] getPreFinalBattle() { return preFinalBattle; }
-        public String[] getPostFinalBattleVictory() { return postFinalBattleVictory; }
-        public String[] getPostFinalBattleDefeat() { return postFinalBattleDefeat; }
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────
@@ -141,8 +120,8 @@ public class CharacterHero {
     public CharacterHero(String name, String instrument, int maxHp, int maxShield) {
         this.name          = name;
         this.instrument    = instrument;
-        this.maxHp         = 1;
-        this.currentHp     = 1;   // Start at full health
+        this.maxHp         = maxHp;
+        this.currentHp     = maxHp;   // Start at full health
         this.maxShield     = maxShield;
         this.currentShield = 0;       // Shield starts empty until a chord grants it
         this.level         = 1;

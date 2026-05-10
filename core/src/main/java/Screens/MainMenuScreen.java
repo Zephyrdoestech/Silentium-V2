@@ -3,10 +3,7 @@ package Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import io.github.Zephyrdoestech.Main;
 
 /**
@@ -21,7 +18,7 @@ public class MainMenuScreen extends BaseScreen {
     private com.badlogic.gdx.math.Vector3 mousePos = new com.badlogic.gdx.math.Vector3();
 
     private static final String[] OPTIONS = {
-        "START GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
+        "START GAME", "LOAD GAME", "HOW TO PLAY", "STORY", "CREDITS", "EXIT"
     };
 
     private int   selection  = 0;
@@ -67,6 +64,7 @@ public class MainMenuScreen extends BaseScreen {
 
         Texture[] buttons = {
             game.assets.startBtnTex,
+            game.assets.loadBtnTex,
             game.assets.tutorialBtnTex,
             game.assets.storyBtnTex,
             game.assets.creditsBtnTex,
@@ -178,22 +176,27 @@ public class MainMenuScreen extends BaseScreen {
         switch (selection) {
             case 0: // START GAME (New Game)
                 game.assets.stopAllMusic();
+                game.ctx.createNewSaveSlot();
                 startFadeOut(new LoreScreen(game));
                 break;
 
-            case 1: // HOW TO PLAY
+            case 1: // LOAD GAME
+                startFadeOut(new LoadGameScreen(game));
+                break;
+
+            case 2: // HOW TO PLAY
                 startFadeOut(new HowToPlayScreen(game));
                 break;
 
-            case 2: // STORY
+            case 3: // STORY
                 startFadeOut(new LoreScreen(game));
                 break;
 
-            case 3: // CREDITS
+            case 4: // CREDITS
                 startFadeOut(new CreditsScreen(game));
                 break;
 
-            case 4: // EXIT
+            case 5: // EXIT
                 Gdx.app.exit();
                 break;
         }

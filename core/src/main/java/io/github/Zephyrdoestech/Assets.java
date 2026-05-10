@@ -18,10 +18,15 @@ import java.util.List;
 public class Assets implements Disposable {
     //Buttons
     public final Texture startBtnTex;
+    public final Texture loadBtnTex; // <-- NEW
     public final Texture tutorialBtnTex;
     public final Texture storyBtnTex;
     public final Texture creditsBtnTex;
     public final Texture exitBtnTex;
+
+    // Load Game UI
+    public final Texture loadGamePanelTex;
+    public final Texture loadFileTex;
 
     public Texture pauseMenuBG;
     public final Texture pauseContinueBtn;
@@ -54,7 +59,6 @@ public class Assets implements Disposable {
     public Texture storyPanel1;
     public Texture storyPanel2;
     public Texture storyPanel3;
-    public Texture storyPanel4;
 
     // Maps and Decorations (These must be TextureRegions!)
     public final TextureRegion townTex;
@@ -74,6 +78,7 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> sonaraMonologueBox;
     public final Animation<TextureRegion> aureliusMonologueBox;
     public final Animation<TextureRegion> lyronMonologueBox;
+    public final Animation<TextureRegion> syozanMonologueBox;
 
     public final Texture sonaraTex;
     public final Texture lyronTex;
@@ -170,6 +175,9 @@ public class Assets implements Disposable {
     public final Texture[] chordInfo;
     public final Texture[] itemInfo;
 
+    public final Texture backButton;
+    public final Texture nextButton;
+
     // ── Tutorial Screen Textures ────────────────────────────────────────────
 
     public final Texture townCombatBackground;
@@ -192,6 +200,11 @@ public class Assets implements Disposable {
     public final Texture mapHeaderTownOfEchoes;
     public final Texture mapHeaderSilentCaverns;
     public final Texture mapHeaderAbyssOfDissonance;
+
+    public final Texture victoryPopupBg;
+
+    public final Texture heart;
+    public final Texture heartEmpty;
 
     public final Texture healthBar;
     public final Texture shieldBar;
@@ -327,7 +340,6 @@ public class Assets implements Disposable {
         storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
         storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
         storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
-        storyPanel4 = new Texture(Gdx.files.internal("Background/Story/story_panel_4.png"));
 
         // Map Textures
         Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
@@ -357,9 +369,6 @@ public class Assets implements Disposable {
         // Pause Menu BG
         pauseMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
 
-//        silentCavernsDecorationsTex = null; // TODO: load "Background/Map/Silent_Caverns_Decorations.png"
-//        abyssDecorationsTex         = null; // TODO: load "Background/Map/Abyss_Decorations.png"
-
         sonaraCardDefault = loadAnim("Sprites/Characters/Sonara/PlayerCard/default",   "",  10, 0.12f);
         sonaraCardSelected = loadAnim("Sprites/Characters/Sonara/PlayerCard/selected",   "",  10, 0.12f);
         aureliusCardDefault = loadAnim("Sprites/Characters/Aurelius/PlayerCard/default",   "",  10, 0.12f);
@@ -370,18 +379,22 @@ public class Assets implements Disposable {
         sonaraMonologueBox = loadAnim("Sprites/Characters/Sonara/MonologueBox",   "",  10, 0.12f);
         aureliusMonologueBox = loadAnim("Sprites/Characters/Aurelius/MonologueBox",   "",  10, 0.12f);
         lyronMonologueBox = loadAnim("Sprites/Characters/Lyron/MonologueBox",   "",  10, 0.12f);
+        syozanMonologueBox = loadAnim("Sprites/Monster/Syozan/MonologueBox",   "",  10, 0.12f);
 
         sonaraTex = new Texture("sonara.png");
         lyronTex = new Texture("lyron.png");
         aureliusTex = new Texture("aurelius.png");
 
         this.startBtnTex = new Texture("UI/start_btn.png");
+        this.loadBtnTex = new Texture("UI/load_btn.png");
         this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
 
-        pauseMenuBG = new Texture("UI/Pause/pause.png");
+        this.loadGamePanelTex = new Texture("UI/Panels/loadgame.png");
+        this.loadFileTex = new Texture("UI/Panels/load_file.png");
+
         pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
         pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
@@ -424,7 +437,7 @@ public class Assets implements Disposable {
         lyronWalkRight    = loadAnim("Sprites/Characters/Lyron/Walk",      "Movement",  6, 0.1f);
         lyronWalkLeft     = flipped(lyronWalkRight);
 
-        // ── Combat Backgrounds ────────────────────────────────────────────────
+        // ── Tutorial Screens ────────────────────────────────────────────────
 
         noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
         metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
@@ -438,7 +451,10 @@ public class Assets implements Disposable {
         chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
         itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
-        // ── Tutorial Screens ────────────────────────────────────────────────
+        backButton = new Texture("Sprites/Combat/Pause/leftButton.png");
+        nextButton = new Texture("Sprites/Combat/Pause/rightButton.png");
+
+        // ── Map Background ────────────────────────────────────────────────
 
         townCombatBackground    = new Texture("Background/Combat/Town.png");
         cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
@@ -461,8 +477,13 @@ public class Assets implements Disposable {
         mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
-        healthBar          = new Texture("Sprites/Combat/Interface/HealthBar.png");
-        shieldBar          = new Texture("Sprites/Combat/Interface/ShieldBar.png");
+        victoryPopupBg              = new Texture("UI/Panels/VictoryPopupBG.png");
+
+        heart                = new Texture("Sprites/Combat/Interface/Heart.png");
+        heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");
+
+        healthBar            = new Texture("Sprites/Combat/Interface/HealthBar.png");
+        shieldBar            = new Texture("Sprites/Combat/Interface/ShieldBar.png");
         staticHudBackground  = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
         timerBackground      = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
         dynamicHudBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
@@ -491,7 +512,7 @@ public class Assets implements Disposable {
         aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
         bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
 
-        // ── Item Textures ─────────────────────────────────────────────────────
+        // ── Item Textures ─────────────────────────────────────────────────────────
 
         crimsonChorusBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
         majorsBlessingBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
@@ -550,11 +571,11 @@ public class Assets implements Disposable {
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 4, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
-        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);
+        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.1f);
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Damaged",  "", 4, 0.2f);
 
-        syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
-        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
+        syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "",   16, 0.1f));
+        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.4f));
         syozanCombatDamaged       = loadAnim("Sprites/Combat/Monster/Syozan/Damaged",       "", 4, 0.2f);
 
         // ── Audio ─────────────────────────────────────────────────────────────
@@ -786,7 +807,6 @@ public class Assets implements Disposable {
         disposeTexture(storyPanel1);
         disposeTexture(storyPanel2);
         disposeTexture(storyPanel3);
-        disposeTexture(storyPanel4);
 
         disposeTextureRegion(townTex);
         disposeTextureRegion(townExitTex);
@@ -800,10 +820,14 @@ public class Assets implements Disposable {
         disposeTexture(aureliusTex);
 
         disposeTexture(startBtnTex);
+        disposeTexture(loadBtnTex);
         disposeTexture(tutorialBtnTex);
         disposeTexture(storyBtnTex);
         disposeTexture(creditsBtnTex);
         disposeTexture(exitBtnTex);
+
+        disposeTexture(loadGamePanelTex);
+        disposeTexture(loadFileTex);
 
         disposeTexture(pauseMenuBG);
         disposeTexture(pauseContinueBtn);

@@ -70,7 +70,8 @@ public class GameContext {
 
     public List<Enemy> mapEnemies = new ArrayList<>();
     public List<Room> rooms = new ArrayList<>();
-    public int lives = 1;
+    public int maxLives = 3;
+    public int lives = maxLives;
     public int enemiesDefeatedInCurrentMap = 0;
     public Room exitRoom = null;
     public ExploringScreen currentMapScreen = null;
@@ -97,30 +98,24 @@ public class GameContext {
     public String combatLog = "";
 
     public boolean playerDefeated = false;
+    public boolean playerWon = false;
+    public int leveledUpTo = 0;
+
+    // ── Final Boss Lines ─────────────────────────────────────────────────
+
+    public String[] bossDialogueLines = {
+        "So the little melody finally reaches me.",
+        "Play, then.",
+        "Let me hear what remains of your world."
+    };
 
     // ── CharacterHero-select audio ─────────────────────────────────────────────────
 
     public Music currentTheme = null;
     public int lastThemeIndex = -1;  // 0=Sonara 1=Aurelius 2=Lyron  -1=none
 
-    /**
-     * Switches character-select theme safely.
-     * Passing -1 stops everything without starting a new track.
-     */
-//    public void playTheme(int index, Assets assets) {
-//        if (index == lastThemeIndex) return;
-//        if (currentTheme != null) { currentTheme.stop(); currentTheme = null; }
-//        lastThemeIndex = index;
-//        if (index < 0) return;
-//        switch (index) {
-//            case 0: currentTheme = assets.sonaraTheme;   break;
-//            case 1: currentTheme = assets.aureliusTheme; break;
-//            case 2: currentTheme = assets.lyronTheme;    break;
-//            default: return;
-//        }
-//        currentTheme.setVolume(0.75f);
-//        currentTheme.play();
-//    }
+    // Save state
+    public String currentSaveSlot = "ZephyrSave_1";
 
     /**
      * Stops all character-select music immediately.
@@ -133,9 +128,47 @@ public class GameContext {
         lastThemeIndex = -1;
     }
 
+    public void createNewSaveSlot() {
+        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        int saveCount = global.getInteger("saveCount", 0);
+
+        if (saveCount >= 3) {
+            // Overwrite the 3rd save slot if we hit the limit
+            currentSaveSlot = "ZephyrSave_3";
+        } else {
+            saveCount++;
+            currentSaveSlot = "ZephyrSave_" + saveCount;
+            global.putInteger("saveCount", saveCount);
+            global.putString("save_" + saveCount, currentSaveSlot);
+            global.flush();
+        }
+    }
+
+    public List<String> getAllSaveSlots() {
+        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        int saveCount = global.getInteger("saveCount", 0);
+        List<String> saves = new ArrayList<>();
+        for (int i = 1; i <= saveCount; i++) {
+            saves.add(global.getString("save_" + i));
+        }
+        return saves;
+    }
+
+    // Get info for a specific save slot to display on the load screen
+    public String getSaveInfo(String slotName) {
+        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+        if (!prefs.contains("currentMap")) {
+            return "Empty Slot";
+        }
+        String map = prefs.getString("currentMap", "Unknown Map");
+        String charName = prefs.getString("charName", "Unknown");
+        int level = prefs.getInteger("charLevel", 1);
+        return charName + " - Lv." + level + " - " + map;
+    }
+
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrSave");
+        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(currentSaveSlot);
 
         prefs.putString("currentMap", mapName);
 
@@ -161,12 +194,32 @@ public class GameContext {
         }
 
         prefs.flush(); // CRITICAL: This actually writes the file to the hard drive
-        System.out.println("Game Auto-Saved at: " + mapName);
+        System.out.println("Game Auto-Saved at: " + mapName + " into " + currentSaveSlot);
+
+        // Also register in ZephyrGlobal if not already
+        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        int saveCount = global.getInteger("saveCount", 0);
+        boolean found = false;
+        for (int i = 1; i <= saveCount; i++) {
+            if (global.getString("save_" + i).equals(currentSaveSlot)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            if (saveCount < 3) {
+                saveCount++;
+                global.putInteger("saveCount", saveCount);
+                global.putString("save_" + saveCount, currentSaveSlot);
+                global.flush();
+            }
+        }
     }
 
     // --- LOAD LOGIC ---
-    public String loadGame() {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrSave");
+    public String loadGame(String slotName) {
+        this.currentSaveSlot = slotName;
+        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
 
         if (!prefs.contains("currentMap")) {
             return null; // No save file exists!
