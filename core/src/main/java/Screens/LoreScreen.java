@@ -38,8 +38,7 @@ public class LoreScreen extends BaseScreen {
         slides = new Texture[] {
             game.assets.storyPanel1,
             game.assets.storyPanel2,
-            game.assets.storyPanel3,
-            game.assets.storyPanel4
+            game.assets.storyPanel3
         };
 
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
