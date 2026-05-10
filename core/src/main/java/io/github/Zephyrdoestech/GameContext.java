@@ -101,6 +101,14 @@ public class GameContext {
     public boolean playerWon = false;
     public int leveledUpTo = 0;
 
+    // ── Final Boss Lines ─────────────────────────────────────────────────
+
+    public String[] bossDialogueLines = {
+        "So the little melody finally reaches me.",
+        "Play, then.",
+        "Let me hear what remains of your world."
+    };
+
     // ── CharacterHero-select audio ─────────────────────────────────────────────────
 
     public Music currentTheme = null;

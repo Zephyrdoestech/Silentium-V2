@@ -78,6 +78,7 @@ public class Assets implements Disposable {
     public final Animation<TextureRegion> sonaraMonologueBox;
     public final Animation<TextureRegion> aureliusMonologueBox;
     public final Animation<TextureRegion> lyronMonologueBox;
+    public final Animation<TextureRegion> syozanMonologueBox;
 
     public final Texture sonaraTex;
     public final Texture lyronTex;
@@ -199,6 +200,8 @@ public class Assets implements Disposable {
     public final Texture mapHeaderTownOfEchoes;
     public final Texture mapHeaderSilentCaverns;
     public final Texture mapHeaderAbyssOfDissonance;
+
+    public final Texture victoryPopupBg;
 
     public final Texture heart;
     public final Texture heartEmpty;
@@ -376,6 +379,7 @@ public class Assets implements Disposable {
         sonaraMonologueBox = loadAnim("Sprites/Characters/Sonara/MonologueBox",   "",  10, 0.12f);
         aureliusMonologueBox = loadAnim("Sprites/Characters/Aurelius/MonologueBox",   "",  10, 0.12f);
         lyronMonologueBox = loadAnim("Sprites/Characters/Lyron/MonologueBox",   "",  10, 0.12f);
+        syozanMonologueBox = loadAnim("Sprites/Monster/Syozan/MonologueBox",   "",  10, 0.12f);
 
         sonaraTex = new Texture("sonara.png");
         lyronTex = new Texture("lyron.png");
@@ -472,6 +476,8 @@ public class Assets implements Disposable {
         mapHeaderTownOfEchoes       = new Texture("Sprites/Combat/Interface/BattleHeader/Map/TownOfEchoes.png");
         mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
         mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
+
+        victoryPopupBg              = new Texture("UI/Panels/VictoryPopupBG.png");
 
         heart                = new Texture("Sprites/Combat/Interface/Heart.png");
         heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");

@@ -4,32 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)">
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/11.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/12.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/13.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/14.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/15.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/16.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/9.png" afterDir="false" />
+    <list default="true" id="73f75c4a-2e51-417c-87fe-091e190866b7" name="Changes" comment="Add victory popup UI and item drop logic; refactor item handling in combat. Also fixed sonara's monologue container">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/Sprites/Combat/Monster/Syozan/Idle/Idle4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/assets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assets/assets.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/Entities/CharacterHero.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Entities/CharacterHero.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/CombatScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/Sprites/Characters/Sonara/MonologueBox/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/Sprites/Characters/Sonara/MonologueBox/4.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/ExploringScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/SilentCavernsScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/SilentCavernsScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/Screens/TownOfEchoesScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/Screens/TownOfEchoesScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/Assets.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/io/github/Zephyrdoestech/GameContext.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +21,7 @@
   <component name="CopilotChats">
     <option name="panelChat">
       <chat>
-        <option name="activeSessionId" value="efd952a1-76bf-43de-95a0-755db412e9e2" />
+        <option name="activeSessionId" value="c03a0fc4-f7bf-4557-a0b3-7aed3c6c8df0" />
         <option name="sessions">
           <session>
             <option name="chatType" value="PANEL" />
@@ -174,39 +155,39 @@
     <option name="sortByType" value="true" />
     <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Gradle.Build GDX Silentium.executor": "Run",
-    "Gradle.Build Silentium.executor": "Run",
-    "Gradle.Configure Daemon JVM Criteria.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.GDX Silentium [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
-    "Gradle.GDX Silentium [:lwjgl3:io.github.some_example_name.lwjgl3.Lwjgl3Launcher.main()].executor": "Run",
-    "Gradle.GDX Silentium [:lwjgl3:run].executor": "Run",
-    "Gradle.Silentium [build].executor": "Run",
-    "Gradle.Silentium [clean].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "#1 on CombatUpdate",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Gradle.Build GDX Silentium.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Build Silentium.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Configure Daemon JVM Criteria.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:io.github.Zephyrdoestech.lwjgl3.Lwjgl3Launcher.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:io.github.some_example_name.lwjgl3.Lwjgl3Launcher.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GDX Silentium [:lwjgl3:run].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Silentium [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Silentium [clean].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#1 on CombatUpdate&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="Screens" />
@@ -511,7 +492,39 @@
       <option name="project" value="LOCAL" />
       <updated>1778324580054</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Implement post-combat victory popup and level-up logic; update CharacterHero stats initialization">
+      <option name="closed" value="true" />
+      <created>1778357845280</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1778357845280</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Refactor combat state management and adjust animation timings for Labagoliath and Syozan">
+      <option name="closed" value="true" />
+      <created>1778363961904</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1778363961904</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Refactor player positioning logic and improve combat return handling. Also changed map headers">
+      <option name="closed" value="true" />
+      <created>1778389003543</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1778389003543</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Add victory popup UI and item drop logic; refactor item handling in combat. Also fixed sonara's monologue container">
+      <option name="closed" value="true" />
+      <created>1778394775551</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1778394775551</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -560,7 +573,11 @@
     <MESSAGE value="2nd map cleaned" />
     <MESSAGE value="added leaderboard" />
     <MESSAGE value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
-    <option name="LAST_COMMIT_MESSAGE" value="ui for exit prompt, + map name for exploring and battle (to polish pa tanan)" />
+    <MESSAGE value="Implement post-combat victory popup and level-up logic; update CharacterHero stats initialization" />
+    <MESSAGE value="Refactor combat state management and adjust animation timings for Labagoliath and Syozan" />
+    <MESSAGE value="Refactor player positioning logic and improve combat return handling. Also changed map headers" />
+    <MESSAGE value="Add victory popup UI and item drop logic; refactor item handling in combat. Also fixed sonara's monologue container" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add victory popup UI and item drop logic; refactor item handling in combat. Also fixed sonara's monologue container" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
