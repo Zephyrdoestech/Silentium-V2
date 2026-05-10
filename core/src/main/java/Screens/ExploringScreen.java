@@ -865,6 +865,8 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.rooms.clear();
                 game.ctx.mapEnemies.clear();
                 game.ctx.exitRoom = null;
+
+                game.assets.traversalSFX.play(3.0f);
                 startFadeOut(next);
             }
         }

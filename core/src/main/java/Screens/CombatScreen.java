@@ -1704,6 +1704,8 @@ public class CombatScreen extends BaseScreen {
                 player.useActiveSkill(game.ctx.noteHandler, game.ctx);
                 activeSkillUsedThisTurn = true;
                 activeSkillUsed = true;
+
+                game.assets.skillActivationSFX.play(3.0f);
                 game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
@@ -1872,6 +1874,7 @@ public class CombatScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             if (confirmSelection == 0) {
                 handleItemUse();
+                game.assets.useItemSFX.play(3.0f);
                 game.ctx.combatState = GameContext.CombatState.ITEM_USED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;

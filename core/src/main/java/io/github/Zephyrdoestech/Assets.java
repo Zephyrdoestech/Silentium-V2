@@ -88,10 +88,16 @@ public class Assets implements Disposable {
 
     public Music storyBGM;
     public Music townOfEchoesBGM;
+    public Music silentCavernsBGM;
+    public Music abyssOfDissonanceBGM;
     public Music battleTownBGM;
     public Music battleCavernsBGM;
     public Music battleAbyssBGM;
     public Music battleBossBGM;
+
+    public Sound traversalSFX;
+    public Sound skillActivationSFX;
+    public Sound useItemSFX;
 
     public Sound victory;
     public Sound defeat;
@@ -590,6 +596,8 @@ public class Assets implements Disposable {
         // Load Background Music
         storyBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/Story.mp3"));
         townOfEchoesBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/TownOfEchoes.mp3"));
+        silentCavernsBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/SilentCaverns.mp3"));
+        abyssOfDissonanceBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/AbyssOfDissonance.mp3"));
 
         // Update this to match your "title_music.wav" file
         titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
@@ -600,9 +608,15 @@ public class Assets implements Disposable {
         battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_abyss.mp3"));
         battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_boss.mp3"));
 
+        // Exploring SFX
+        traversalSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Explore/traversalSFX.mp3"));
+
         // Battle SFX
         // State Transition
         stateTransition = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/state_transition.mp3"));
+        // Item and Skill Used;
+        skillActivationSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/skillActivationSFX.wav"));
+        useItemSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/useItemSFX.wav"));
         // Splash Screen
         victory = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/victory.wav"));
         defeat = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/defeat.wav"));
@@ -662,6 +676,8 @@ public class Assets implements Disposable {
         titleBGM.setLooping(true);
         storyBGM.setLooping(true);
         townOfEchoesBGM.setLooping(true);
+        silentCavernsBGM.setLooping(true);
+        abyssOfDissonanceBGM.setLooping(true);
 
         battleTownBGM.setLooping(true);
         battleCavernsBGM.setLooping(true);
