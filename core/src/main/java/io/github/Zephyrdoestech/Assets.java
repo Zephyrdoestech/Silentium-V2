@@ -382,7 +382,6 @@ public class Assets implements Disposable {
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
 
-        pauseMenuBG = new Texture("UI/Pause/pause.png");
         pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
         pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
         pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
@@ -557,11 +556,11 @@ public class Assets implements Disposable {
         chimericksCombatDamaged   = loadAnim("Sprites/Combat/Monster/Chimericks/Damaged",   "", 4, 0.2f);
 
         labagoliathCombatIdle    = flipped(loadAnim("Sprites/Combat/Monster/Labagoliath/Idle",    "",   8, 0.2f));
-        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.16f);
+        labagoliathCombatAttack  = loadAnim("Sprites/Combat/Monster/Labagoliath/Attack",  "", 9, 0.1f);
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Damaged",  "", 4, 0.2f);
 
-        syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "Idle",   4, 0.2f));
-        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "Attack", 6, 0.2f));
+        syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "",   16, 0.1f));
+        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.4f));
         syozanCombatDamaged       = loadAnim("Sprites/Combat/Monster/Syozan/Damaged",       "", 4, 0.2f);
 
         // ── Audio ─────────────────────────────────────────────────────────────

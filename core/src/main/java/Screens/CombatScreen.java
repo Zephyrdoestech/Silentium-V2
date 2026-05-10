@@ -208,6 +208,7 @@ public class CombatScreen extends BaseScreen {
         game.ctx.chordSystem.resetChords();
         game.ctx.metronome.reset();
         game.ctx.leveledUpTo = 0; // Reset level up tracking
+        game.ctx.playerWon = false; // Reset player won tracking
 
         switch (game.ctx.mapName) {
             case TOWN_OF_ECHOES:        maxTurnTime = 25f; break;
@@ -262,8 +263,9 @@ public class CombatScreen extends BaseScreen {
 
         // First enemy encountered gets 30% health (tutorial difficulty reduction)
         if (player.getMonstersDefeated() == 0) {
-            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.7f));
+            enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
+        enemy.setMaxHp((int)(1));
 
 
         if (player.getLevel() <= 3) {
@@ -361,7 +363,6 @@ public class CombatScreen extends BaseScreen {
         mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         game.uiCamera.unproject(mousePos);
 
-
         if (showChordList) {
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
@@ -441,8 +442,8 @@ public class CombatScreen extends BaseScreen {
 
         // --- Main Pause Menu Logic ---
 
-        float btnWidth = 250f;
-        float btnHeight = 60f;
+        float btnWidth = px(3.2f);
+        float btnHeight = px(1.6f);
         float gap = 20f;
         float totalHeight = (pauseButtons.length * btnHeight) + ((pauseButtons.length - 1) * gap);
         float startY = (Main.WORLD_HEIGHT / 2f) + (totalHeight / 2f) - btnHeight - 30f;
@@ -475,14 +476,19 @@ public class CombatScreen extends BaseScreen {
         }
 
         // Drawing
-        game.batch.begin();
+        beginUiBatch();
 
         // Draw the background texture first, centered on screen
-        if (game.assets.pauseMenuBG != null) {
-            float bgWidth = 600f; // adjust to match texture scaling
-            float bgHeight = 500f; // adjust to match texture scaling
-            game.batch.draw(game.assets.pauseMenuBG, (Main.WORLD_WIDTH - bgWidth) / 2f, (Main.WORLD_HEIGHT - bgHeight) / 2f, bgWidth, bgHeight);
+        Texture background = game.assets.pauseMenuBG;
+        if (background != null) {
+            game.batch.draw(background, screenLeft, screenBottom, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+        } else {
+            // Fallback: Draw a semi-transparent dark overlay if background texture is missing
+            game.batch.setColor(0f, 0f, 0f, 0.7f);
+            game.batch.draw(game.assets.darknessOverlay, screenLeft, screenBottom, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
+            game.batch.setColor(Color.WHITE);
         }
+
 
         // Now draw the buttons
         for (int i = 0; i < pauseButtons.length; i++) {
@@ -490,7 +496,7 @@ public class CombatScreen extends BaseScreen {
             Texture btnTex = pauseButtons[i];
 
             if (i == pauseMenuSelection) {
-                game.batch.setColor(Color.WHITE); // Bright for selected
+                game.batch.setColor(Color.WHITE);
             } else {
                 game.batch.setColor(0.5f, 0.5f, 0.5f, 1f); // Dimmed for unselected
             }
@@ -672,6 +678,21 @@ public class CombatScreen extends BaseScreen {
         renderTimerPanel(delta);
         renderChords();
         renderActionPanel(delta);
+        renderPauseOption();
+    }
+
+    // =========================================================================
+    // Background
+    // =========================================================================
+
+    private void renderPauseOption(){
+        beginUiBatch();
+        Texture pauseAsset = game.assets.pauseBtnTex;
+        game.batch.draw(pauseAsset,
+            notesPanelLeft + px(0.2f),
+            notesPanelTop + px(0.2f),
+            pauseAsset.getWidth() * (0.2f), pauseAsset.getHeight() * (0.2f));
+        game.batch.end();
     }
 
     // =========================================================================
@@ -1223,7 +1244,7 @@ public class CombatScreen extends BaseScreen {
         if((game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD ||
             game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD_EFFECT)
             && message.equalsIgnoreCase("null")){
-            advanceBattleLogState();}
+            advanceCombatState();}
         else if(game.ctx.combatState == GameContext.CombatState.DISPLAY_CHORD){
             if(!chordPlayed){
                 switch(chordUsedThisTurn){
@@ -1259,7 +1280,7 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.resultTimer >= DISPLAY_TIME) {
             game.ctx.resultTimer = 0f;
-            advanceBattleLogState();
+            advanceCombatState();
         }
     }
 
@@ -1290,6 +1311,8 @@ public class CombatScreen extends BaseScreen {
                 return "Beat Sync! Total Damage Dealt: " + finalDamage;
             case ENEMY_ATTACK:
                 if (!enemyAttacked) { executeEnemyAttack(); enemyAttacked = true; }
+                if(enemy.getName().equals("Labagoliath the Void Shaker")) return " Labagoliath used " + enemy.getLastAttackName();
+                if(enemy.getName().equals("Maestro Syozan")) return " Syozan used " + enemy.getLastAttackName();
                 return enemy.getName() + " used " + enemy.getLastAttackName();
             case DISPLAY_ENEMY_DAMAGE:
                 return "You received " + enemyDamage + " damage!";
@@ -1319,7 +1342,7 @@ public class CombatScreen extends BaseScreen {
      * Drives the state-machine transitions that follow each timed battle log message.
      * Rendering only calls this; all flow logic lives here.
      */
-    private void advanceBattleLogState() {
+    private void advanceCombatState() {
         game.assets.stateTransition.play(1.0f);
         switch (game.ctx.combatState) {
             case ITEM_USED:
@@ -1363,7 +1386,10 @@ public class CombatScreen extends BaseScreen {
                 finishRound();
                 if (player.isAlive()) {
                     game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-                } else {
+                } else if (enemy.isDefeated()){
+                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;;
+                }
+                else {
                     game.ctx.combatState = GameContext.CombatState.DEFEAT;
                     splashTimer = 0f;
                     splashSFX = false;
@@ -2072,6 +2098,8 @@ public class CombatScreen extends BaseScreen {
         handleItemEffects(new SilentBarrier(game.assets), null);
 
         player.takeDamage(enemyDamage);
+
+        // Sonara Passive
         player.onDamageReceived(enemy, enemyDamage);
     }
 
@@ -2116,6 +2144,9 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
+        game.ctx.playerWon = true;
+        player.defeatedMonster();
+
         // Remove defeated enemy from the world
         game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
         if (game.ctx.rooms != null) {
@@ -2133,38 +2164,6 @@ public class CombatScreen extends BaseScreen {
         game.ctx.noteHandler.noteCount     = 0;
         game.ctx.combatLog                 = "";
         game.ctx.combatState               = GameContext.CombatState.NONE;
-
-        // Level-up progression
-        player.defeatedMonster();
-        int currentLevel = player.getLevel();
-        int kills = player.getMonstersDefeated();
-        int newLevel = currentLevel;
-
-        if (kills >= 7) newLevel = 5;
-        else if (kills >= 4) newLevel = 4;
-        else if (kills >= 2) newLevel = 3;
-        else if (kills >= 1) newLevel = 2;
-
-        int maxLevelForMap = 5;
-        if (game.ctx.mapName != null) {
-            switch (game.ctx.mapName) {
-                case TOWN_OF_ECHOES:
-                    maxLevelForMap = 3;
-                    break;
-                case SILENT_CAVERNS:
-                    maxLevelForMap = 5;
-                    break;
-                case ABYSS_OF_DISSONANCE:
-                    maxLevelForMap = 5; // Assuming global max level is 5
-                    break;
-            }
-        }
-
-        // Only level up if the new level is below or equal to the map's cap.
-        if (newLevel > currentLevel && newLevel <= maxLevelForMap) {
-            player.levelUp(newLevel);
-            game.ctx.leveledUpTo = newLevel;
-        }
 
         game.assets.stopAllMusic();
 
