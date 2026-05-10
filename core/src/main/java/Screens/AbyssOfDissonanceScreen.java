@@ -87,7 +87,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
                 game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
 
                 // Flow: Ending -> Credits -> Leaderboard -> Title Screen
-                game.setScreen(new CreditsScreen(game, true));
+                game.setScreen(new EndingScreen(game));
                 return;
             }
 

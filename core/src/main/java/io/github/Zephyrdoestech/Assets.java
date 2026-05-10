@@ -146,8 +146,12 @@ public class Assets implements Disposable {
     public final Texture story1Tex;
     public final Texture story2Tex;
     public final Texture story3Tex;
-    public final Texture story4Tex;
 
+
+    // Endings
+    public final Texture sonaraEnding;
+    public final Texture aureliusEnding;
+    public final Texture lyronEnding;
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -410,7 +414,10 @@ public class Assets implements Disposable {
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
         story3Tex = safeLoadTexture("Background/Story/story_panel_3.png");
-        story4Tex = safeLoadTexture("Background/Story/story_panel_4.png");
+
+        sonaraEnding = safeLoadTexture("Background/Ending/sonara_ending.png");
+        aureliusEnding = safeLoadTexture("Background/Ending/aurelius_ending.png");
+        lyronEnding = safeLoadTexture("Background/Ending/lyron_ending.png");
 
         // Load the 11-frame selection animations!
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
@@ -844,7 +851,10 @@ public class Assets implements Disposable {
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);
         disposeTexture(story3Tex);
-        disposeTexture(story4Tex);
+
+        disposeTexture(sonaraEnding);
+        disposeTexture(aureliusEnding);
+        disposeTexture(lyronEnding);
 
         disposeTexture(darknessOverlay);
         if (noteTextures != null) {

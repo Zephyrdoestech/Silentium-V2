@@ -108,6 +108,9 @@ Aurelius/right3.png
 Background/Combat/Abyss.png
 Background/Combat/Cavern.png
 Background/Combat/Town.png
+Background/Ending/aurelius_ending.png
+Background/Ending/lyron_ending.png
+Background/Ending/sonara_ending.png
 Background/Map/Abyss_Of_Dissonance.png
 Background/Map/Caverns_Exit.png
 Background/Map/Dungeon.png
@@ -118,7 +121,6 @@ Background/Map/Town_Of_Echoes.png
 Background/Story/story_panel_1.png
 Background/Story/story_panel_2.png
 Background/Story/story_panel_3.png
-Background/Story/story_panel_4.png
 Background/Texture/Cobblestone.png
 Background/Title_Screen/Title_Screen_Placeholder.png
 Enemies/Darryllion/Attack1/1.png
