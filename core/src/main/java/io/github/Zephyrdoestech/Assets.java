@@ -281,6 +281,12 @@ public class Assets implements Disposable {
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
+    public final Animation<TextureRegion> sonaraLore;
+    public final Animation<TextureRegion> aureliusLore;
+    public final Animation<TextureRegion> lyronLore;
+
+    // ── Combat Animations ─────────────────────────────────────────────────────
+
     public final Animation<TextureRegion> battleIntroAnim;
     public final Animation<TextureRegion> victoryAnim;
     public final Animation<TextureRegion> defeatAnim;
@@ -562,6 +568,12 @@ public class Assets implements Disposable {
         timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
         emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
         selectedSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
+
+        // ── Character Lore ─────────────────────────────────────────────────
+
+        sonaraLore = loadAnim("Sprites/Characters/Sonara/Lore",   "",  10, 0.12f);
+        aureliusLore = loadAnim("Sprites/Characters/Aurelius/Lore",   "",  10, 0.12f);
+        lyronLore = loadAnim("Sprites/Characters/Lyron/Lore",   "",  10, 0.12f);
 
         // ── Combat Animations ─────────────────────────────────────────────────
 
