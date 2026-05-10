@@ -105,4 +105,14 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
             game.ctx.saveGame("AbyssOfDissonance", game.ctx.player.getX(), game.ctx.player.getY());
         }
     }
+
+    @Override
+    public void hide() {
+        super.hide();
+
+        // Stop the town music when leaving (e.g., entering Combat or Main Menu)
+        if (game.assets.abyssOfDissonanceBGM != null) {
+            game.assets.abyssOfDissonanceBGM.stop();
+        }
+    }
 }

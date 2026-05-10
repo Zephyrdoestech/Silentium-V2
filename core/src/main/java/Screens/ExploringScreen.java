@@ -101,6 +101,9 @@ public class ExploringScreen extends BaseScreen {
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
 
+    private long monologueSfxId = -1L;
+    private boolean monologueSfxPlaying = false;
+
     // --- Pause Menu ---
     private int             pauseMenuSelection   = 0;
     private Texture[]       pauseButtons;
@@ -239,11 +242,7 @@ public class ExploringScreen extends BaseScreen {
                     break;
             }
 
-            if (mapEntry != null && mapEntry.length > 0) {
-                isMonologueActive = true;
-                currentMonologue = mapEntry;
-                prepareMonologue();
-            }
+            startMonologue(mapEntry, false);
         } else {
             restoreInstanceFields();
             initWalkable();
@@ -528,6 +527,8 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void startMonologue(String[] lines, boolean rightAligned) {
+        stopMonologueSfx();
+
         currentMonologue = lines != null ? lines : new String[0];
         currentMonologueRightAligned = rightAligned;
         isMonologueActive = true;
@@ -691,10 +692,8 @@ public class ExploringScreen extends BaseScreen {
                 // 2. Maestro Syozan dialogue, right-aligned
                 // 3. Combat proper
                 if (e.getName().equals("Maestro Syozan")) {
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().preFinalBattle;
-                    currentMonologueRightAligned = false;
+                    startMonologue(game.ctx.activeCharacterStats.getMonologues().preFinalBattle, false);
 
-                    isMonologueActive = true;
                     pendingBossDialogue = true;
                     pendingCombat = false;
                     return;
@@ -708,10 +707,8 @@ public class ExploringScreen extends BaseScreen {
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV4
                 };
 
-                currentMonologue = encounters[RNG.nextInt(encounters.length)];
-                currentMonologueRightAligned = false;
+                startMonologue(encounters[RNG.nextInt(encounters.length)], false);
 
-                isMonologueActive = true;
                 pendingCombat = true;
                 return;
             }
@@ -855,8 +852,7 @@ public class ExploringScreen extends BaseScreen {
         if (next != null) {
             if (mapExit != null && mapExit.length > 0) {
                 // EXIT MONOLOGUE
-                currentMonologue = mapExit;
-                isMonologueActive = true;
+                startMonologue(mapExit, false);
                 pendingExit = true;
             } else {
                 // Reset state before transitioning to new map
@@ -889,6 +885,25 @@ public class ExploringScreen extends BaseScreen {
         return false;
     }
 
+    private void startMonologueSfx() {
+        if (monologueSfxPlaying) return;
+
+        if (game.assets.monologueSFX != null) {
+            monologueSfxId = game.assets.monologueSFX.loop(3.0f);
+            monologueSfxPlaying = true;
+        }
+    }
+
+    private void stopMonologueSfx() {
+        if (!monologueSfxPlaying) return;
+
+        if (game.assets.monologueSFX != null) {
+            game.assets.monologueSFX.stop(monologueSfxId);
+        }
+
+        monologueSfxId = -1L;
+        monologueSfxPlaying = false;
+    }
 
     // ── Camera ────────────────────────────────────────────────────────────────
 
@@ -1298,8 +1313,7 @@ public class ExploringScreen extends BaseScreen {
             showVictoryPopup = false;
 
             if (leveledUp && currentMonologue != null) {
-                isMonologueActive = true;
-                prepareMonologue();
+                startMonologue(currentMonologue, false);
             }
         }
     }
@@ -1519,12 +1533,14 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void handleMonologueInput(float delta) {
-        if (currentMonologue == null || currentMonologue.length == 0) {
+        if (currentMonologueIndex >= currentMonologue.length) {
+            stopMonologueSfx();
             finishCurrentMonologue();
             return;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            stopMonologueSfx();
             finishCurrentMonologue();
             return;
         }
@@ -1533,12 +1549,20 @@ public class ExploringScreen extends BaseScreen {
             String currentLine = currentMonologue[currentMonologueIndex];
 
             if (monologueCharIndex < currentLine.length()) {
+                startMonologueSfx();
+
                 monologueTimer += delta;
                 while (monologueTimer >= TYPEWRITER_SPEED && monologueCharIndex < currentLine.length()) {
                     monologueTimer -= TYPEWRITER_SPEED;
                     monologueCharIndex++;
                 }
+
+                if (monologueCharIndex >= currentLine.length()) {
+                    stopMonologueSfx();
+                }
             } else {
+                stopMonologueSfx();
+
                 lineDelayTimer += delta;
                 if (lineDelayTimer >= LINE_DELAY) {
                     lineDelayTimer = 0f;
@@ -1555,6 +1579,7 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void finishCurrentMonologue() {
+        stopMonologueSfx();
         isMonologueActive = false;
 
         if (pendingFinalBossVictoryLines) {
@@ -1706,9 +1731,10 @@ public class ExploringScreen extends BaseScreen {
         game.gameViewport.update(w, h, true);
         game.uiViewport.update(w, h, true);
     }
-    @Override public void hide()    {}
+    @Override public void hide()    {stopMonologueSfx();}
     @Override
     public void dispose() {
         // Do not dispose of global assets here
+        stopMonologueSfx();
     }
 }

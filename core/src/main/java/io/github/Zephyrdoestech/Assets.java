@@ -96,6 +96,7 @@ public class Assets implements Disposable {
     public Music battleBossBGM;
 
     public Sound traversalSFX;
+    public Sound monologueSFX;
     public Sound skillActivationSFX;
     public Sound useItemSFX;
 
@@ -610,6 +611,7 @@ public class Assets implements Disposable {
 
         // Exploring SFX
         traversalSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Explore/traversalSFX.mp3"));
+        monologueSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/monologueSFX.mp3"));
 
         // Battle SFX
         // State Transition
