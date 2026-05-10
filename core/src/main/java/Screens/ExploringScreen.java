@@ -290,8 +290,20 @@ public class ExploringScreen extends BaseScreen {
         updateCamera();
     }
 
-    private TextureRegion getEnemyFrame(Enemy e) {
+    // Helper class to store a texture region and its dimensions
+    private static class EnemyDrawData {
+        TextureRegion region;
+        float width = 64f;
+        float height = 64f;
+
+        EnemyDrawData(TextureRegion region) {
+            this.region = region;
+        }
+    }
+
+    private EnemyDrawData getEnemyFrame(Enemy e) {
         com.badlogic.gdx.graphics.g2d.Animation<TextureRegion> anim;
+        EnemyDrawData data = new EnemyDrawData(null);
 
         switch (e.getName()) {
             case "Flesh Feeder":
@@ -302,15 +314,23 @@ public class ExploringScreen extends BaseScreen {
                 break;
             case "Gobninil":
                 anim = game.assets.gobninilCombatIdle;
+                data.width = 60f;
+                data.height = 60f;
                 break;
             case "Chimericks":
                 anim = game.assets.chimericksCombatIdle;
+                data.width = 80f;
+                data.height = 80f;
                 break;
             case "Labagoliath the Void Shaker":
                 anim = game.assets.labagoliathCombatIdle;
+                data.width = 96f;
+                data.height = 96f;
                 break;
             case "Maestro Syozan":
                 anim = game.assets.syozanCombatIdle;
+                data.width = 112f;
+                data.height = 112f;
                 break;
             default:
                 // Fallback if name doesn't match
@@ -318,7 +338,10 @@ public class ExploringScreen extends BaseScreen {
                 break;
         }
 
-        return (anim != null) ? anim.getKeyFrame(game.ctx.stateTime, true) : null;
+        if (anim != null) {
+            data.region = anim.getKeyFrame(game.ctx.stateTime, true);
+        }
+        return data.region != null ? data : null;
     }
 
     // ── Render ────────────────────────────────────────────────────────────────
@@ -419,9 +442,9 @@ public class ExploringScreen extends BaseScreen {
         // Enemies
         for (Enemy e : game.ctx.mapEnemies) {
             if (!e.isDefeated()) {
-                TextureRegion enemyFrame = getEnemyFrame(e);
-                if (enemyFrame != null) {
-                    game.batch.draw(enemyFrame, e.getX(), e.getY(), 64f, 64f);
+                EnemyDrawData drawData = getEnemyFrame(e);
+                if (drawData != null && drawData.region != null) {
+                    game.batch.draw(drawData.region, e.getX(), e.getY(), drawData.width, drawData.height);
                 }
             }
         }

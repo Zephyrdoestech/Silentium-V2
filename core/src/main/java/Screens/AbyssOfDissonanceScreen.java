@@ -57,7 +57,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         semiBossRoom.addEnemy(labagoliath);
         game.ctx.mapEnemies.add(labagoliath);
 
-        Room finalBossRoom = game.ctx.rooms.get(2);
+        Room finalBossRoom = game.ctx.rooms.get(0);
         float fbX = finalBossRoom.getBounds().x + (finalBossRoom.getBounds().width  - 64f) / 2f;
         float fbY = finalBossRoom.getBounds().y + (finalBossRoom.getBounds().height - 64f) / 2f;
         Enemy maestroSyozan = Enemy.maestroSyozan(fbX, fbY);
