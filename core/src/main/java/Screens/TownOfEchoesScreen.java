@@ -86,7 +86,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
     protected int getEnemyCount() { return 6; }
 
     @Override
-    protected int getRequiredKills() { return 2; }
+    protected int getRequiredKills() { return 0; }
 
     @Override
     protected void initPlayerPosition() {

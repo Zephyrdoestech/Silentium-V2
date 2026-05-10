@@ -82,6 +82,8 @@ public class ExploringScreen extends BaseScreen {
     private boolean wasMonologueActive = false;
     private boolean pendingExit = false;
     private boolean pendingCombat = false;
+    private boolean pendingBossDialogue = false;
+    private boolean currentMonologueRightAligned = false;
     private String[] mapEntry;
     private String[] mapExit;
     private String[] currentMonologue = {"This is a dummy line.", "This is also a dummy line.", "This is another dummy line."};
@@ -215,24 +217,26 @@ public class ExploringScreen extends BaseScreen {
             initMapData();
             initWalkable();
 
-            switch (mapName) {
-                case "Town of Echoes":
+            switch (game.ctx.mapName) {
+                case TOWN_OF_ECHOES:
                     mapEntry = game.ctx.activeCharacterStats.getMonologues().firstMapEntry;
                     mapExit = game.ctx.activeCharacterStats.getMonologues().firstMapExit;
                     break;
-                case "Silent Caverns":
+                case SILENT_CAVERNS:
                     mapEntry = game.ctx.activeCharacterStats.getMonologues().secondMapEntry;
                     mapExit = game.ctx.activeCharacterStats.getMonologues().secondMapExit;
                     break;
-                case "Abyss of Dissonance":
+                case ABYSS_OF_DISSONANCE:
                     mapEntry = game.ctx.activeCharacterStats.getMonologues().thirdMapEntry;
                     mapExit = game.ctx.activeCharacterStats.getMonologues().thirdMapExit;
                     break;
             }
 
-            isMonologueActive = true;
-            currentMonologue = mapEntry;
-            prepareMonologue();
+            if (mapEntry != null && mapEntry.length > 0) {
+                isMonologueActive = true;
+                currentMonologue = mapEntry;
+                prepareMonologue();
+            }
         } else {
             restoreInstanceFields();
             initWalkable();
@@ -323,7 +327,8 @@ public class ExploringScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT);
 
-        // If a fade out finishes this frame, don't do anything else (BaseScreen handles the transition)
+        // If a fade out finishes this frame, don't do anything else.
+        // BaseScreen handles the actual screen transition.
         if (updateFade(delta)) return;
 
         if (game.ctx.player == null) return;
@@ -336,42 +341,61 @@ public class ExploringScreen extends BaseScreen {
         game.ctx.totalPlaytime += delta;
         game.ctx.stateTime += delta;
 
+        // Handle the moment a monologue finishes.
         if (isMonologueActive && !wasMonologueActive) {
             prepareMonologue();
         } else if (!isMonologueActive && wasMonologueActive) {
             if (pendingExit) {
                 pendingExit = false;
+
                 // Reset state before transitioning to new map
                 game.ctx.player = null;
                 game.ctx.enemiesDefeatedInCurrentMap = 0;
                 game.ctx.rooms.clear();
                 game.ctx.mapEnemies.clear();
                 game.ctx.exitRoom = null;
+
+                currentMonologueRightAligned = false;
                 startFadeOut(getNextScreen());
                 return;
+            } else if (pendingBossDialogue) {
+                // Final boss encounter part 2:
+                // After the player's pre-final monologue, show Syozan's dialogue.
+                pendingBossDialogue = false;
+                pendingCombat = true;
+
+                currentMonologue = game.ctx.bossDialogueLines;
+                currentMonologueRightAligned = true;
+
+                isMonologueActive = true;
+                prepareMonologue();
             } else if (pendingCombat) {
                 pendingCombat = false;
-                game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
+                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
 
                 // Do NOT set player won yet! We are just entering combat.
                 game.ctx.playerWon = false;
 
+                currentMonologueRightAligned = false;
                 startFadeOut(new CombatScreen(game));
                 return;
             }
         }
+
+        // IMPORTANT:
+        // This must run every frame, or the typewriter text never advances.
         wasMonologueActive = isMonologueActive;
 
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
             handleMonologueInput(delta);
-        } else if (!fadingOut) { // Only handle movement if we are not currently fading out
+        } else if (!fadingOut) {
             handleMovement(delta);
         }
 
         updateCamera();
 
-        // 1. DRAW ALL WORLD SPRITES (The "Main Batch")
+        // 1. DRAW ALL WORLD SPRITES
         game.batch.setProjectionMatrix(game.gameCamera.combined);
         game.batch.begin();
         game.batch.setColor(Color.WHITE);
@@ -401,32 +425,40 @@ public class ExploringScreen extends BaseScreen {
                 }
             }
         }
+
         game.assets.font.setColor(Color.WHITE);
 
         // Player sprite
         drawPlayerSprite();
 
         // Map Decor
-        if (mapDecor != null)
+        if (mapDecor != null) {
             game.batch.draw(mapDecor, 0, 0, game.ctx.MAP_SIZE, game.ctx.MAP_SIZE);
+        }
 
         // Darkness overlay
         drawDarknessOverlay();
-        game.batch.end(); // END OF WORLD DRAWING
+        game.batch.end();
 
-        if (isMonologueActive) { drawMonologueOverlay(delta); }
-        else{ drawHUD(); } // HUD (uses fixed uiCamera)
+        if (isMonologueActive) {
+            drawMonologueOverlay(delta);
+        } else {
+            drawHUD();
+        }
 
-        if (showInventory) {drawInventoryOverlay();}
-        if (showVictoryPopup) { drawVictoryPopup(); }
+        if (showInventory) {
+            drawInventoryOverlay();
+        }
+
+        if (showVictoryPopup) {
+            drawVictoryPopup();
+        }
 
         drawFadeOverlay();
 
         // ESC → Save Game and return to main menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !fadingOut) {
-            // Save exactly where they are standing right now!
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
-
             startFadeOut(new MainMenuScreen(game));
         }
     }
@@ -571,25 +603,43 @@ public class ExploringScreen extends BaseScreen {
         Rectangle pRect = new Rectangle(game.ctx.player.getX(), game.ctx.player.getY(), C, C);
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
+
             Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
             if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
                 game.ctx.currentEnemy = e;
-                game.ctx.noteHandler.noteCount    = 0;
+                game.ctx.noteHandler.noteCount = 0;
 
-                // ENEMY ENCOUNTER MONOLOGUE
+                // FINAL BOSS ENCOUNTER
+                // Sequence:
+                // 1. Player pre-final battle monologue
+                // 2. Maestro Syozan dialogue, right-aligned
+                // 3. Combat proper
+                if (e.getName().equals("Maestro Syozan")) {
+                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().preFinalBattle;
+                    currentMonologueRightAligned = false;
+
+                    isMonologueActive = true;
+                    pendingBossDialogue = true;
+                    pendingCombat = false;
+                    return;
+                }
+
+                // NORMAL ENEMY ENCOUNTER MONOLOGUE
                 String[][] encounters = {
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV1,
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV2,
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV3,
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV4
                 };
+
                 currentMonologue = encounters[RNG.nextInt(encounters.length)];
+                currentMonologueRightAligned = false;
+
                 isMonologueActive = true;
                 pendingCombat = true;
                 return;
-
             }
         }
     }
@@ -1319,39 +1369,71 @@ public class ExploringScreen extends BaseScreen {
 
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
-        switch(game.ctx.selectedCharacter){
-            case SONARA:  animFrame = game.assets.sonaraMonologueBox.getKeyFrame(game.ctx.stateTime, true); break;
-            case AURELIUS: animFrame = game.assets.aureliusMonologueBox.getKeyFrame(game.ctx.stateTime, true); break;
-            case LYRON: animFrame = game.assets.lyronMonologueBox.getKeyFrame(game.ctx.stateTime, true); break;
+
+        if (currentMonologueRightAligned) {
+            // Syozan dialogue uses Syozan's own monologue box.
+            // If the asset is missing, fall back to the selected player's box.
+            if (game.assets.syozanMonologueBox != null) {
+                animFrame = game.assets.syozanMonologueBox.getKeyFrame(game.ctx.stateTime, true);
+            }
+        }
+
+        if (animFrame == null) {
+            switch(game.ctx.selectedCharacter){
+                case SONARA:
+                    animFrame = game.assets.sonaraMonologueBox.getKeyFrame(game.ctx.stateTime, true);
+                    break;
+                case AURELIUS:
+                    animFrame = game.assets.aureliusMonologueBox.getKeyFrame(game.ctx.stateTime, true);
+                    break;
+                case LYRON:
+                    animFrame = game.assets.lyronMonologueBox.getKeyFrame(game.ctx.stateTime, true);
+                    break;
+            }
         }
 
         if(animFrame == null) return;
 
         float boxX = 0f;
-        float boxY = 0f; // Lower part of screen
+        float boxY = 0f;
         float boxWidth = animFrame.getRegionWidth();
         float boxHeight = animFrame.getRegionHeight();
 
-        // Monologue Container
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
         game.batch.draw(animFrame, boxX, boxY, boxWidth, boxHeight);
 
-        float textX = boxX + px(7.2f);
         float textY = boxY + px(3.2f);
 
-        // Dialogue Line
+        float playerTextLeft = boxX + px(7.2f);
+        float playerTextRightPadding = px(3.0f);
+
+        float textX = playerTextLeft;
+        float wrapWidth = boxWidth - playerTextLeft - playerTextRightPadding;
+        int alignment = com.badlogic.gdx.utils.Align.left;
+
+        if (currentMonologueRightAligned) {
+            // Syozan box has the enemy card on the right.
+            // So the text starts near the left, and reserves the same card-space on the right
+            // that player dialogue reserves on the left.
+            float syozanTextLeft = boxX + px(2.0f);
+            float enemyCardRightPadding = px(4.8f);
+            float syozanTextRightPadding = px(3.0f);
+
+            textX = syozanTextLeft;
+            wrapWidth = boxWidth - syozanTextLeft - enemyCardRightPadding - syozanTextRightPadding;
+            alignment = com.badlogic.gdx.utils.Align.right;
+        }
+
         game.assets.font.setColor(Color.WHITE);
         game.assets.font.getData().setScale(1.2f);
+
         if (currentMonologueIndex < currentMonologue.length) {
             String currentLine = currentMonologue[currentMonologueIndex];
             int displayLen = Math.min(monologueCharIndex, currentLine.length());
             String textToDisplay = currentLine.substring(0, displayLen);
-            float wrapWidthThreshold = boxWidth - textX - px(3.0f);
 
-            game.assets.font.draw(game.batch, textToDisplay, textX, textY,
-                wrapWidthThreshold,
-                com.badlogic.gdx.utils.Align.left, true);
+            game.assets.font.draw(game.batch, textToDisplay, textX, textY, wrapWidth, alignment, true);
         }
 
         game.assets.font.setColor(Color.GRAY);
