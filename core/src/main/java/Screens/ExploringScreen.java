@@ -242,7 +242,7 @@ public class ExploringScreen extends BaseScreen {
                     break;
             }
 
-            startMonologue(mapEntry, false);
+            if (mapEntry != null && mapEntry.length > 0) { startMonologue(mapEntry, false); }
         } else {
             restoreInstanceFields();
             initWalkable();
@@ -285,19 +285,29 @@ public class ExploringScreen extends BaseScreen {
 
         if (game.ctx.finalBossVictoryPending) {
             game.ctx.finalBossVictoryPending = false;
+            game.ctx.playerWon = false;
 
             pendingFinalBossVictoryLines = true;
             startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleVictory, false);
 
-            game.ctx.playerWon = false;
-        } else if (game.ctx.finalBossDefeatPending) {
+            game.ctx.stateTime = 0f;
+            this.lockedRoom = null;
+            updateCamera();
+            return;
+        }
+        if (game.ctx.finalBossDefeatPending) {
             game.ctx.finalBossDefeatPending = false;
+            game.ctx.playerDefeated = false;
 
             pendingFinalBossDefeatLines = true;
             startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleDefeat, false);
 
-            game.ctx.playerDefeated = false;
-        }else if (game.ctx.playerWon) {
+            game.ctx.stateTime = 0f;
+            this.lockedRoom = null;
+            updateCamera();
+            return;
+        }
+        if (game.ctx.playerWon) {
             game.ctx.playerWon = false;
             triggerVictoryPopup();
         }
@@ -385,90 +395,6 @@ public class ExploringScreen extends BaseScreen {
         }
         game.ctx.totalPlaytime += delta;
         game.ctx.stateTime += delta;
-
-//        // Handle the moment a monologue finishes.
-//        if (isMonologueActive && !wasMonologueActive) {
-//            prepareMonologue();
-//        } else if (!isMonologueActive && wasMonologueActive) {
-//            if (pendingFinalBossVictoryLines) {
-//                // Player won final battle:
-//                // after player's victory monologue, show Syozan's defeat lines.
-//                pendingFinalBossVictoryLines = false;
-//                pendingFinalBossRecordScreen = true;
-//
-//                currentMonologue = game.ctx.bossVictoryLines;
-//                currentMonologueRightAligned = true;
-//                isMonologueActive = true;
-//                wasMonologueActive = false;
-//                prepareMonologue();
-//                return;
-//            } else if (pendingFinalBossDefeatLines) {
-//                // Player lost final battle:
-//                // after player's defeat monologue, show Syozan's victory lines.
-//                pendingFinalBossDefeatLines = false;
-//                pendingFinalBossDeathReset = true;
-//
-//                currentMonologue = game.ctx.bossDefeatLines;
-//                currentMonologueRightAligned = true;
-//                isMonologueActive = true;
-//                wasMonologueActive = false;
-//                prepareMonologue();
-//                return;
-//            } else if (pendingFinalBossRecordScreen) {
-//                pendingFinalBossRecordScreen = false;
-//                currentMonologueRightAligned = false;
-//
-//                game.ctx.mapsCleared = 3;
-//                game.setScreen(new NameInputScreen(game, game.ctx, 1));
-//                return;
-//            } else if (pendingFinalBossDeathReset) {
-//                pendingFinalBossDeathReset = false;
-//                currentMonologueRightAligned = false;
-//
-//                handlePlayerDeath();
-//                return;
-//            }
-//
-//            if (pendingExit) {
-//                pendingExit = false;
-//
-//                // Reset state before transitioning to new map
-//                game.ctx.player = null;
-//                game.ctx.enemiesDefeatedInCurrentMap = 0;
-//                game.ctx.rooms.clear();
-//                game.ctx.mapEnemies.clear();
-//                game.ctx.exitRoom = null;
-//
-//                currentMonologueRightAligned = false;
-//                startFadeOut(getNextScreen());
-//                return;
-//            } else if (pendingBossDialogue) {
-//                // Final boss encounter part 2:
-//                // After the player's pre-final monologue, show Syozan's dialogue.
-//                pendingBossDialogue = false;
-//                pendingCombat = true;
-//
-//                currentMonologue = game.ctx.bossPreCombatLines;
-//                currentMonologueRightAligned = true;
-//
-//                isMonologueActive = true;
-//                prepareMonologue();
-//            } else if (pendingCombat) {
-//                pendingCombat = false;
-//                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
-//
-//                // Do NOT set player won yet! We are just entering combat.
-//                game.ctx.playerWon = false;
-//
-//                currentMonologueRightAligned = false;
-//                startFadeOut(new CombatScreen(game));
-//                return;
-//            }
-//        }
-//
-//        // IMPORTANT:
-//        // This must run every frame, or the typewriter text never advances.
-//        wasMonologueActive = isMonologueActive;
 
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
@@ -587,6 +513,32 @@ public class ExploringScreen extends BaseScreen {
             }
         }
     }
+
+    private com.badlogic.gdx.Screen getDeathDestinationScreen() {
+        game.ctx.lives--;
+        game.ctx.enemiesDefeatedInCurrentMap = 0;
+        game.ctx.rooms.clear();
+        game.ctx.mapEnemies.clear();
+        game.ctx.activeCharacterStats.resetStats();
+        game.ctx.player = null;
+
+        if (game.ctx.lives <= 0) {
+            game.ctx.lives = 1;
+            return new NameInputScreen(game, game.ctx, 1);
+        }
+
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                return new TownOfEchoesScreen(game);
+            case SILENT_CAVERNS:
+                return new SilentCavernsScreen(game);
+            case ABYSS_OF_DISSONANCE:
+                return new AbyssOfDissonanceScreen(game);
+            default:
+                return new TownOfEchoesScreen(game);
+        }
+    }
+
 
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
@@ -1158,14 +1110,18 @@ public class ExploringScreen extends BaseScreen {
                 heartWidth, heartHeight);
         }
 
-
-        text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        boolean isAbyssOfDissonance = false;
+        switch (game.ctx.mapName) {
+            case ABYSS_OF_DISSONANCE: isAbyssOfDissonance = true;
+                text = "Defeat: " + (game.ctx.isLabagoliathDefeated ? "Maestro Syozan!" : " Labagoliath the Void Shaker!"); break;
+            default: text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        }
         float textWidth = textWidth(text);
         float textHeight = px(1.6f);
         textX = screenRight - textWidth - px(1.6f);
         textY = screenTop - textHeight - px(2.0f);
         game.assets.font.setColor(Color.RED);
-        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) game.assets.font.setColor(Color.GREEN);
+        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills() && !isAbyssOfDissonance) game.assets.font.setColor(Color.GREEN);
         game.assets.font.getData().setScale(1.0f);
         game.assets.font.draw(game.batch, text, textX, textY);
 
@@ -1556,13 +1512,19 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void handleMonologueInput(float delta) {
-        if (currentMonologueIndex >= currentMonologue.length) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             stopMonologueSfx();
             finishCurrentMonologue();
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (currentMonologue == null || currentMonologue.length == 0) {
+            stopMonologueSfx();
+            finishCurrentMonologue();
+            return;
+        }
+
+        if (currentMonologueIndex >= currentMonologue.length) {
             stopMonologueSfx();
             finishCurrentMonologue();
             return;
@@ -1626,7 +1588,8 @@ public class ExploringScreen extends BaseScreen {
             currentMonologueRightAligned = false;
 
             game.ctx.mapsCleared = 3;
-            game.setScreen(new NameInputScreen(game, game.ctx, 1));
+
+            startFadeOut(new EndingScreen(game));
             return;
         }
 
@@ -1634,7 +1597,7 @@ public class ExploringScreen extends BaseScreen {
             pendingFinalBossDeathReset = false;
             currentMonologueRightAligned = false;
 
-            handlePlayerDeath();
+            startFadeOut(getDeathDestinationScreen());
             return;
         }
 

@@ -2163,6 +2163,8 @@ public class CombatScreen extends BaseScreen {
     private void endCombat() {
         boolean finalBossFight = game.ctx.currentEnemy != null
             && game.ctx.currentEnemy.getName().equals("Maestro Syozan");
+        boolean semiBossFight = game.ctx.currentEnemy != null
+            && game.ctx.currentEnemy.getName().equals("Labagoliath the Void Shaker");
 
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT) {
             if (finalBossFight) {
@@ -2189,6 +2191,10 @@ public class CombatScreen extends BaseScreen {
         }
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
+
+        if(semiBossFight){
+            game.ctx.isLabagoliathDefeated = true;
+        }
 
         if (finalBossFight) {
             game.ctx.finalBossVictoryPending = true;

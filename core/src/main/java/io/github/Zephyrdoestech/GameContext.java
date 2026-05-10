@@ -103,6 +103,8 @@ public class GameContext {
     public boolean playerWon = false;
     public int leveledUpTo = 0;
 
+    public boolean isLabagoliathDefeated = false;
+
     // ── Final Boss Lines ─────────────────────────────────────────────────
 
     public boolean finalBossVictoryPending = false;
