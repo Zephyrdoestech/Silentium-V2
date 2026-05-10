@@ -86,8 +86,8 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
             if (game.ctx.mapEnemies.isEmpty()) {
                 game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
 
-                // --- FIXED: Call the new Name Input Screen instead of the deleted method! ---
-                game.setScreen(new Screens.LeaderBoard.NameInputScreen(game, game.ctx, 3));
+                // Flow: Ending -> Credits -> Leaderboard -> Title Screen
+                game.setScreen(new CreditsScreen(game, true));
                 return;
             }
 

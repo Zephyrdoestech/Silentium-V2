@@ -2,6 +2,7 @@ package Screens.LeaderBoard;
 
 import Screens.BaseScreen;
 import Screens.MainMenuScreen;
+import Screens.TitleScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -105,8 +106,8 @@ public class LeaderboardScreen extends BaseScreen {
 
         // ── Footer hint (Moved dynamically below the panel) ───────────────────
         game.assets.font.setColor(Color.GRAY);
-        game.glyphLayout.setText(game.assets.font, "Press ENTER to return to main menu");
-        game.assets.font.draw(game.batch, "Press ENTER to return to main menu", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
+        game.glyphLayout.setText(game.assets.font, "Press ENTER to return to title screen");
+        game.assets.font.draw(game.batch, "Press ENTER to return to title screen", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
         game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
@@ -119,7 +120,7 @@ public class LeaderboardScreen extends BaseScreen {
         if (screenTimer > 0.5f) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
                 game.assets.stopAllMusic();
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(new TitleScreen(game));
             }
         }
     }

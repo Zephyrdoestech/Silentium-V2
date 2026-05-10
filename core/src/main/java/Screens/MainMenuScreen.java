@@ -32,6 +32,10 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     public void show() {
+        // Reset scales that might have been changed by other screens
+        game.assets.font.getData().setScale(1.5f);
+        game.assets.titleFont.getData().setScale(2.2f);
+
         game.gameCamera.zoom = 1.0f;
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();

@@ -9,6 +9,8 @@ import Mechanics.CombatSystem.Metronome;
 import Mechanics.MapTraversalSystem.Room;
 import Screens.ExploringScreen;
 import com.badlogic.gdx.audio.Music;
+import Inventory.Consumables.Item;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,10 +187,12 @@ public class GameContext {
             prefs.putInteger("charLevel", activeCharacterStats.getLevel());
             prefs.putInteger("charMonsters", activeCharacterStats.getMonstersDefeated());
 
-            // Flatten the inventory Map into a single String (e.g., "CrimsonChorus:1,TimeOrb:2,")
+            // Serialize the items in playerInventory
             StringBuilder invStr = new StringBuilder();
-            for (java.util.Map.Entry<String, Integer> entry : activeCharacterStats.inventory.entrySet()) {
-                invStr.append(entry.getKey()).append(":").append(entry.getValue()).append(",");
+            if (activeCharacterStats.getPlayerInventory() != null) {
+                for (Item item : activeCharacterStats.getPlayerInventory().getItems()) {
+                    invStr.append(item.getName()).append(",");
+                }
             }
             prefs.putString("charInventory", invStr.toString());
         }
@@ -217,7 +221,7 @@ public class GameContext {
     }
 
     // --- LOAD LOGIC ---
-    public String loadGame(String slotName) {
+    public String loadGame(String slotName, Assets assets) {
         this.currentSaveSlot = slotName;
         com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
 
@@ -256,14 +260,39 @@ public class GameContext {
         loadedChar.setLevel(prefs.getInteger("charLevel", 1));
         loadedChar.setMonstersDefeated(prefs.getInteger("charMonsters", 0));
 
-        // 3. Unpack the inventory
+        // 3. Unpack the inventory into playerInventory
         String invStr = prefs.getString("charInventory", "");
         if (!invStr.isEmpty()) {
             String[] items = invStr.split(",");
-            for (String item : items) {
-                if (item.contains(":")) {
-                    String[] parts = item.split(":");
-                    loadedChar.inventory.put(parts[0], Integer.parseInt(parts[1]));
+            for (String itemStr : items) {
+                String itemName = itemStr.trim();
+                if (itemName.isEmpty()) continue;
+
+                // If it contains a colon, we extract just the name to support backward compatibility
+                // (if older saves had format "Crimson Chorus:1")
+                if (itemName.contains(":")) {
+                    itemName = itemName.split(":")[0].trim();
+                }
+
+                switch (itemName) {
+                    case "Crimson Chorus":
+                        loadedChar.getPlayerInventory().gainCrimsonChorus(assets);
+                        break;
+                    case "Major's Blessing":
+                        loadedChar.getPlayerInventory().gainMajorBlessing(assets);
+                        break;
+                    case "Minor's Grace":
+                        loadedChar.getPlayerInventory().gainMinorsGrace(assets);
+                        break;
+                    case "Silent Barrier":
+                        loadedChar.getPlayerInventory().gainSilentBarrier(assets);
+                        break;
+                    case "Resolved Dissonance":
+                        loadedChar.getPlayerInventory().gainResolvedDissonance(assets);
+                        break;
+                    case "Time Orb":
+                        loadedChar.getPlayerInventory().gainTimeOrb(assets);
+                        break;
                 }
             }
         }

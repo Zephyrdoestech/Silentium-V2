@@ -16,10 +16,10 @@ public class LoadGameScreen extends BaseScreen {
     private float cursorTime = 0f;
 
     // Panel and slot dimensions
-    private float panelWidth = 600f;
-    private float panelHeight = 150f; // FORCED TO 150 TO BE A BANNER
-    private float slotWidth = 450f;
-    private float slotHeight = 80f;
+    private float panelWidth = 400f;
+    private float panelHeight = 100f;
+    private float slotWidth = 350f;
+    private float slotHeight = 55f;
 
     public LoadGameScreen(Main game) {
         super(game);
@@ -40,11 +40,11 @@ public class LoadGameScreen extends BaseScreen {
 
         // 1. Make the panel act like a wide header banner
         panelWidth = 400f;
-        panelHeight = 100f;
+        panelHeight = 90f;
 
         // 2. Set the save slot buttons
-        slotWidth = 350f;
-        slotHeight = 55f;
+        slotWidth = 480f;
+        slotHeight = 60f;
     }
 
     @Override
@@ -65,17 +65,13 @@ public class LoadGameScreen extends BaseScreen {
 
         // 2. Panel (Anchored to the top)
         float panelX = (Main.WORLD_WIDTH - panelWidth) / 2f;
-        float panelY = Main.WORLD_HEIGHT - panelHeight - 40f;
+        float panelY = (Main.WORLD_HEIGHT - panelHeight) - 40f;
 
         if (game.assets.loadGamePanelTex != null) {
             game.batch.draw(game.assets.loadGamePanelTex, panelX, panelY, panelWidth, panelHeight);
         }
 
-        // Return button text
-//        game.assets.font.setColor(Color.GRAY);
-//        game.assets.font.draw(game.batch, "Press ESC to return", 20f, 40f);
-
-        // Calculate layout properties for slots (Pushed down below the banner)
+        // Calculate layout properties for slots (Pushed down BELOW the banner)
         float startY = panelY - 60f;
         float gap = slotHeight + 15f;
         float centerX = (Main.WORLD_WIDTH - slotWidth) / 2f;
@@ -100,19 +96,13 @@ public class LoadGameScreen extends BaseScreen {
                     game.batch.draw(game.assets.loadFileTex, centerX, drawY, slotWidth, slotHeight);
                 }
 
-                // Draw save info text
+                // Draw save info text with proper scaling
                 String info = game.ctx.getSaveInfo(saveSlots.get(i));
                 game.assets.font.setColor(Color.WHITE);
 
-                // 1. INCREASE THIS NUMBER!
-                // If it is 0.8f right now, try changing it to 1.2f, 1.5f, or even 2.0f
-                game.assets.font.getData().setScale(1.2f);
-
-                // 2. Draw the text
-                // Note: You might need to adjust the '+ 10f' at the end to center it vertically perfectly
-                game.assets.font.draw(game.batch, info, centerX + 20f, drawY + slotHeight / 2f + 10f);
-
-                // 3. IMMEDIATELY RESET (Keep this at 1.0f!)
+                // Scale text up to be readable, then reset it
+                game.assets.font.getData().setScale(1.4f);
+                game.assets.font.draw(game.batch, info, centerX + 20f, drawY + slotHeight / 2f + 5f);
                 game.assets.font.getData().setScale(1.0f);
             }
         }
@@ -127,6 +117,7 @@ public class LoadGameScreen extends BaseScreen {
             float pulse = (com.badlogic.gdx.math.MathUtils.sin(cursorTime * 6f) + 1f) / 2f;
             game.shapeRenderer.setColor(0.7f + pulse * 0.3f, 0.7f + pulse * 0.3f, 0.75f + pulse * 0.25f, 1f);
 
+            // Using the correct startY here as well
             float selY = startY - (selection * gap);
             float pad = 8f;
             float t = 4f;
@@ -173,6 +164,7 @@ public class LoadGameScreen extends BaseScreen {
             game.gameViewport.unproject(mousePos);
 
             for (int i = 0; i < saveSlots.size(); i++) {
+                // Clicking logic uses the correct startY
                 float slotY = startY - (i * gap);
                 if (mousePos.x >= centerX && mousePos.x <= centerX + slotWidth &&
                     mousePos.y >= slotY && mousePos.y <= slotY + slotHeight) {
@@ -189,7 +181,9 @@ public class LoadGameScreen extends BaseScreen {
         if (saveSlots.isEmpty()) return;
 
         String slot = saveSlots.get(selection);
-        String mapName = game.ctx.loadGame(slot);
+
+        // KEEPING THE NEW ADDITION: Passing game.assets
+        String mapName = game.ctx.loadGame(slot, game.assets);
 
         if (mapName != null) {
             game.assets.stopAllMusic();
