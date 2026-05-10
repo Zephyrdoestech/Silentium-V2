@@ -2158,12 +2158,28 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void endCombat() {
+        boolean finalBossFight = game.ctx.currentEnemy != null
+            && game.ctx.currentEnemy.getName().equals("Maestro Syozan");
+
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT) {
+            if (finalBossFight) {
+                game.ctx.finalBossDefeatPending = true;
+                game.ctx.playerDefeated = false;
+
+                game.assets.stopAllMusic();
+
+                if (game.ctx.currentMapScreen != null) {
+                    game.setScreen(game.ctx.currentMapScreen);
+                } else {
+                    game.setScreen(new AbyssOfDissonanceScreen(game));
+                }
+                return;
+            }
+
             game.ctx.playerDefeated = true;
             if (game.ctx.currentMapScreen != null) {
                 game.setScreen(game.ctx.currentMapScreen);
             } else {
-                // Fallback just in case
                 game.setScreen(new TownOfEchoesScreen(game));
             }
             return;
@@ -2171,10 +2187,41 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
+        if (finalBossFight) {
+            game.ctx.finalBossVictoryPending = true;
+            game.ctx.playerWon = false;
+
+            player.defeatedMonster();
+
+            game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
+            if (game.ctx.rooms != null) {
+                for (Room r : game.ctx.rooms) {
+                    if (r.getEnemies().remove(game.ctx.currentEnemy)) {
+                        if (r.getEnemies().isEmpty()) r.setCleared(true);
+                        break;
+                    }
+                }
+            }
+
+            player.resetDamageBuff();
+            game.ctx.currentEnemy = null;
+            game.ctx.noteHandler.noteCount = 0;
+            game.ctx.combatLog = "";
+            game.ctx.combatState = GameContext.CombatState.NONE;
+
+            game.assets.stopAllMusic();
+
+            if (game.ctx.currentMapScreen != null) {
+                game.setScreen(game.ctx.currentMapScreen);
+            } else {
+                game.setScreen(new AbyssOfDissonanceScreen(game));
+            }
+            return;
+        }
+
         game.ctx.playerWon = true;
         player.defeatedMonster();
 
-        // Remove defeated enemy from the world
         game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
         if (game.ctx.rooms != null) {
             for (Room r : game.ctx.rooms) {
@@ -2185,21 +2232,20 @@ public class CombatScreen extends BaseScreen {
             }
         }
 
-        // Reset shared context before leaving
         player.resetDamageBuff();
-        game.ctx.currentEnemy              = null;
-        game.ctx.noteHandler.noteCount     = 0;
-        game.ctx.combatLog                 = "";
-        game.ctx.combatState               = GameContext.CombatState.NONE;
+        game.ctx.currentEnemy = null;
+        game.ctx.noteHandler.noteCount = 0;
+        game.ctx.combatLog = "";
+        game.ctx.combatState = GameContext.CombatState.NONE;
 
         game.assets.stopAllMusic();
 
         if (game.ctx.currentMapScreen != null) {
             game.setScreen(game.ctx.currentMapScreen);
         } else {
-            // Fallback just in case
             game.setScreen(new TownOfEchoesScreen(game));
         }
+
     }
 
     // =========================================================================

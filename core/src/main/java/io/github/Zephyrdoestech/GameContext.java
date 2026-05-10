@@ -103,11 +103,14 @@ public class GameContext {
 
     // ── Final Boss Lines ─────────────────────────────────────────────────
 
+    public boolean finalBossVictoryPending = false;
+    public boolean finalBossDefeatPending = false;
+
     public String[] bossPreCombatLines = {
         "Ah, another one.",
         "A child of the silence, yet obsessed with the deafening clang of sound.",
         "Did you truly believe your little noise could lead you here? How pathetic.",
-        "You found my work—the eternal silence—and instead of realizing its perfection, you declared it a disease.",
+        "You found my work - the eternal silence - and instead of realizing its perfection, you declared it a disease.",
         "You confuse chaos for life, and order for cruelty."
     };
 
@@ -115,8 +118,9 @@ public class GameContext {
         "No... you fool!",
         "You have ruined the perfection!",
         "You confuse this chaos for life, and order for cruelty!",
-        "I imposed this silence out of pity, stopping the world from screaming itself into oblivion," +
-            " gifting humanity absolute peace from the sheer, agonizing volume of its own sorrow.",
+        "I imposed this silence out of pity;",
+        "stopping the world from screaming itself into oblivion;",
+        "gifting humanity absolute peace from the sheer, agonizing volume of its own sorrow.",
         "You think this noise is freedom?",
         "It is the sound of inevitable pain and hatred, magnified a thousand times!",
         "You will live to regret this freedom, child; you will beg for the quiet I gifted you."

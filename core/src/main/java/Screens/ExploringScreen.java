@@ -86,9 +86,13 @@ public class ExploringScreen extends BaseScreen {
     private boolean currentMonologueRightAligned = false;
     private String[] mapEntry;
     private String[] mapExit;
-    private String[] currentMonologue = {"This is a dummy line.", "This is also a dummy line.", "This is another dummy line."};
+    private String[] currentMonologue = {};
     private int currentMonologueIndex = 0;
 
+    private boolean pendingFinalBossVictoryLines = false;
+    private boolean pendingFinalBossDefeatLines = false;
+    private boolean pendingFinalBossRecordScreen = false;
+    private boolean pendingFinalBossDeathReset = false;
 
     // --- Typewriter Effect Variables ---
     private float monologueTimer = 0f;
@@ -205,7 +209,10 @@ public class ExploringScreen extends BaseScreen {
             game.assets.pauseExitBtn
         };
 
-        if (game.ctx.playerDefeated) {
+        boolean hasFinalBossVictoryPending = game.ctx.finalBossVictoryPending;
+        boolean hasFinalBossDefeatPending = game.ctx.finalBossDefeatPending;
+
+        if (!hasFinalBossVictoryPending && !hasFinalBossDefeatPending && game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false;
             handlePlayerDeath();
             return;
@@ -277,7 +284,21 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (game.ctx.playerWon) {
+        if (game.ctx.finalBossVictoryPending) {
+            game.ctx.finalBossVictoryPending = false;
+
+            pendingFinalBossVictoryLines = true;
+            startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleVictory, false);
+
+            game.ctx.playerWon = false;
+        } else if (game.ctx.finalBossDefeatPending) {
+            game.ctx.finalBossDefeatPending = false;
+
+            pendingFinalBossDefeatLines = true;
+            startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleDefeat, false);
+
+            game.ctx.playerDefeated = false;
+        }else if (game.ctx.playerWon) {
             game.ctx.playerWon = false;
             triggerVictoryPopup();
         }
@@ -333,58 +354,99 @@ public class ExploringScreen extends BaseScreen {
 
         if (game.ctx.player == null) return;
 
-        if (game.ctx.activeCharacterStats.getHp() <= 0) {
+        if (game.ctx.activeCharacterStats.getHp() <= 0
+            && !isMonologueActive
+            && !pendingFinalBossDefeatLines
+            && !pendingFinalBossDeathReset) {
             handlePlayerDeath();
             return;
         }
-
         game.ctx.totalPlaytime += delta;
         game.ctx.stateTime += delta;
 
-        // Handle the moment a monologue finishes.
-        if (isMonologueActive && !wasMonologueActive) {
-            prepareMonologue();
-        } else if (!isMonologueActive && wasMonologueActive) {
-            if (pendingExit) {
-                pendingExit = false;
-
-                // Reset state before transitioning to new map
-                game.ctx.player = null;
-                game.ctx.enemiesDefeatedInCurrentMap = 0;
-                game.ctx.rooms.clear();
-                game.ctx.mapEnemies.clear();
-                game.ctx.exitRoom = null;
-
-                currentMonologueRightAligned = false;
-                startFadeOut(getNextScreen());
-                return;
-            } else if (pendingBossDialogue) {
-                // Final boss encounter part 2:
-                // After the player's pre-final monologue, show Syozan's dialogue.
-                pendingBossDialogue = false;
-                pendingCombat = true;
-
-                currentMonologue = game.ctx.bossPreCombatLines;
-                currentMonologueRightAligned = true;
-
-                isMonologueActive = true;
-                prepareMonologue();
-            } else if (pendingCombat) {
-                pendingCombat = false;
-                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
-
-                // Do NOT set player won yet! We are just entering combat.
-                game.ctx.playerWon = false;
-
-                currentMonologueRightAligned = false;
-                startFadeOut(new CombatScreen(game));
-                return;
-            }
-        }
-
-        // IMPORTANT:
-        // This must run every frame, or the typewriter text never advances.
-        wasMonologueActive = isMonologueActive;
+//        // Handle the moment a monologue finishes.
+//        if (isMonologueActive && !wasMonologueActive) {
+//            prepareMonologue();
+//        } else if (!isMonologueActive && wasMonologueActive) {
+//            if (pendingFinalBossVictoryLines) {
+//                // Player won final battle:
+//                // after player's victory monologue, show Syozan's defeat lines.
+//                pendingFinalBossVictoryLines = false;
+//                pendingFinalBossRecordScreen = true;
+//
+//                currentMonologue = game.ctx.bossVictoryLines;
+//                currentMonologueRightAligned = true;
+//                isMonologueActive = true;
+//                wasMonologueActive = false;
+//                prepareMonologue();
+//                return;
+//            } else if (pendingFinalBossDefeatLines) {
+//                // Player lost final battle:
+//                // after player's defeat monologue, show Syozan's victory lines.
+//                pendingFinalBossDefeatLines = false;
+//                pendingFinalBossDeathReset = true;
+//
+//                currentMonologue = game.ctx.bossDefeatLines;
+//                currentMonologueRightAligned = true;
+//                isMonologueActive = true;
+//                wasMonologueActive = false;
+//                prepareMonologue();
+//                return;
+//            } else if (pendingFinalBossRecordScreen) {
+//                pendingFinalBossRecordScreen = false;
+//                currentMonologueRightAligned = false;
+//
+//                game.ctx.mapsCleared = 3;
+//                game.setScreen(new NameInputScreen(game, game.ctx, 1));
+//                return;
+//            } else if (pendingFinalBossDeathReset) {
+//                pendingFinalBossDeathReset = false;
+//                currentMonologueRightAligned = false;
+//
+//                handlePlayerDeath();
+//                return;
+//            }
+//
+//            if (pendingExit) {
+//                pendingExit = false;
+//
+//                // Reset state before transitioning to new map
+//                game.ctx.player = null;
+//                game.ctx.enemiesDefeatedInCurrentMap = 0;
+//                game.ctx.rooms.clear();
+//                game.ctx.mapEnemies.clear();
+//                game.ctx.exitRoom = null;
+//
+//                currentMonologueRightAligned = false;
+//                startFadeOut(getNextScreen());
+//                return;
+//            } else if (pendingBossDialogue) {
+//                // Final boss encounter part 2:
+//                // After the player's pre-final monologue, show Syozan's dialogue.
+//                pendingBossDialogue = false;
+//                pendingCombat = true;
+//
+//                currentMonologue = game.ctx.bossPreCombatLines;
+//                currentMonologueRightAligned = true;
+//
+//                isMonologueActive = true;
+//                prepareMonologue();
+//            } else if (pendingCombat) {
+//                pendingCombat = false;
+//                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
+//
+//                // Do NOT set player won yet! We are just entering combat.
+//                game.ctx.playerWon = false;
+//
+//                currentMonologueRightAligned = false;
+//                startFadeOut(new CombatScreen(game));
+//                return;
+//            }
+//        }
+//
+//        // IMPORTANT:
+//        // This must run every frame, or the typewriter text never advances.
+//        wasMonologueActive = isMonologueActive;
 
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
@@ -392,6 +454,8 @@ public class ExploringScreen extends BaseScreen {
         } else if (!fadingOut) {
             handleMovement(delta);
         }
+
+        if (game.ctx.player == null) return;
 
         updateCamera();
 
@@ -461,6 +525,13 @@ public class ExploringScreen extends BaseScreen {
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
             startFadeOut(new MainMenuScreen(game));
         }
+    }
+
+    private void startMonologue(String[] lines, boolean rightAligned) {
+        currentMonologue = lines != null ? lines : new String[0];
+        currentMonologueRightAligned = rightAligned;
+        isMonologueActive = true;
+        prepareMonologue();
     }
 
     private void handlePlayerDeath() {
@@ -660,7 +731,7 @@ public class ExploringScreen extends BaseScreen {
 
     private void drawExitOverlay() {
         if (!showingExitPrompt) return;
-        
+
         Texture promptBg = game.assets.exitPromptBg;
         Texture yesBtn = game.assets.exitPromptYesBtn;
         Texture noBtn = game.assets.exitPromptNoBtn;
@@ -820,6 +891,7 @@ public class ExploringScreen extends BaseScreen {
     // ── Camera ────────────────────────────────────────────────────────────────
 
     private void updateCamera() {
+        if (game.ctx.player == null || fadingOut) return;
         game.gameCamera.zoom = 0.6f;
 
         float effectiveHalfW = (Main.WORLD_WIDTH * game.gameCamera.zoom) / 2f;
@@ -1445,8 +1517,13 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void handleMonologueInput(float delta) {
+        if (currentMonologue == null || currentMonologue.length == 0) {
+            finishCurrentMonologue();
+            return;
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            isMonologueActive = false;
+            finishCurrentMonologue();
             return;
         }
 
@@ -1466,13 +1543,83 @@ public class ExploringScreen extends BaseScreen {
                     monologueCharIndex = 0;
                     monologueTimer = 0f;
                     currentMonologueIndex++;
+
                     if (currentMonologueIndex >= currentMonologue.length) {
-                        isMonologueActive = false;
+                        finishCurrentMonologue();
                     }
                 }
             }
         }
     }
+
+    private void finishCurrentMonologue() {
+        isMonologueActive = false;
+
+        if (pendingFinalBossVictoryLines) {
+            pendingFinalBossVictoryLines = false;
+            pendingFinalBossRecordScreen = true;
+
+            startMonologue(game.ctx.bossVictoryLines, true);
+            return;
+        }
+
+        if (pendingFinalBossDefeatLines) {
+            pendingFinalBossDefeatLines = false;
+            pendingFinalBossDeathReset = true;
+
+            startMonologue(game.ctx.bossDefeatLines, true);
+            return;
+        }
+
+        if (pendingFinalBossRecordScreen) {
+            pendingFinalBossRecordScreen = false;
+            currentMonologueRightAligned = false;
+
+            game.ctx.mapsCleared = 3;
+            game.setScreen(new NameInputScreen(game, game.ctx, 1));
+            return;
+        }
+
+        if (pendingFinalBossDeathReset) {
+            pendingFinalBossDeathReset = false;
+            currentMonologueRightAligned = false;
+
+            handlePlayerDeath();
+            return;
+        }
+
+        if (pendingExit) {
+            pendingExit = false;
+
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+
+            currentMonologueRightAligned = false;
+            startFadeOut(getNextScreen());
+            return;
+        }
+
+        if (pendingBossDialogue) {
+            pendingBossDialogue = false;
+            pendingCombat = true;
+
+            startMonologue(game.ctx.bossPreCombatLines, true);
+            return;
+        }
+
+        if (pendingCombat) {
+            pendingCombat = false;
+            game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
+            game.ctx.playerWon = false;
+
+            currentMonologueRightAligned = false;
+            startFadeOut(new CombatScreen(game));
+        }
+    }
+
 
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
