@@ -375,7 +375,6 @@ Sprites/Combat/CharacterHero/Lyron/Death/6.png
 Sprites/Combat/CharacterHero/Lyron/Death/7.png
 Sprites/Combat/CharacterHero/Lyron/Death/8.png
 Sprites/Combat/CharacterHero/Lyron/Death/9.png
-Sprites/Combat/CharacterHero/Lyron/Death/LYRON_DEATH.png
 Sprites/Combat/CharacterHero/Lyron/Idle/Idle1.png
 Sprites/Combat/CharacterHero/Lyron/Idle/Idle2.png
 Sprites/Combat/CharacterHero/Lyron/Idle/Idle3.png

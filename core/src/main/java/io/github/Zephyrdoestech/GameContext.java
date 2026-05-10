@@ -190,6 +190,9 @@ public class GameContext {
         prefs.putFloat("playerX", playerX);
         prefs.putFloat("playerY", playerY);
 
+        // Save the map specific kill count
+        prefs.putInteger("enemiesDefeatedInCurrentMap", enemiesDefeatedInCurrentMap);
+
         if (activeCharacterStats != null) {
             prefs.putString("charName", activeCharacterStats.getName());
             prefs.putString("charWeapon", activeCharacterStats.getInstrument());
@@ -245,6 +248,9 @@ public class GameContext {
         // Read the saved coordinates
         this.savedPlayerX = prefs.getFloat("playerX", -1f);
         this.savedPlayerY = prefs.getFloat("playerY", -1f);
+
+        // Read the map-specific kill count
+        this.enemiesDefeatedInCurrentMap = prefs.getInteger("enemiesDefeatedInCurrentMap", 0);
 
         // 1. Read the base stats
         String name = prefs.getString("charName", "Sonara");

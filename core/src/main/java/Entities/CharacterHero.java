@@ -120,7 +120,7 @@ public class CharacterHero {
     public CharacterHero(String name, String instrument, int maxHp, int maxShield) {
         this.name          = name;
         this.instrument    = instrument;
-        this.maxHp         = maxHp;
+        this.maxHp         = 1;
         this.currentHp     = maxHp;   // Start at full health
         this.maxShield     = maxShield;
         this.currentShield = 0;       // Shield starts empty until a chord grants it
