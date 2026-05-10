@@ -57,7 +57,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         semiBossRoom.addEnemy(labagoliath);
         game.ctx.mapEnemies.add(labagoliath);
 
-        Room finalBossRoom = game.ctx.rooms.get(2);
+        Room finalBossRoom = game.ctx.rooms.get(0);
         float fbX = finalBossRoom.getBounds().x + (finalBossRoom.getBounds().width  - 64f) / 2f;
         float fbY = finalBossRoom.getBounds().y + (finalBossRoom.getBounds().height - 64f) / 2f;
         Enemy maestroSyozan = Enemy.maestroSyozan(fbX, fbY);
@@ -86,8 +86,8 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
             if (game.ctx.mapEnemies.isEmpty()) {
                 game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
 
-                // --- FIXED: Call the new Name Input Screen instead of the deleted method! ---
-                game.setScreen(new Screens.LeaderBoard.NameInputScreen(game, game.ctx, 3));
+                // Flow: Ending -> Credits -> Leaderboard -> Title Screen
+                game.setScreen(new CreditsScreen(game, true));
                 return;
             }
 

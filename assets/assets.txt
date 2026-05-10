@@ -807,6 +807,8 @@ UI/Panels/Inventory.png
 UI/Panels/LeaderBoard.png
 UI/Panels/LeaderBoard_Input.png
 UI/Panels/VictoryPopupBg.png
+UI/Panels/load_file.png
+UI/Panels/loadgame.png
 UI/Pause/btn_chordinfo.png
 UI/Pause/btn_continue.png
 UI/Pause/btn_exit.png
@@ -814,6 +816,7 @@ UI/Pause/btn_iteminfo.png
 UI/Pause/pause.png
 UI/credits_btn.png
 UI/exit_btn.png
+UI/load_btn.png
 UI/start_btn.png
 UI/story_btn.png
 UI/tutorial_btn.png

@@ -16,6 +16,10 @@ public class TitleScreen extends BaseScreen {
 
     @Override
     public void show() {
+        // Reset scales that might have been changed by other screens
+        game.assets.font.getData().setScale(1.5f);
+        game.assets.titleFont.getData().setScale(2.2f);
+
         // Reset cameras to centre for UI screens
         game.gameCamera.position.set(Main.WORLD_WIDTH / 2f, Main.WORLD_HEIGHT / 2f, 0);
         game.gameCamera.update();
@@ -41,8 +45,10 @@ public class TitleScreen extends BaseScreen {
         drawFloatingNotes(delta);
 
         game.assets.font.setColor(new Color(0.85f, 0.85f, 0.85f, 0.9f));
-        game.assets.font.draw(game.batch, "Press SPACE to continue",
-            290, 60);
+        String prompt = "Press SPACE to continue";
+        game.glyphLayout.setText(game.assets.font, prompt);
+        float textX = (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f;
+        game.assets.font.draw(game.batch, prompt, textX, 60f);
         game.assets.font.setColor(Color.WHITE);
 
         game.batch.end();
