@@ -18,10 +18,15 @@ import java.util.List;
 public class Assets implements Disposable {
     //Buttons
     public final Texture startBtnTex;
+    public final Texture loadBtnTex; // <-- NEW
     public final Texture tutorialBtnTex;
     public final Texture storyBtnTex;
     public final Texture creditsBtnTex;
     public final Texture exitBtnTex;
+
+    // Load Game UI
+    public final Texture loadGamePanelTex;
+    public final Texture loadFileTex;
 
     public Texture pauseMenuBG;
     public final Texture pauseContinueBtn;
@@ -377,10 +382,14 @@ public class Assets implements Disposable {
         aureliusTex = new Texture("aurelius.png");
 
         this.startBtnTex = new Texture("UI/start_btn.png");
+        this.loadBtnTex = new Texture("UI/load_btn.png");
         this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
         this.storyBtnTex = new Texture("UI/story_btn.png");
         this.creditsBtnTex = new Texture("UI/credits_btn.png");
         this.exitBtnTex = new Texture("UI/exit_btn.png");
+
+        this.loadGamePanelTex = new Texture("UI/Panels/loadgame.png");
+        this.loadFileTex = new Texture("UI/Panels/load_file.png");
 
         pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
         pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
@@ -497,7 +506,7 @@ public class Assets implements Disposable {
         aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
         bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
 
-        // ── Item Textures ─────────────────────────────────────────────────────
+        // ── Item Textures ─────────────────────────────────────────────────────────
 
         crimsonChorusBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
         majorsBlessingBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
@@ -805,10 +814,14 @@ public class Assets implements Disposable {
         disposeTexture(aureliusTex);
 
         disposeTexture(startBtnTex);
+        disposeTexture(loadBtnTex);
         disposeTexture(tutorialBtnTex);
         disposeTexture(storyBtnTex);
         disposeTexture(creditsBtnTex);
         disposeTexture(exitBtnTex);
+
+        disposeTexture(loadGamePanelTex);
+        disposeTexture(loadFileTex);
 
         disposeTexture(pauseMenuBG);
         disposeTexture(pauseContinueBtn);

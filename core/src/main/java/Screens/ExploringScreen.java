@@ -192,6 +192,7 @@ public class ExploringScreen extends BaseScreen {
 
     @Override
     public void show() {
+        startFadeIn();
         game.assets.font.getData().setScale(1.0f);       // ← add this
         game.assets.titleFont.getData().setScale(1.0f);  // ← and this
         game.ctx.currentMapScreen = this;
