@@ -1714,7 +1714,7 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.setColor(Color.GRAY);
         game.assets.font.getData().setScale(0.8f);
         game.assets.font.draw(game.batch, "Press ENTER to skip.",
-            Main.WORLD_WIDTH - px(5.0f),
+            (!currentMonologueRightAligned ? Main.WORLD_WIDTH - px(5.0f) : px(1.2f)),
             px(1.6f));
 
         game.assets.font.getData().setScale(1.0f);
