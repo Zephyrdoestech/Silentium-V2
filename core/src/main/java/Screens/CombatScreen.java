@@ -205,6 +205,7 @@ public class CombatScreen extends BaseScreen {
         game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
         game.ctx.resultTimer  = 0f;
         game.ctx.combatLog    = "";
+        game.ctx.combatState  = GameContext.CombatState.BATTLE_SCREEN;
         game.ctx.chordSystem.resetChords();
         game.ctx.metronome.reset();
         game.ctx.leveledUpTo = 0; // Reset level up tracking
@@ -265,6 +266,7 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
+            enemy.setMaxHp(1);
 
         if (player.getLevel() <= 3) {
             tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
@@ -2192,6 +2194,7 @@ public class CombatScreen extends BaseScreen {
 
         if(semiBossFight){
             game.ctx.isLabagoliathDefeated = true;
+            player.setHp(player.getMaxHp());
         }
 
         if (finalBossFight) {
