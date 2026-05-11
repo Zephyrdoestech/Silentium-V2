@@ -52,18 +52,10 @@ public class ExploringScreen extends BaseScreen {
     private Rectangle noButtonRect = new Rectangle();
     private Rectangle okButtonRect = new Rectangle();
 
-    // ── Screen Layout ─────────────────────────────────────────────────────────
-
-    private final float screenLeft   = 0;
-    private final float screenRight  = Main.WORLD_WIDTH;
-    private final float screenTop    = Main.WORLD_HEIGHT;
-    private final float screenBottom = 0;
-
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
+
     private float textWidth(String text) {
         game.glyphLayout.setText(game.assets.font, text);
         return game.glyphLayout.width;
@@ -1401,9 +1393,7 @@ public class ExploringScreen extends BaseScreen {
         }
 
         Inventory inv = player.getPlayerInventory();
-        for (int i = 0; i < dropCount; i++) {
-            if(!addRandomDrop(inv)) i--;
-        }
+        for (int i = 0; i < dropCount; i++) { addRandomDrop(inv); }
 
         game.ctx.enemiesDefeatedInCurrentMap++;
         showVictoryPopup = true;
@@ -1420,38 +1410,52 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-    private boolean addRandomDrop(Inventory inv) {
-        int itemType = RNG.nextInt(6);
+    private void addRandomDrop(Inventory inv) {
+        int lastDropType = -1;
+        switch(droppedItemNames.get(droppedItemNames.size() - 1)){
+            case "Crimson Chorus":      lastDropType = 0; break;
+            case "Major's Blessing":    lastDropType = 1; break;
+            case "Minor's Grace":       lastDropType = 2; break;
+            case "Resolved Dissonance": lastDropType = 3; break;
+            case "Silent Barrier":      lastDropType = 4; break;
+            case "Time Orb":            lastDropType = 5; break;
+        }
 
-        String itemName = "";
+        int itemType;
+
+        // Unique Item Drops
+        do { itemType = RNG.nextInt(6);
+        } while (itemType == lastDropType);
 
         switch (itemType) {
-            case 0:  itemName = "Crimson Chorus"; break;
-            case 1:  itemName = "Major's Blessing"; break;
-            case 2:  itemName = "Minor's Grace"; break;
-            case 3:  itemName = "Resolved Dissonance"; break;
-            case 4:  itemName = "Silent Barrier"; break;
-            case 5:  itemName = "Time Orb"; break;
+            case 0:
+                inv.gainCrimsonChorus(game.assets);
+                droppedItemNames.add("Crimson Chorus");
+                break;
+            case 1:
+                inv.gainMajorBlessing(game.assets);
+                droppedItemNames.add("Major's Blessing");
+                break;
+            case 2:
+                inv.gainMinorsGrace(game.assets);
+                droppedItemNames.add("Minor's Grace");
+                break;
+            case 3:
+                inv.gainResolvedDissonance(game.assets);
+                droppedItemNames.add("Resolved Dissonance");
+                break;
+            case 4:
+                inv.gainSilentBarrier(game.assets);
+                droppedItemNames.add("Silent Barrier");
+                break;
+            case 5:
+                inv.gainTimeOrb(game.assets);
+                droppedItemNames.add("Time Orb");
+                break;
         }
 
-        if (!droppedItemNames.isEmpty()) {
-            String latestDrop = droppedItemNames.get(droppedItemNames.size() - 1);
-            if (latestDrop.equals(itemName)) { return false; }
-        }
-
-        switch (itemType) {
-            case 0:  inv.gainCrimsonChorus(game.assets); break;
-            case 1:  inv.gainMajorBlessing(game.assets); break;
-            case 2:  inv.gainMinorsGrace(game.assets); break;
-            case 3:  inv.gainResolvedDissonance(game.assets); break;
-            case 4:  inv.gainSilentBarrier(game.assets); break;
-            case 5:  inv.gainTimeOrb(game.assets); break;
-        }
-
-        droppedItemNames.add(itemName);
-        droppedItemIcons.add(inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
-
-        return true;
+        lastDropType = itemType;
+        droppedItemIcons.add( inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
     }
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
@@ -1641,7 +1645,6 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
 
@@ -1653,7 +1656,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (animFrame == null) {
+        if (animFrame == null && !currentMonologueRightAligned) {
             switch(game.ctx.selectedCharacter){
                 case SONARA:
                     animFrame = game.assets.sonaraMonologueBox.getKeyFrame(game.ctx.stateTime, true);
@@ -1688,12 +1691,9 @@ public class ExploringScreen extends BaseScreen {
         int alignment = com.badlogic.gdx.utils.Align.left;
 
         if (currentMonologueRightAligned) {
-            // Syozan box has the enemy card on the right.
-            // So the text starts near the left, and reserves the same card-space on the right
-            // that player dialogue reserves on the left.
             float syozanTextLeft = boxX + px(2.0f);
             float enemyCardRightPadding = px(4.8f);
-            float syozanTextRightPadding = px(3.0f);
+            float syozanTextRightPadding = px(2.0f);
 
             textX = syozanTextLeft;
             wrapWidth = boxWidth - syozanTextLeft - enemyCardRightPadding - syozanTextRightPadding;

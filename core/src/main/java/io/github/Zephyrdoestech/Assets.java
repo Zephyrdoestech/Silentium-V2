@@ -38,6 +38,8 @@ public class Assets implements Disposable {
     public final Texture pauseBtnTex;
     public final Texture menuBtnTex;
 
+    public final Texture leaderboardBtn;
+
     public final Texture exitPromptBg;
     public final Texture exitPromptYesBtn;
     public final Texture exitPromptNoBtn;
@@ -432,6 +434,8 @@ public class Assets implements Disposable {
         inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
         pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
+
+        leaderboardBtn = new Texture("UI/Buttons/btn_leaderboard.png");
 
         exitPromptBg        = new Texture("UI/Panels/ExitMap/BG.png");
         exitPromptYesBtn    = new Texture("UI/Panels/ExitMap/yes_btn.png");;

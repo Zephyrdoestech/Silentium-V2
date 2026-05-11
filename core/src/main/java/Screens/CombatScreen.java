@@ -109,13 +109,6 @@ public class CombatScreen extends BaseScreen {
     private Texture[] chordInfoScreen = null;
     private Texture[] itemInfoScreen = null;
 
-    // ── Screen Layout ─────────────────────────────────────────────────────────
-
-    private final float screenLeft   = 0;
-    private final float screenRight  = Main.WORLD_WIDTH;
-    private final float screenTop    = Main.WORLD_HEIGHT;
-    private final float screenBottom = 0;
-
     private Texture playerHeader = null;
     private Texture enemyHeader = null;
 
@@ -175,8 +168,7 @@ public class CombatScreen extends BaseScreen {
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
+
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
