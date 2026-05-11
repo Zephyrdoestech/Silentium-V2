@@ -1412,13 +1412,16 @@ public class ExploringScreen extends BaseScreen {
 
     private void addRandomDrop(Inventory inv) {
         int lastDropType = -1;
-        switch(droppedItemNames.get(droppedItemNames.size() - 1)){
-            case "Crimson Chorus":      lastDropType = 0; break;
-            case "Major's Blessing":    lastDropType = 1; break;
-            case "Minor's Grace":       lastDropType = 2; break;
-            case "Resolved Dissonance": lastDropType = 3; break;
-            case "Silent Barrier":      lastDropType = 4; break;
-            case "Time Orb":            lastDropType = 5; break;
+
+        if (!droppedItemNames.isEmpty()) {
+            switch(droppedItemNames.get(droppedItemNames.size() - 1)){
+                case "Crimson Chorus":      lastDropType = 0; break;
+                case "Major's Blessing":    lastDropType = 1; break;
+                case "Minor's Grace":       lastDropType = 2; break;
+                case "Resolved Dissonance": lastDropType = 3; break;
+                case "Silent Barrier":      lastDropType = 4; break;
+                case "Time Orb":            lastDropType = 5; break;
+            }
         }
 
         int itemType;

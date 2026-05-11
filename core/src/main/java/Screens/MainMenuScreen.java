@@ -96,10 +96,33 @@ public class MainMenuScreen extends BaseScreen {
             game.batch.draw(buttons[i], centerX, drawY, BTN_WIDTH, BTN_HEIGHT);
         }
 
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.gameViewport.unproject(mousePos);
+
         Texture button = game.assets.leaderboardBtn;
-        game.batch.draw(button,
-            Main.WORLD_WIDTH - px(0.8f) - button.getWidth() / 2f, px(0.8f),
-            button.getWidth() / 2f, button.getHeight() /2f);
+        float leaderX = 0;
+        float leaderY = 0;
+        float leaderW = 0;
+        float leaderH = 0;
+        boolean hoverLeaderboard = false;
+
+        if (button != null) {
+            leaderX = Main.WORLD_WIDTH - px(0.8f) - button.getWidth() / 2f;
+            leaderY = px(0.8f);
+            leaderW = button.getWidth() / 2f;
+            leaderH = button.getHeight() / 2f;
+
+            hoverLeaderboard = (mousePos.x >= leaderX && mousePos.x <= leaderX + leaderW &&
+                                        mousePos.y >= leaderY && mousePos.y <= leaderY + leaderH);
+
+            if (hoverLeaderboard) {
+                game.batch.setColor(Color.WHITE);
+            } else {
+                game.batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            game.batch.draw(button, leaderX, leaderY, leaderW, leaderH);
+        }
 
         game.batch.end(); // Briefly stop the batch to draw our shapes!
 
@@ -160,9 +183,6 @@ public class MainMenuScreen extends BaseScreen {
         }
 
         // 7. Handle Mouse Input
-        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        game.gameViewport.unproject(mousePos);
-
         for (int i = 0; i < buttons.length; i++) {
             float btnY = startY - (i * gap);
 
@@ -178,6 +198,10 @@ public class MainMenuScreen extends BaseScreen {
                     handleSelection();
                 }
             }
+        }
+
+        if (hoverLeaderboard && Gdx.input.justTouched()) {
+            startFadeOut(new Screens.LeaderBoard.LeaderboardScreen(game, 3));
         }
     }
 

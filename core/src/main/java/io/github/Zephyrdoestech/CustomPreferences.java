@@ -8,6 +8,7 @@ import java.util.Properties;
 public class CustomPreferences {
     private final Properties properties = new Properties();
     private final FileHandle file;
+    private static final Object writeLock = new Object();
 
     public CustomPreferences(String name) {
         // Gdx.files.local points to the working directory, which in dev is your assets folder!
@@ -65,13 +66,17 @@ public class CustomPreferences {
         final Properties snapshot = (Properties) properties.clone();
 
         new Thread(() -> {
-            try {
-                if (!file.parent().exists()) {
-                    file.parent().mkdirs();
+            // Using a static lock ensures that even if multiple threads are spawned,
+            // they will take turns writing the file, preventing XML corruption.
+            synchronized (writeLock) {
+                try {
+                    if (!file.parent().exists()) {
+                        file.parent().mkdirs();
+                    }
+                    snapshot.storeToXML(file.write(false), null);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                snapshot.storeToXML(file.write(false), null);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }).start();
     }
