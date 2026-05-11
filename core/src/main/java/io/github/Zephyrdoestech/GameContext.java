@@ -261,6 +261,15 @@ public class GameContext {
         }
     }
 
+    public void deleteCurrentSave() {
+        if (currentSaveSlot != null) {
+            com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(currentSaveSlot);
+            prefs.clear();
+            prefs.flush();
+            System.out.println("Deleted save file: " + currentSaveSlot);
+        }
+    }
+
     // --- LOAD LOGIC ---
     public String loadGame(String slotName, Assets assets) {
         this.currentSaveSlot = slotName;

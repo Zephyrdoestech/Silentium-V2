@@ -88,6 +88,9 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
             if (game.ctx.mapEnemies.isEmpty()) {
                 game.ctx.mapsCleared = 3; // Player has cleared all 3 maps.
 
+                // Delete the save file after finishing the game
+                game.ctx.deleteCurrentSave();
+
                 // Flow: Ending -> Credits -> Leaderboard -> Title Screen
                 game.setScreen(new EndingScreen(game));
                 return;
