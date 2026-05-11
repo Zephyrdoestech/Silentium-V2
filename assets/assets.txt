@@ -122,6 +122,7 @@ Background/Map/Silent_Caverns.png
 Background/Map/Town_Decorations.png
 Background/Map/Town_Exit.png
 Background/Map/Town_Of_Echoes.png
+Background/Story/story_border.png
 Background/Story/story_panel_1.png
 Background/Story/story_panel_2.png
 Background/Story/story_panel_3.png
@@ -168,9 +169,6 @@ Lyron/Select/lyronSelect7.png
 Lyron/Select/lyronSelect8.png
 Lyron/Select/lyronSelect9.png
 Saves/ZephyrGlobal.xml
-Saves/ZephyrSave_1.xml
-Saves/ZephyrSave_2.xml
-Saves/silentium_leaderboard.xml
 Sonara/Select/sonaraSelect1.png
 Sonara/Select/sonaraSelect10.png
 Sonara/Select/sonaraSelect11.png
@@ -827,6 +825,7 @@ Sprites/Monster/Syozan/MonologueBox/7.png
 Sprites/Monster/Syozan/MonologueBox/8.png
 Sprites/Monster/Syozan/MonologueBox/9.png
 UI/Buttons/btn_inventory.png
+UI/Buttons/btn_leaderboard.png
 UI/Buttons/btn_menu.png
 UI/Buttons/btn_pause.png
 UI/Items/Battle/crimson_chorus_battle.png
