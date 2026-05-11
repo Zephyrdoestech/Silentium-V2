@@ -130,12 +130,29 @@ public class SilentCavernsScreen extends ExploringScreen {
         super.show();
 
         if (game.ctx != null) {
-            game.ctx.mapsCleared = 0;
+            game.ctx.mapsCleared = 1;
+        }
+
+        // Start the town music when the screen is shown
+        if (game.assets.silentCavernsBGM != null) {
+            game.assets.silentCavernsBGM.setLooping(true);
+            game.assets.silentCavernsBGM.setVolume(0.5f);
+            game.assets.silentCavernsBGM.play();
         }
 
         // 2. Auto-Save the game!
         if (game.ctx != null) {
             game.ctx.saveGame("SilentCaverns", game.ctx.player.getX(), game.ctx.player.getY());
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+
+        // Stop the town music when leaving (e.g., entering Combat or Main Menu)
+        if (game.assets.silentCavernsBGM != null) {
+            game.assets.silentCavernsBGM.stop();
         }
     }
 }

@@ -89,7 +89,7 @@ public class CharSelectScreen extends BaseScreen {
                     case 1: game.ctx.activeCharacterStats = new CharacterHero("Aurelius", "Flute", 150, 40); break;
                     case 2: game.ctx.activeCharacterStats = new CharacterHero("Lyron",    "Harp",  250, 40); break;
                 }
-                game.setScreen(new TownOfEchoesScreen(game));
+                game.setScreen(new CharacterLoreScreen(game));
                 return; // Exit render loop to prevent further drawing
             }
         }
@@ -134,11 +134,11 @@ public class CharSelectScreen extends BaseScreen {
             if (animFrame != null) { game.batch.draw(animFrame, imageX, imageY, cardWidth, cardHeight);
             } else if (staticFrame != null) { game.batch.draw(staticFrame, imageX, imageY, cardWidth, cardHeight);}
 
-            game.assets.loreFont.getData().setScale(1.2f);
-            game.assets.loreFont.setColor(sel ? Color.YELLOW : Color.WHITE);
-            game.assets.loreFont.draw(game.batch, WEAPONS[i], textX, textY);
-            game.assets.loreFont.draw(game.batch, HP_VALS[i], textX, textY - px (1f));
-            game.assets.loreFont.setColor(Color.WHITE);
+            game.assets.font.getData().setScale(1.2f);
+            game.assets.font.setColor(sel ? Color.YELLOW : Color.WHITE);
+            game.assets.font.draw(game.batch, WEAPONS[i], textX, textY);
+            game.assets.font.draw(game.batch, HP_VALS[i], textX, textY - px (1f));
+            game.assets.font.setColor(Color.WHITE);
         }
 
         drawCenteredText(DESCS[index], 0, px(2.0f), Main.WORLD_WIDTH, px(1.6f),

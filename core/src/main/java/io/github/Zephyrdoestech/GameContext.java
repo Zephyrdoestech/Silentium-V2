@@ -9,6 +9,8 @@ import Mechanics.CombatSystem.Metronome;
 import Mechanics.MapTraversalSystem.Room;
 import Screens.ExploringScreen;
 import com.badlogic.gdx.audio.Music;
+import Inventory.Consumables.Item;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +79,7 @@ public class GameContext {
     public ExploringScreen currentMapScreen = null;
 
 
-    // Map dimensions — match your Dungeon.png pixel size
+    // Map dimensions
     public float MAP_SIZE = 2048f;
     public static final float CHAR_SIZE = 32f;
     public static final float SPEED     = 200f;
@@ -101,12 +103,37 @@ public class GameContext {
     public boolean playerWon = false;
     public int leveledUpTo = 0;
 
+    public boolean isLabagoliathDefeated = false;
+
     // ── Final Boss Lines ─────────────────────────────────────────────────
 
-    public String[] bossDialogueLines = {
-        "So the little melody finally reaches me.",
-        "Play, then.",
-        "Let me hear what remains of your world."
+    public boolean finalBossVictoryPending = false;
+    public boolean finalBossDefeatPending = false;
+
+    public String[] bossPreCombatLines = {
+        "Ah, another one.",
+        "A child of the silence, yet obsessed with the deafening clang of sound.",
+        "Did you truly believe your little noise could lead you here? How pathetic.",
+        "You found my work - the eternal silence - and instead of realizing its perfection, you declared it a disease.",
+        "You confuse chaos for life, and order for cruelty."
+    };
+
+    public String[] bossVictoryLines = {
+        "No... you fool!",
+        "You have ruined the perfection!",
+        "You confuse this chaos for life, and order for cruelty!",
+        "I imposed this silence out of pity;",
+        "stopping the world from screaming itself into oblivion;",
+        "gifting humanity absolute peace from the sheer, agonizing volume of its own sorrow.",
+        "You think this noise is freedom?",
+        "It is the sound of inevitable pain and hatred, magnified a thousand times!",
+        "You will live to regret this freedom, child; you will beg for the quiet I gifted you."
+    };
+
+    public String[] bossDefeatLines = {
+        "You fought to bring back the scream of existence, but you lacked the breath to sustain it.",
+        "Look around—the silence hasn't just defeated you; it has welcomed you home.",
+        "You are finally part of the masterpiece."
     };
 
     // ── CharacterHero-select audio ─────────────────────────────────────────────────
@@ -129,23 +156,36 @@ public class GameContext {
     }
 
     public void createNewSaveSlot() {
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
-        int saveCount = global.getInteger("saveCount", 0);
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
 
-        if (saveCount >= 3) {
-            // Overwrite the 3rd save slot if we hit the limit
-            currentSaveSlot = "ZephyrSave_3";
-        } else {
-            saveCount++;
-            currentSaveSlot = "ZephyrSave_" + saveCount;
-            global.putInteger("saveCount", saveCount);
-            global.putString("save_" + saveCount, currentSaveSlot);
+        // Find the first empty slot out of the 3 available
+        int availableSlot = -1;
+        for (int i = 1; i <= 3; i++) {
+            String slotName = "ZephyrSave_" + i;
+            CustomPreferences slotPrefs = CustomPreferences.getPreferences(slotName);
+            if (!slotPrefs.contains("currentMap")) {
+                availableSlot = i;
+                break;
+            }
+        }
+
+        if (availableSlot != -1) {
+            // Found an empty slot, use it
+            currentSaveSlot = "ZephyrSave_" + availableSlot;
+            int saveCount = global.getInteger("saveCount", 0);
+            if (availableSlot > saveCount) {
+                global.putInteger("saveCount", availableSlot);
+            }
+            global.putString("save_" + availableSlot, currentSaveSlot);
             global.flush();
+        } else {
+            // No empty slots, overwrite the 3rd slot as fallback
+            currentSaveSlot = "ZephyrSave_3";
         }
     }
 
     public List<String> getAllSaveSlots() {
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
         int saveCount = global.getInteger("saveCount", 0);
         List<String> saves = new ArrayList<>();
         for (int i = 1; i <= saveCount; i++) {
@@ -156,7 +196,7 @@ public class GameContext {
 
     // Get info for a specific save slot to display on the load screen
     public String getSaveInfo(String slotName) {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+        CustomPreferences prefs = CustomPreferences.getPreferences(slotName);
         if (!prefs.contains("currentMap")) {
             return "Empty Slot";
         }
@@ -168,12 +208,15 @@ public class GameContext {
 
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(currentSaveSlot);
+        CustomPreferences prefs = CustomPreferences.getPreferences(currentSaveSlot);
 
         prefs.putString("currentMap", mapName);
 
         prefs.putFloat("playerX", playerX);
         prefs.putFloat("playerY", playerY);
+
+        // Save the map specific kill count
+        prefs.putInteger("enemiesDefeatedInCurrentMap", enemiesDefeatedInCurrentMap);
 
         if (activeCharacterStats != null) {
             prefs.putString("charName", activeCharacterStats.getName());
@@ -185,10 +228,12 @@ public class GameContext {
             prefs.putInteger("charLevel", activeCharacterStats.getLevel());
             prefs.putInteger("charMonsters", activeCharacterStats.getMonstersDefeated());
 
-            // Flatten the inventory Map into a single String (e.g., "CrimsonChorus:1,TimeOrb:2,")
+            // Serialize the items in playerInventory
             StringBuilder invStr = new StringBuilder();
-            for (java.util.Map.Entry<String, Integer> entry : activeCharacterStats.inventory.entrySet()) {
-                invStr.append(entry.getKey()).append(":").append(entry.getValue()).append(",");
+            if (activeCharacterStats.getPlayerInventory() != null) {
+                for (Item item : activeCharacterStats.getPlayerInventory().getItems()) {
+                    invStr.append(item.getName()).append(",");
+                }
             }
             prefs.putString("charInventory", invStr.toString());
         }
@@ -197,7 +242,7 @@ public class GameContext {
         System.out.println("Game Auto-Saved at: " + mapName + " into " + currentSaveSlot);
 
         // Also register in ZephyrGlobal if not already
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
         int saveCount = global.getInteger("saveCount", 0);
         boolean found = false;
         for (int i = 1; i <= saveCount; i++) {
@@ -216,10 +261,19 @@ public class GameContext {
         }
     }
 
+    public void deleteCurrentSave() {
+        if (currentSaveSlot != null) {
+            CustomPreferences prefs = CustomPreferences.getPreferences(currentSaveSlot);
+            prefs.clear();
+            prefs.flush();
+            System.out.println("Deleted save file: " + currentSaveSlot);
+        }
+    }
+
     // --- LOAD LOGIC ---
-    public String loadGame(String slotName) {
+    public String loadGame(String slotName, Assets assets) {
         this.currentSaveSlot = slotName;
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+        CustomPreferences prefs = CustomPreferences.getPreferences(slotName);
 
         if (!prefs.contains("currentMap")) {
             return null; // No save file exists!
@@ -228,6 +282,9 @@ public class GameContext {
         // Read the saved coordinates
         this.savedPlayerX = prefs.getFloat("playerX", -1f);
         this.savedPlayerY = prefs.getFloat("playerY", -1f);
+
+        // Read the map-specific kill count
+        this.enemiesDefeatedInCurrentMap = prefs.getInteger("enemiesDefeatedInCurrentMap", 0);
 
         // 1. Read the base stats
         String name = prefs.getString("charName", "Sonara");
@@ -256,14 +313,39 @@ public class GameContext {
         loadedChar.setLevel(prefs.getInteger("charLevel", 1));
         loadedChar.setMonstersDefeated(prefs.getInteger("charMonsters", 0));
 
-        // 3. Unpack the inventory
+        // 3. Unpack the inventory into playerInventory
         String invStr = prefs.getString("charInventory", "");
         if (!invStr.isEmpty()) {
             String[] items = invStr.split(",");
-            for (String item : items) {
-                if (item.contains(":")) {
-                    String[] parts = item.split(":");
-                    loadedChar.inventory.put(parts[0], Integer.parseInt(parts[1]));
+            for (String itemStr : items) {
+                String itemName = itemStr.trim();
+                if (itemName.isEmpty()) continue;
+
+                // If it contains a colon, we extract just the name to support backward compatibility
+                // (if older saves had format "Crimson Chorus:1")
+                if (itemName.contains(":")) {
+                    itemName = itemName.split(":")[0].trim();
+                }
+
+                switch (itemName) {
+                    case "Crimson Chorus":
+                        loadedChar.getPlayerInventory().gainCrimsonChorus(assets);
+                        break;
+                    case "Major's Blessing":
+                        loadedChar.getPlayerInventory().gainMajorBlessing(assets);
+                        break;
+                    case "Minor's Grace":
+                        loadedChar.getPlayerInventory().gainMinorsGrace(assets);
+                        break;
+                    case "Silent Barrier":
+                        loadedChar.getPlayerInventory().gainSilentBarrier(assets);
+                        break;
+                    case "Resolved Dissonance":
+                        loadedChar.getPlayerInventory().gainResolvedDissonance(assets);
+                        break;
+                    case "Time Orb":
+                        loadedChar.getPlayerInventory().gainTimeOrb(assets);
+                        break;
                 }
             }
         }

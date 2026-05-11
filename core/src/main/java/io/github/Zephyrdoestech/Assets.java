@@ -38,6 +38,10 @@ public class Assets implements Disposable {
     public final Texture pauseBtnTex;
     public final Texture menuBtnTex;
 
+    public final Texture exitPromptBg;
+    public final Texture exitPromptYesBtn;
+    public final Texture exitPromptNoBtn;
+
     public final Texture leaderboardPanelBG;
 
     public final com.badlogic.gdx.graphics.g2d.Animation<com.badlogic.gdx.graphics.g2d.TextureRegion> sonaraSelectAnim;
@@ -86,12 +90,20 @@ public class Assets implements Disposable {
     public final Texture darknessOverlay;
     public final Texture[] noteTextures;
 
+
     public Music storyBGM;
     public Music townOfEchoesBGM;
+    public Music silentCavernsBGM;
+    public Music abyssOfDissonanceBGM;
     public Music battleTownBGM;
     public Music battleCavernsBGM;
     public Music battleAbyssBGM;
     public Music battleBossBGM;
+
+    public Sound traversalSFX;
+    public Sound monologueSFX;
+    public Sound skillActivationSFX;
+    public Sound useItemSFX;
 
     public Sound victory;
     public Sound defeat;
@@ -143,11 +155,22 @@ public class Assets implements Disposable {
     public Sound chordAttackHarpFmaj;
     public Sound chordAttackHarpGmaj;
 
+    public Sound enemyAttackv1;
+    public Sound enemyAttackv2;
+    public Sound enemyAttackv3;
+    public Sound enemyAttackv4;
+
+    public Sound levelUpSFX;
+
     public final Texture story1Tex;
     public final Texture story2Tex;
     public final Texture story3Tex;
-    public final Texture story4Tex;
 
+
+    // Endings
+    public final Texture sonaraEnding;
+    public final Texture aureliusEnding;
+    public final Texture lyronEnding;
 
     // ── Exploration Animations ────────────────────────────────────────────────
 
@@ -258,6 +281,12 @@ public class Assets implements Disposable {
 
     // ── Combat Animations ─────────────────────────────────────────────────────
 
+    public final Animation<TextureRegion> sonaraLore;
+    public final Animation<TextureRegion> aureliusLore;
+    public final Animation<TextureRegion> lyronLore;
+
+    // ── Combat Animations ─────────────────────────────────────────────────────
+
     public final Animation<TextureRegion> battleIntroAnim;
     public final Animation<TextureRegion> victoryAnim;
     public final Animation<TextureRegion> defeatAnim;
@@ -316,7 +345,7 @@ public class Assets implements Disposable {
 
     public Assets() {
         // Fonts
-        font      = new BitmapFont(); font.getData().setScale(1.5f);
+        loreFont      = new BitmapFont(); loreFont.getData().setScale(1.5f);
         titleFont = new BitmapFont(); titleFont.getData().setScale(2.2f);
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
 
@@ -324,12 +353,12 @@ public class Assets implements Disposable {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
             // Set the base size of the font you want
-        parameter.size = 24;
+        parameter.size =14;
             // You can also easily add borders, shadows, and colors here!
         parameter.borderWidth = 1;
 
-        loreFont = generator.generateFont(parameter);
-        loreFont.getData().setScale(1.5f);
+        font = generator.generateFont(parameter);
+        font.getData().setScale(1.0f);
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");
@@ -404,13 +433,20 @@ public class Assets implements Disposable {
         pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
         menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
 
+        exitPromptBg        = new Texture("UI/Panels/ExitMap/BG.png");
+        exitPromptYesBtn    = new Texture("UI/Panels/ExitMap/yes_btn.png");;
+        exitPromptNoBtn     = new Texture("UI/Panels/ExitMap/no_btn.png");;
+
         leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
         nameInputPanelBG = safeLoadTexture("UI/Panels/LeaderBoard_Input.png");
 
         story1Tex = safeLoadTexture("Background/Story/story_panel_1.png");
         story2Tex = safeLoadTexture("Background/Story/story_panel_2.png");
         story3Tex = safeLoadTexture("Background/Story/story_panel_3.png");
-        story4Tex = safeLoadTexture("Background/Story/story_panel_4.png");
+
+        sonaraEnding = safeLoadTexture("Background/Ending/sonara_ending.png");
+        aureliusEnding = safeLoadTexture("Background/Ending/aurelius_ending.png");
+        lyronEnding = safeLoadTexture("Background/Ending/lyron_ending.png");
 
         // Load the 11-frame selection animations!
         sonaraSelectAnim = loadAnim("Sonara/Select", "sonaraSelect", 11, 0.1f);
@@ -533,6 +569,12 @@ public class Assets implements Disposable {
         emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
         selectedSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
 
+        // ── Character Lore ─────────────────────────────────────────────────
+
+        sonaraLore = loadAnim("Sprites/Characters/Sonara/Lore",   "",  10, 0.12f);
+        aureliusLore = loadAnim("Sprites/Characters/Aurelius/Lore",   "",  10, 0.12f);
+        lyronLore = loadAnim("Sprites/Characters/Lyron/Lore",   "",  10, 0.12f);
+
         // ── Combat Animations ─────────────────────────────────────────────────
 
         battleIntroAnim = loadAnim("Sprites/Combat/SplashScreen/Intro",   "",  20, 0.05f);
@@ -575,7 +617,7 @@ public class Assets implements Disposable {
         labagoliathCombatDamaged = loadAnim("Sprites/Combat/Monster/Labagoliath/Damaged",  "", 4, 0.2f);
 
         syozanCombatIdle         = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Idle",         "",   16, 0.1f));
-        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.4f));
+        syozanCombatAttack       = flipped(loadAnim("Sprites/Combat/Monster/Syozan/Attack",       "", 48, 0.03f));
         syozanCombatDamaged       = loadAnim("Sprites/Combat/Monster/Syozan/Damaged",       "", 4, 0.2f);
 
         // ── Audio ─────────────────────────────────────────────────────────────
@@ -583,6 +625,8 @@ public class Assets implements Disposable {
         // Load Background Music
         storyBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/Story.mp3"));
         townOfEchoesBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/TownOfEchoes.mp3"));
+        silentCavernsBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/SilentCaverns.mp3"));
+        abyssOfDissonanceBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/AbyssOfDissonance.mp3"));
 
         // Update this to match your "title_music.wav" file
         titleBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/background_music/title_music.wav"));
@@ -593,9 +637,16 @@ public class Assets implements Disposable {
         battleAbyssBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_abyss.mp3"));
         battleBossBGM = Gdx.audio.newMusic(Gdx.files.internal("Audio/Combat/BGM/battle_boss.mp3"));
 
+        // Exploring SFX
+        traversalSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Explore/traversalSFX.mp3"));
+        monologueSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/monologueSFX.mp3"));
+
         // Battle SFX
         // State Transition
         stateTransition = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/state_transition.mp3"));
+        // Item and Skill Used;
+        skillActivationSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/skillActivationSFX.wav"));
+        useItemSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/useItemSFX.wav"));
         // Splash Screen
         victory = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/victory.wav"));
         defeat = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/defeat.wav"));
@@ -649,10 +700,14 @@ public class Assets implements Disposable {
         chordAttackHarpFmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - F MAJOR.wav"));
         chordAttackHarpGmaj = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/Notes/Harp/harp - G MAJOR.wav"));
 
+        levelUpSFX = Gdx.audio.newSound(Gdx.files.internal("Audio/Combat/SFX/SFX_levelup.wav"));
+
         // Set Loops
         titleBGM.setLooping(true);
         storyBGM.setLooping(true);
         townOfEchoesBGM.setLooping(true);
+        silentCavernsBGM.setLooping(true);
+        abyssOfDissonanceBGM.setLooping(true);
 
         battleTownBGM.setLooping(true);
         battleCavernsBGM.setLooping(true);
@@ -844,7 +899,10 @@ public class Assets implements Disposable {
         disposeTexture(story1Tex);
         disposeTexture(story2Tex);
         disposeTexture(story3Tex);
-        disposeTexture(story4Tex);
+
+        disposeTexture(sonaraEnding);
+        disposeTexture(aureliusEnding);
+        disposeTexture(lyronEnding);
 
         disposeTexture(darknessOverlay);
         if (noteTextures != null) {

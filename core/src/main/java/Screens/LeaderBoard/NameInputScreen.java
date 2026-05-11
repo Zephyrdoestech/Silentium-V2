@@ -104,7 +104,7 @@ public class NameInputScreen implements Screen {
         game.assets.titleFont.draw(game.batch, displayString, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, textY);
 
         // --- RESET SCALE (CRITICAL!) ---
-        game.assets.titleFont.getData().setScale(1.0f);
+        game.assets.titleFont.getData().setScale(2.2f); // Set back to 2.2f instead of 1.0f
         // -------------------------------
 
         // 3. Draw the Helper Footer underneath the panel

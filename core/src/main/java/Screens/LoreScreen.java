@@ -11,6 +11,7 @@ public class LoreScreen extends BaseScreen {
 
     private Texture[] slides;
     private int currentSlide = 0;
+    private boolean fromStartGame;
 
     // Fade logic variables
     private enum FadeState { FADING_IN, VIEWING, FADING_OUT }
@@ -18,8 +19,14 @@ public class LoreScreen extends BaseScreen {
     private float slideAlpha = 0f;
     private final float FADE_SPEED = 1.5f; // Higher is faster. 1.0f takes 1 second to fade.
 
+    public LoreScreen(Main game, boolean fromStartGame) {
+        super(game);
+        this.fromStartGame = fromStartGame;
+    }
+
     public LoreScreen(Main game) {
         super(game);
+        this.fromStartGame = false;
     }
 
     @Override
@@ -119,12 +126,15 @@ public class LoreScreen extends BaseScreen {
             game.assets.storyBGM.stop();
         }
 
-        if (game.assets.titleBGM != null) {
-            game.assets.titleBGM.setLooping(true);
-            game.assets.titleBGM.play();
+        if (fromStartGame) {
+            game.setScreen(new CharSelectScreen(game));
+        } else {
+            if (game.assets.titleBGM != null) {
+                game.assets.titleBGM.setLooping(true);
+                game.assets.titleBGM.play();
+            }
+            game.setScreen(new MainMenuScreen(game));
         }
-
-        game.setScreen(new CharSelectScreen(game));
     }
 
     @Override public void resize(int w, int h) { game.gameViewport.update(w, h, true); }
