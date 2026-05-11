@@ -20,11 +20,6 @@ public class LoreScreen extends BaseScreen {
     private float slideAlpha = 0f;
     private final float FADE_SPEED = 1.5f; // Higher is faster. 1.0f takes 1 second to fade.
 
-    public LoreScreen(Main game, boolean fromStartGame) {
-        super(game);
-        this.fromStartGame = fromStartGame;
-    }
-
     // Text Render Variables
     private int loreTextIndex = 0;
     private int loreCharIndex = 0;
