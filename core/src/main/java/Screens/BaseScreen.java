@@ -165,8 +165,15 @@ public abstract class BaseScreen implements Screen {
 
     // ── Measurement helper ──────────────────────────────────────────────────────────
 
-    private static final float scale = 32f;
+    protected static final float scale = 32f;
     protected float px(float factor){ return scale * factor;}
+
+    // ── Screen Layout ─────────────────────────────────────────────────────────
+
+    protected final float screenLeft   = 0;
+    protected final float screenRight  = Main.WORLD_WIDTH;
+    protected final float screenTop    = Main.WORLD_HEIGHT;
+    protected final float screenBottom = 0;
 
     // ── Default no-op lifecycle ───────────────────────────────────────────────
 

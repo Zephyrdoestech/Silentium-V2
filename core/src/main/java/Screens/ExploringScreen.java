@@ -52,13 +52,6 @@ public class ExploringScreen extends BaseScreen {
     private Rectangle noButtonRect = new Rectangle();
     private Rectangle okButtonRect = new Rectangle();
 
-    // ── Screen Layout ─────────────────────────────────────────────────────────
-
-    private final float screenLeft   = 0;
-    private final float screenRight  = Main.WORLD_WIDTH;
-    private final float screenTop    = Main.WORLD_HEIGHT;
-    private final float screenBottom = 0;
-
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
@@ -1641,7 +1634,6 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
 
@@ -1653,7 +1645,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (animFrame == null) {
+        if (animFrame == null && !currentMonologueRightAligned) {
             switch(game.ctx.selectedCharacter){
                 case SONARA:
                     animFrame = game.assets.sonaraMonologueBox.getKeyFrame(game.ctx.stateTime, true);
@@ -1688,12 +1680,9 @@ public class ExploringScreen extends BaseScreen {
         int alignment = com.badlogic.gdx.utils.Align.left;
 
         if (currentMonologueRightAligned) {
-            // Syozan box has the enemy card on the right.
-            // So the text starts near the left, and reserves the same card-space on the right
-            // that player dialogue reserves on the left.
             float syozanTextLeft = boxX + px(2.0f);
             float enemyCardRightPadding = px(4.8f);
-            float syozanTextRightPadding = px(3.0f);
+            float syozanTextRightPadding = px(2.0f);
 
             textX = syozanTextLeft;
             wrapWidth = boxWidth - syozanTextLeft - enemyCardRightPadding - syozanTextRightPadding;

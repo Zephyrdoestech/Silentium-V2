@@ -109,13 +109,6 @@ public class CombatScreen extends BaseScreen {
     private Texture[] chordInfoScreen = null;
     private Texture[] itemInfoScreen = null;
 
-    // ── Screen Layout ─────────────────────────────────────────────────────────
-
-    private final float screenLeft   = 0;
-    private final float screenRight  = Main.WORLD_WIDTH;
-    private final float screenTop    = Main.WORLD_HEIGHT;
-    private final float screenBottom = 0;
-
     private Texture playerHeader = null;
     private Texture enemyHeader = null;
 
