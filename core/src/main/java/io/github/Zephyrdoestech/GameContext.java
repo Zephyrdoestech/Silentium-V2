@@ -103,12 +103,37 @@ public class GameContext {
     public boolean playerWon = false;
     public int leveledUpTo = 0;
 
+    public boolean isLabagoliathDefeated = false;
+
     // ── Final Boss Lines ─────────────────────────────────────────────────
 
-    public String[] bossDialogueLines = {
-        "So the little melody finally reaches me.",
-        "Play, then.",
-        "Let me hear what remains of your world."
+    public boolean finalBossVictoryPending = false;
+    public boolean finalBossDefeatPending = false;
+
+    public String[] bossPreCombatLines = {
+        "Ah, another one.",
+        "A child of the silence, yet obsessed with the deafening clang of sound.",
+        "Did you truly believe your little noise could lead you here? How pathetic.",
+        "You found my work - the eternal silence - and instead of realizing its perfection, you declared it a disease.",
+        "You confuse chaos for life, and order for cruelty."
+    };
+
+    public String[] bossVictoryLines = {
+        "No... you fool!",
+        "You have ruined the perfection!",
+        "You confuse this chaos for life, and order for cruelty!",
+        "I imposed this silence out of pity;",
+        "stopping the world from screaming itself into oblivion;",
+        "gifting humanity absolute peace from the sheer, agonizing volume of its own sorrow.",
+        "You think this noise is freedom?",
+        "It is the sound of inevitable pain and hatred, magnified a thousand times!",
+        "You will live to regret this freedom, child; you will beg for the quiet I gifted you."
+    };
+
+    public String[] bossDefeatLines = {
+        "You fought to bring back the scream of existence, but you lacked the breath to sustain it.",
+        "Look around—the silence hasn't just defeated you; it has welcomed you home.",
+        "You are finally part of the masterpiece."
     };
 
     // ── CharacterHero-select audio ─────────────────────────────────────────────────

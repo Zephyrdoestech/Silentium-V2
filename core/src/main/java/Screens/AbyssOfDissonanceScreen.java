@@ -93,11 +93,28 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
                 return;
             }
 
+            // Start the town music when the screen is shown
+            if (game.assets.abyssOfDissonanceBGM != null) {
+                game.assets.abyssOfDissonanceBGM.setLooping(true);
+                game.assets.abyssOfDissonanceBGM.setVolume(0.5f);
+                game.assets.abyssOfDissonanceBGM.play();
+            }
+
             // Player is on the 3rd map, so they have cleared 2 maps.
             game.ctx.mapsCleared = 2;
 
             // Auto-Save the game
             game.ctx.saveGame("AbyssOfDissonance", game.ctx.player.getX(), game.ctx.player.getY());
+        }
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+
+        // Stop the town music when leaving (e.g., entering Combat or Main Menu)
+        if (game.assets.abyssOfDissonanceBGM != null) {
+            game.assets.abyssOfDissonanceBGM.stop();
         }
     }
 }

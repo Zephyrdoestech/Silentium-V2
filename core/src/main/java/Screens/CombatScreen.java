@@ -265,8 +265,6 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
-        enemy.setMaxHp((int)(1));
-
 
         if (player.getLevel() <= 3) {
             tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
@@ -1196,8 +1194,23 @@ public class CombatScreen extends BaseScreen {
 
     private void renderDialogue(float delta) {
         switch (game.ctx.combatState) {
-            case ENEMY_INTRODUCTION:        game.ctx.combatLog = enemy.getName() + " encountered!";       break;
-            case CHARACTER_POSTCOMBAT_LINE: game.ctx.combatLog = enemy.getName() + " has been defeated!";     break;
+            case ENEMY_INTRODUCTION:
+                if(enemy.getName().equals("Labagoliath the Void Shaker")){
+                    game.ctx.combatLog = "Labagoliath has appeared!";
+                } else if(enemy.getName().equals("Maestro Syozan")){
+                    game.ctx.combatLog = "Maestro Syozan has appeared!";
+                } else {
+                    game.ctx.combatLog = enemy.getName() + " encountered!";
+                }
+                break;
+            case CHARACTER_POSTCOMBAT_LINE:
+                if(enemy.getName().equals("Labagoliath the Void Shaker")){
+                    game.ctx.combatLog = "Labagoliath has been slain!";
+                } else if(enemy.getName().equals("Maestro Syozan")){
+                    game.ctx.combatLog = "Maestro Syozan is defeated!";
+                } else {
+                    game.ctx.combatLog = enemy.getName() + " eliminated!";
+                }
             default: break;
         }
 
@@ -1383,16 +1396,19 @@ public class CombatScreen extends BaseScreen {
                 break;
 
             case DISPLAY_ENEMY_DAMAGE:
-                finishRound();
-                if (player.isAlive()) {
-                    game.ctx.combatState = GameContext.CombatState.TURN_MENU;
-                } else if (enemy.isDefeated()){
-                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;;
-                }
-                else {
-                    game.ctx.combatState = GameContext.CombatState.DEFEAT;
-                    splashTimer = 0f;
-                    splashSFX = false;
+                if (enemy.isDefeated()) {
+                    finishRound();
+                    game.ctx.combatState = GameContext.CombatState.CHARACTER_POSTCOMBAT_LINE;
+                } else {
+                    finishRound();
+
+                    if (player.isAlive()) {
+                        game.ctx.combatState = GameContext.CombatState.TURN_MENU;
+                    } else {
+                        game.ctx.combatState = GameContext.CombatState.DEFEAT;
+                        splashTimer = 0f;
+                        splashSFX = false;
+                    }
                 }
                 break;
 
@@ -1686,6 +1702,8 @@ public class CombatScreen extends BaseScreen {
                 player.useActiveSkill(game.ctx.noteHandler, game.ctx);
                 activeSkillUsedThisTurn = true;
                 activeSkillUsed = true;
+
+                game.assets.skillActivationSFX.play(3.0f);
                 game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
@@ -1854,6 +1872,7 @@ public class CombatScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             if (confirmSelection == 0) {
                 handleItemUse();
+                game.assets.useItemSFX.play(3.0f);
                 game.ctx.combatState = GameContext.CombatState.ITEM_USED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
@@ -2097,6 +2116,15 @@ public class CombatScreen extends BaseScreen {
         // Silent Barrier check is handled inside handleItemEffects
         handleItemEffects(new SilentBarrier(game.assets), null);
 
+        // Play enemy attack SFX
+        Sound[] enemyAttackSFX = {
+            game.assets.enemyAttackv1,
+            game.assets.enemyAttackv2,
+            game.assets.enemyAttackv3,
+            game.assets.enemyAttackv4
+        };
+        Sound sfx = enemyAttackSFX[rd.nextInt(enemyAttackSFX.length)];
+        if (sfx != null) sfx.play(1.0f);
         player.takeDamage(enemyDamage);
 
         // Sonara Passive
@@ -2131,12 +2159,30 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void endCombat() {
+        boolean finalBossFight = game.ctx.currentEnemy != null
+            && game.ctx.currentEnemy.getName().equals("Maestro Syozan");
+        boolean semiBossFight = game.ctx.currentEnemy != null
+            && game.ctx.currentEnemy.getName().equals("Labagoliath the Void Shaker");
+
         if (game.ctx.combatState == GameContext.CombatState.DEFEAT) {
+            if (finalBossFight) {
+                game.ctx.finalBossDefeatPending = true;
+                game.ctx.playerDefeated = false;
+
+                game.assets.stopAllMusic();
+
+                if (game.ctx.currentMapScreen != null) {
+                    game.setScreen(game.ctx.currentMapScreen);
+                } else {
+                    game.setScreen(new AbyssOfDissonanceScreen(game));
+                }
+                return;
+            }
+
             game.ctx.playerDefeated = true;
             if (game.ctx.currentMapScreen != null) {
                 game.setScreen(game.ctx.currentMapScreen);
             } else {
-                // Fallback just in case
                 game.setScreen(new TownOfEchoesScreen(game));
             }
             return;
@@ -2144,10 +2190,45 @@ public class CombatScreen extends BaseScreen {
 
         if (game.ctx.combatState != GameContext.CombatState.VICTORY) return;
 
+        if(semiBossFight){
+            game.ctx.isLabagoliathDefeated = true;
+        }
+
+        if (finalBossFight) {
+            game.ctx.finalBossVictoryPending = true;
+            game.ctx.playerWon = false;
+
+            player.defeatedMonster();
+
+            game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
+            if (game.ctx.rooms != null) {
+                for (Room r : game.ctx.rooms) {
+                    if (r.getEnemies().remove(game.ctx.currentEnemy)) {
+                        if (r.getEnemies().isEmpty()) r.setCleared(true);
+                        break;
+                    }
+                }
+            }
+
+            player.resetDamageBuff();
+            game.ctx.currentEnemy = null;
+            game.ctx.noteHandler.noteCount = 0;
+            game.ctx.combatLog = "";
+            game.ctx.combatState = GameContext.CombatState.NONE;
+
+            game.assets.stopAllMusic();
+
+            if (game.ctx.currentMapScreen != null) {
+                game.setScreen(game.ctx.currentMapScreen);
+            } else {
+                game.setScreen(new AbyssOfDissonanceScreen(game));
+            }
+            return;
+        }
+
         game.ctx.playerWon = true;
         player.defeatedMonster();
 
-        // Remove defeated enemy from the world
         game.ctx.mapEnemies.remove(game.ctx.currentEnemy);
         if (game.ctx.rooms != null) {
             for (Room r : game.ctx.rooms) {
@@ -2158,21 +2239,20 @@ public class CombatScreen extends BaseScreen {
             }
         }
 
-        // Reset shared context before leaving
         player.resetDamageBuff();
-        game.ctx.currentEnemy              = null;
-        game.ctx.noteHandler.noteCount     = 0;
-        game.ctx.combatLog                 = "";
-        game.ctx.combatState               = GameContext.CombatState.NONE;
+        game.ctx.currentEnemy = null;
+        game.ctx.noteHandler.noteCount = 0;
+        game.ctx.combatLog = "";
+        game.ctx.combatState = GameContext.CombatState.NONE;
 
         game.assets.stopAllMusic();
 
         if (game.ctx.currentMapScreen != null) {
             game.setScreen(game.ctx.currentMapScreen);
         } else {
-            // Fallback just in case
             game.setScreen(new TownOfEchoesScreen(game));
         }
+
     }
 
     // =========================================================================

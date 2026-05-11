@@ -86,9 +86,13 @@ public class ExploringScreen extends BaseScreen {
     private boolean currentMonologueRightAligned = false;
     private String[] mapEntry;
     private String[] mapExit;
-    private String[] currentMonologue = {"This is a dummy line.", "This is also a dummy line.", "This is another dummy line."};
+    private String[] currentMonologue = {};
     private int currentMonologueIndex = 0;
 
+    private boolean pendingFinalBossVictoryLines = false;
+    private boolean pendingFinalBossDefeatLines = false;
+    private boolean pendingFinalBossRecordScreen = false;
+    private boolean pendingFinalBossDeathReset = false;
 
     // --- Typewriter Effect Variables ---
     private float monologueTimer = 0f;
@@ -96,6 +100,9 @@ public class ExploringScreen extends BaseScreen {
     private float lineDelayTimer = 0f;
     private final float TYPEWRITER_SPEED = 0.05f; // Seconds per character
     private final float LINE_DELAY = 1.0f; // Seconds to wait after line is fully displayed
+
+    private long monologueSfxId = -1L;
+    private boolean monologueSfxPlaying = false;
 
     // --- Pause Menu ---
     private int             pauseMenuSelection   = 0;
@@ -205,7 +212,10 @@ public class ExploringScreen extends BaseScreen {
             game.assets.pauseExitBtn
         };
 
-        if (game.ctx.playerDefeated) {
+        boolean hasFinalBossVictoryPending = game.ctx.finalBossVictoryPending;
+        boolean hasFinalBossDefeatPending = game.ctx.finalBossDefeatPending;
+
+        if (!hasFinalBossVictoryPending && !hasFinalBossDefeatPending && game.ctx.playerDefeated) {
             game.ctx.playerDefeated = false;
             handlePlayerDeath();
             return;
@@ -232,11 +242,7 @@ public class ExploringScreen extends BaseScreen {
                     break;
             }
 
-            if (mapEntry != null && mapEntry.length > 0) {
-                isMonologueActive = true;
-                currentMonologue = mapEntry;
-                prepareMonologue();
-            }
+            if (mapEntry != null && mapEntry.length > 0) { startMonologue(mapEntry, false); }
         } else {
             restoreInstanceFields();
             initWalkable();
@@ -277,6 +283,30 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
+        if (game.ctx.finalBossVictoryPending) {
+            game.ctx.finalBossVictoryPending = false;
+            game.ctx.playerWon = false;
+
+            pendingFinalBossVictoryLines = true;
+            startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleVictory, false);
+
+            game.ctx.stateTime = 0f;
+            this.lockedRoom = null;
+            updateCamera();
+            return;
+        }
+        if (game.ctx.finalBossDefeatPending) {
+            game.ctx.finalBossDefeatPending = false;
+            game.ctx.playerDefeated = false;
+
+            pendingFinalBossDefeatLines = true;
+            startMonologue(game.ctx.activeCharacterStats.getMonologues().postFinalBattleDefeat, false);
+
+            game.ctx.stateTime = 0f;
+            this.lockedRoom = null;
+            updateCamera();
+            return;
+        }
         if (game.ctx.playerWon) {
             game.ctx.playerWon = false;
             triggerVictoryPopup();
@@ -356,58 +386,15 @@ public class ExploringScreen extends BaseScreen {
 
         if (game.ctx.player == null) return;
 
-        if (game.ctx.activeCharacterStats.getHp() <= 0) {
+        if (game.ctx.activeCharacterStats.getHp() <= 0
+            && !isMonologueActive
+            && !pendingFinalBossDefeatLines
+            && !pendingFinalBossDeathReset) {
             handlePlayerDeath();
             return;
         }
-
         game.ctx.totalPlaytime += delta;
         game.ctx.stateTime += delta;
-
-        // Handle the moment a monologue finishes.
-        if (isMonologueActive && !wasMonologueActive) {
-            prepareMonologue();
-        } else if (!isMonologueActive && wasMonologueActive) {
-            if (pendingExit) {
-                pendingExit = false;
-
-                // Reset state before transitioning to new map
-                game.ctx.player = null;
-                game.ctx.enemiesDefeatedInCurrentMap = 0;
-                game.ctx.rooms.clear();
-                game.ctx.mapEnemies.clear();
-                game.ctx.exitRoom = null;
-
-                currentMonologueRightAligned = false;
-                startFadeOut(getNextScreen());
-                return;
-            } else if (pendingBossDialogue) {
-                // Final boss encounter part 2:
-                // After the player's pre-final monologue, show Syozan's dialogue.
-                pendingBossDialogue = false;
-                pendingCombat = true;
-
-                currentMonologue = game.ctx.bossDialogueLines;
-                currentMonologueRightAligned = true;
-
-                isMonologueActive = true;
-                prepareMonologue();
-            } else if (pendingCombat) {
-                pendingCombat = false;
-                game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
-
-                // Do NOT set player won yet! We are just entering combat.
-                game.ctx.playerWon = false;
-
-                currentMonologueRightAligned = false;
-                startFadeOut(new CombatScreen(game));
-                return;
-            }
-        }
-
-        // IMPORTANT:
-        // This must run every frame, or the typewriter text never advances.
-        wasMonologueActive = isMonologueActive;
 
         if (isMonologueActive) {
             game.ctx.playerState = GameContext.PlayerState.IDLE;
@@ -415,6 +402,8 @@ public class ExploringScreen extends BaseScreen {
         } else if (!fadingOut) {
             handleMovement(delta);
         }
+
+        if (game.ctx.player == null) return;
 
         updateCamera();
 
@@ -497,6 +486,15 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    private void startMonologue(String[] lines, boolean rightAligned) {
+        stopMonologueSfx();
+
+        currentMonologue = lines != null ? lines : new String[0];
+        currentMonologueRightAligned = rightAligned;
+        isMonologueActive = true;
+        prepareMonologue();
+    }
+
     private void handlePlayerDeath() {
         game.ctx.lives--;
         game.ctx.enemiesDefeatedInCurrentMap = 0;
@@ -527,6 +525,32 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    private com.badlogic.gdx.Screen getDeathDestinationScreen() {
+        game.ctx.lives--;
+        game.ctx.enemiesDefeatedInCurrentMap = 0;
+        game.ctx.rooms.clear();
+        game.ctx.mapEnemies.clear();
+        game.ctx.activeCharacterStats.resetStats();
+        game.ctx.player = null;
+
+        if (game.ctx.lives <= 0) {
+            game.ctx.lives = 1;
+            return new NameInputScreen(game, game.ctx, 1);
+        }
+
+        switch (game.ctx.mapName) {
+            case TOWN_OF_ECHOES:
+                return new TownOfEchoesScreen(game);
+            case SILENT_CAVERNS:
+                return new SilentCavernsScreen(game);
+            case ABYSS_OF_DISSONANCE:
+                return new AbyssOfDissonanceScreen(game);
+            default:
+                return new TownOfEchoesScreen(game);
+        }
+    }
+
+
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
         if (showVictoryPopup) return;
@@ -540,34 +564,37 @@ public class ExploringScreen extends BaseScreen {
             return;
         }
 
+        if (showingExitPrompt) {
+            game.ctx.playerState = GameContext.PlayerState.IDLE;
+            return;
+        }
+
         float move = GameContext.SPEED * delta;
         float prevX = game.ctx.player.getX();
         float prevY = game.ctx.player.getY();
 
         game.ctx.playerState = GameContext.PlayerState.IDLE;
 
-        if (!showingExitPrompt) {
-            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.ctx.player.setY(game.ctx.player.getY() + move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_UP;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                game.ctx.player.setY(game.ctx.player.getY() - move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                game.ctx.player.setX(game.ctx.player.getX() - move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
-                game.ctx.facing = GameContext.Facing.LEFT;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                game.ctx.player.setX(game.ctx.player.getX() + move);
-                game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
-                game.ctx.facing = GameContext.Facing.RIGHT;
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            game.ctx.player.setY(game.ctx.player.getY() + move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_UP;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            game.ctx.player.setY(game.ctx.player.getY() - move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_DOWN;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            game.ctx.player.setX(game.ctx.player.getX() - move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_LEFT;
+            game.ctx.facing = GameContext.Facing.LEFT;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            game.ctx.player.setX(game.ctx.player.getX() + move);
+            game.ctx.playerState = GameContext.PlayerState.WALK_RIGHT;
+            game.ctx.facing = GameContext.Facing.RIGHT;
         }
 
-        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY()) || showingExitPrompt) {
+        if (!isInWalkableZone(game.ctx.player.getX(), game.ctx.player.getY())) {
             game.ctx.player.setX(prevX);
             game.ctx.player.setY(prevY);
         }
@@ -651,10 +678,8 @@ public class ExploringScreen extends BaseScreen {
                 // 2. Maestro Syozan dialogue, right-aligned
                 // 3. Combat proper
                 if (e.getName().equals("Maestro Syozan")) {
-                    currentMonologue = game.ctx.activeCharacterStats.getMonologues().preFinalBattle;
-                    currentMonologueRightAligned = false;
+                    startMonologue(game.ctx.activeCharacterStats.getMonologues().preFinalBattle, false);
 
-                    isMonologueActive = true;
                     pendingBossDialogue = true;
                     pendingCombat = false;
                     return;
@@ -668,10 +693,8 @@ public class ExploringScreen extends BaseScreen {
                     game.ctx.activeCharacterStats.getMonologues().enemyEncounterV4
                 };
 
-                currentMonologue = encounters[RNG.nextInt(encounters.length)];
-                currentMonologueRightAligned = false;
+                startMonologue(encounters[RNG.nextInt(encounters.length)], false);
 
-                isMonologueActive = true;
                 pendingCombat = true;
                 return;
             }
@@ -692,50 +715,153 @@ public class ExploringScreen extends BaseScreen {
     private void drawExitOverlay() {
         if (!showingExitPrompt) return;
 
-        float boxW = 400, boxH = 200;
-        float boxX = (Main.WORLD_WIDTH - boxW) / 2f;
-        float boxY = (Main.WORLD_HEIGHT - boxH) / 2f;
+        Texture promptBg = game.assets.exitPromptBg;
+        Texture yesBtn = game.assets.exitPromptYesBtn;
+        Texture noBtn = game.assets.exitPromptNoBtn;
+
+        boolean canExit = game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills();
+
+        float boxW = promptBg.getWidth();
+        float boxH = promptBg.getHeight();
+        float boxX = screenLeft + ((Main.WORLD_WIDTH - boxW) / 2f);
+        float boxY = screenBottom + ((Main.WORLD_HEIGHT - boxH) / 2f);
+        float boxTop = boxY + boxH;
+
+        // Dim background
+        Gdx.gl.glEnable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(
+            com.badlogic.gdx.graphics.GL20.GL_SRC_ALPHA,
+            com.badlogic.gdx.graphics.GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         game.shapeRenderer.setProjectionMatrix(game.uiCamera.combined);
         game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(0.1f, 0.1f, 0.15f, 0.95f);
-        game.shapeRenderer.rect(boxX, boxY, boxW, boxH);
-
-        game.shapeRenderer.setColor(Color.DARK_GRAY);
-        if (game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) {
-            yesButtonRect.set(boxX + 50, boxY + 40, 120, 50);
-            noButtonRect.set(boxX + boxW - 170, boxY + 40, 120, 50);
-            game.shapeRenderer.rect(yesButtonRect.x, yesButtonRect.y, yesButtonRect.width, yesButtonRect.height);
-            game.shapeRenderer.rect(noButtonRect.x, noButtonRect.y, noButtonRect.width, noButtonRect.height);
-        } else {
-            okButtonRect.set(boxX + (boxW - 120) / 2f, boxY + 40, 120, 50);
-            game.shapeRenderer.rect(okButtonRect.x, okButtonRect.y, okButtonRect.width, okButtonRect.height);
-        }
+        game.shapeRenderer.setColor(0f, 0f, 0f, 0.6f);
+        game.shapeRenderer.rect(0, 0, Main.WORLD_WIDTH, Main.WORLD_HEIGHT);
         game.shapeRenderer.end();
+
+        Gdx.gl.glDisable(com.badlogic.gdx.graphics.GL20.GL_BLEND);
 
         game.batch.setProjectionMatrix(game.uiCamera.combined);
         game.batch.begin();
+        game.batch.setColor(Color.WHITE);
 
-        if (game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) {
+        // Prompt background container. Header "Leave Room" is assumed to be part of this asset.
+        game.batch.draw(promptBg, boxX, boxY, boxW, boxH);
+
+        if (canExit) {
+            // Player can leave: show confirmation text and Yes/No buttons.
+            game.assets.font.getData().setScale(1.1f);
             game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Proceed to next area?", boxX, boxY + 160, boxW, com.badlogic.gdx.utils.Align.center, false);
 
-            game.assets.font.setColor(Color.GREEN);
-            game.assets.font.draw(game.batch, "YES", yesButtonRect.x, yesButtonRect.y + 35, yesButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            String prompt = "Do you want to explore the next area?";
+            float promptX = screenLeft + ((Main.WORLD_WIDTH - textWidth(prompt)) / 2f);
+            float promptY = boxTop - px(7f);
+            game.assets.font.draw(game.batch, prompt, promptX, promptY);
 
-            game.assets.font.setColor(Color.RED);
-            game.assets.font.draw(game.batch, "NO", noButtonRect.x, noButtonRect.y + 35, noButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            float btnW = yesBtn.getWidth();
+            float btnH = yesBtn.getHeight();
+            float gap = px(1.0f);
+            float totalBtnW = btnW + gap + noBtn.getWidth();
+
+            float yesX = screenLeft + ((Main.WORLD_WIDTH - totalBtnW) / 2f);
+            float noX = yesX + btnW + gap;
+            float btnY = promptY - px(1.6f) - btnH;
+
+            yesButtonRect.set(yesX, btnY, btnW, btnH);
+            noButtonRect.set(noX, btnY, noBtn.getWidth(), noBtn.getHeight());
+
+            game.batch.draw(yesBtn, yesButtonRect.x, yesButtonRect.y, yesButtonRect.width, yesButtonRect.height);
+            game.batch.draw(noBtn, noButtonRect.x, noButtonRect.y, noButtonRect.width, noButtonRect.height);
         } else {
-            game.assets.font.setColor(Color.ORANGE);
-            game.assets.font.draw(game.batch, "AREA LOCKED", boxX, boxY + 165, boxW, com.badlogic.gdx.utils.Align.center, false);
+            // Player cannot leave yet: show locked message and an OK/continue hint.
+            game.assets.font.getData().setScale(1.1f);
+            game.assets.font.setColor(Color.RED);
 
-            game.assets.font.setColor(Color.WHITE);
-            game.assets.font.draw(game.batch, "Defeat " + getRequiredKills() + " enemies!", boxX, boxY + 125, boxW, com.badlogic.gdx.utils.Align.center, false);
-            game.assets.font.draw(game.batch, "OK", okButtonRect.x, okButtonRect.y + 35, okButtonRect.width, com.badlogic.gdx.utils.Align.center, false);
+            String lockedText = "The path ahead is still sealed.";
+            float lockedX = screenLeft + ((Main.WORLD_WIDTH - textWidth(lockedText)) / 2f);
+            float lockedY = boxTop - px(7f);
+            game.assets.font.draw(game.batch, lockedText, lockedX, lockedY);
+
+            game.assets.font.getData().setScale(0.8f);
+            game.assets.font.setColor(Color.LIGHT_GRAY);
+
+            String hint = "Press ENTER to continue";
+            float hintX = screenLeft + ((Main.WORLD_WIDTH - textWidth(hint)) / 2f);
+            float hintY = boxY + px(0.8f);
+            game.assets.font.draw(game.batch, hint, hintX, hintY);
+
+            // Keep an OK rect around the whole prompt input area for mouse support too.
+            okButtonRect.set(boxX, boxY, boxW, boxH);
+
+            // Optional: draw an OK button asset if you want one later.
+            // game.batch.draw(okBtn, okX, okY, okBtn.getWidth(), okBtn.getHeight());
         }
 
+        game.assets.font.getData().setScale(1.0f);
+        game.assets.font.setColor(Color.WHITE);
+        game.batch.setColor(Color.WHITE);
         game.batch.end();
+
+        handleExitOverlayInput(canExit);
     }
+
+    private void handleExitOverlayInput(boolean canExit) {
+        com.badlogic.gdx.math.Vector3 touch =
+            new com.badlogic.gdx.math.Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.uiCamera.unproject(touch);
+
+        if (canExit) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && yesButtonRect.contains(touch.x, touch.y)) {
+                confirmExitToNextMap();
+                return;
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && noButtonRect.contains(touch.x, touch.y)) {
+                cancelExitPrompt();
+                return;
+            }
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)
+                || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+                || Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                showingExitPrompt = false;
+                atExit = false;
+                game.ctx.player.setY(game.ctx.player.getY() - 30f);
+            }
+        }
+    }
+
+    private void confirmExitToNextMap() {
+        ExploringScreen next = getNextScreen();
+        if (next != null) {
+            if (mapExit != null && mapExit.length > 0) {
+                // EXIT MONOLOGUE
+                startMonologue(mapExit, false);
+                pendingExit = true;
+            } else {
+                // Reset state before transitioning to new map
+                game.ctx.player = null;
+                game.ctx.enemiesDefeatedInCurrentMap = 0;
+                game.ctx.rooms.clear();
+                game.ctx.mapEnemies.clear();
+                game.ctx.exitRoom = null;
+
+                game.assets.traversalSFX.play(3.0f);
+                startFadeOut(next);
+            }
+        }
+
+        showingExitPrompt = false;
+    }
+
+    private void cancelExitPrompt() {
+        showingExitPrompt = false;
+        atExit = false;
+        game.ctx.player.setY(game.ctx.player.getY() - 15f);
+    }
+
 
     private boolean isInWalkableZone(float x, float y) {
         Rectangle playerRect = new Rectangle(x, y, GameContext.CHAR_SIZE, GameContext.CHAR_SIZE);
@@ -745,10 +871,30 @@ public class ExploringScreen extends BaseScreen {
         return false;
     }
 
+    private void startMonologueSfx() {
+        if (monologueSfxPlaying) return;
+
+        if (game.assets.monologueSFX != null) {
+            monologueSfxId = game.assets.monologueSFX.loop(3.0f);
+            monologueSfxPlaying = true;
+        }
+    }
+
+    private void stopMonologueSfx() {
+        if (!monologueSfxPlaying) return;
+
+        if (game.assets.monologueSFX != null) {
+            game.assets.monologueSFX.stop(monologueSfxId);
+        }
+
+        monologueSfxId = -1L;
+        monologueSfxPlaying = false;
+    }
 
     // ── Camera ────────────────────────────────────────────────────────────────
 
     private void updateCamera() {
+        if (game.ctx.player == null || fadingOut) return;
         game.gameCamera.zoom = 0.6f;
 
         float effectiveHalfW = (Main.WORLD_WIDTH * game.gameCamera.zoom) / 2f;
@@ -975,14 +1121,18 @@ public class ExploringScreen extends BaseScreen {
                 heartWidth, heartHeight);
         }
 
-
-        text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        boolean isAbyssOfDissonance = false;
+        switch (game.ctx.mapName) {
+            case ABYSS_OF_DISSONANCE: isAbyssOfDissonance = true;
+                text = "Defeat: " + (game.ctx.isLabagoliathDefeated ? "Maestro Syozan!" : " Labagoliath the Void Shaker!"); break;
+            default: text = "Eliminate monsters: " + game.ctx.enemiesDefeatedInCurrentMap + "   /   " + getRequiredKills();
+        }
         float textWidth = textWidth(text);
         float textHeight = px(1.6f);
         textX = screenRight - textWidth - px(1.6f);
         textY = screenTop - textHeight - px(2.0f);
         game.assets.font.setColor(Color.RED);
-        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills()) game.assets.font.setColor(Color.GREEN);
+        if(game.ctx.enemiesDefeatedInCurrentMap >= getRequiredKills() && !isAbyssOfDissonance) game.assets.font.setColor(Color.GREEN);
         game.assets.font.getData().setScale(1.0f);
         game.assets.font.draw(game.batch, text, textX, textY);
 
@@ -1153,8 +1303,7 @@ public class ExploringScreen extends BaseScreen {
             showVictoryPopup = false;
 
             if (leveledUp && currentMonologue != null) {
-                isMonologueActive = true;
-                prepareMonologue();
+                startMonologue(currentMonologue, false);
             }
         }
     }
@@ -1246,20 +1395,22 @@ public class ExploringScreen extends BaseScreen {
                     dropCount = 1 + RNG.nextInt(3);
                     break;
                 case ABYSS_OF_DISSONANCE:
-                    dropCount = 3 + RNG.nextInt(3);
+                    dropCount = 3 + RNG.nextInt(6);
                     break;
             }
         }
 
         Inventory inv = player.getPlayerInventory();
         for (int i = 0; i < dropCount; i++) {
-            addRandomDrop(inv);
+            if(!addRandomDrop(inv)) i--;
         }
 
         game.ctx.enemiesDefeatedInCurrentMap++;
         showVictoryPopup = true;
 
         if (leveledUp) {
+            game.assets.levelUpSFX.play(1.0f);
+
             switch (newLevel) {
                 case 2: currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;  break;
                 case 3: currentMonologue = game.ctx.activeCharacterStats.getMonologues().secondLevelUp; break;
@@ -1269,41 +1420,38 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-    private void addRandomDrop(Inventory inv) {
+    private boolean addRandomDrop(Inventory inv) {
         int itemType = RNG.nextInt(6);
 
-        switch (itemType) {
-            case 0:
-                inv.gainCrimsonChorus(game.assets);
-                droppedItemNames.add("Crimson Chorus");
-                break;
-            case 1:
-                inv.gainMajorBlessing(game.assets);
-                droppedItemNames.add("Major's Blessing");
-                break;
-            case 2:
-                inv.gainMinorsGrace(game.assets);
-                droppedItemNames.add("Minor's Grace");
-                break;
-            case 3:
-                inv.gainResolvedDissonance(game.assets);
-                droppedItemNames.add("Resolved Dissonance");
-                break;
-            case 4:
-                inv.gainSilentBarrier(game.assets);
-                droppedItemNames.add("Silent Barrier");
-                break;
-            case 5:
-                inv.gainTimeOrb(game.assets);
-                droppedItemNames.add("Time Orb");
-                break;
-        }
-        droppedItemIcons.add(inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
-    }
+        String itemName = "";
 
-    private float getMapNameWidth() {
-        game.glyphLayout.setText(game.assets.font, mapName);
-        return game.glyphLayout.width;
+        switch (itemType) {
+            case 0:  itemName = "Crimson Chorus"; break;
+            case 1:  itemName = "Major's Blessing"; break;
+            case 2:  itemName = "Minor's Grace"; break;
+            case 3:  itemName = "Resolved Dissonance"; break;
+            case 4:  itemName = "Silent Barrier"; break;
+            case 5:  itemName = "Time Orb"; break;
+        }
+
+        if (!droppedItemNames.isEmpty()) {
+            String latestDrop = droppedItemNames.get(droppedItemNames.size() - 1);
+            if (latestDrop.equals(itemName)) { return false; }
+        }
+
+        switch (itemType) {
+            case 0:  inv.gainCrimsonChorus(game.assets); break;
+            case 1:  inv.gainMajorBlessing(game.assets); break;
+            case 2:  inv.gainMinorsGrace(game.assets); break;
+            case 3:  inv.gainResolvedDissonance(game.assets); break;
+            case 4:  inv.gainSilentBarrier(game.assets); break;
+            case 5:  inv.gainTimeOrb(game.assets); break;
+        }
+
+        droppedItemNames.add(itemName);
+        droppedItemIcons.add(inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
+
+        return true;
     }
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
@@ -1372,8 +1520,21 @@ public class ExploringScreen extends BaseScreen {
     }
 
     private void handleMonologueInput(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            isMonologueActive = false;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            stopMonologueSfx();
+            finishCurrentMonologue();
+            return;
+        }
+
+        if (currentMonologue == null || currentMonologue.length == 0) {
+            stopMonologueSfx();
+            finishCurrentMonologue();
+            return;
+        }
+
+        if (currentMonologueIndex >= currentMonologue.length) {
+            stopMonologueSfx();
+            finishCurrentMonologue();
             return;
         }
 
@@ -1381,25 +1542,105 @@ public class ExploringScreen extends BaseScreen {
             String currentLine = currentMonologue[currentMonologueIndex];
 
             if (monologueCharIndex < currentLine.length()) {
+                startMonologueSfx();
+
                 monologueTimer += delta;
                 while (monologueTimer >= TYPEWRITER_SPEED && monologueCharIndex < currentLine.length()) {
                     monologueTimer -= TYPEWRITER_SPEED;
                     monologueCharIndex++;
                 }
+
+                if (monologueCharIndex >= currentLine.length()) {
+                    stopMonologueSfx();
+                }
             } else {
+                stopMonologueSfx();
+
                 lineDelayTimer += delta;
                 if (lineDelayTimer >= LINE_DELAY) {
                     lineDelayTimer = 0f;
                     monologueCharIndex = 0;
                     monologueTimer = 0f;
                     currentMonologueIndex++;
+
                     if (currentMonologueIndex >= currentMonologue.length) {
-                        isMonologueActive = false;
+                        finishCurrentMonologue();
                     }
                 }
             }
         }
     }
+
+    private void finishCurrentMonologue() {
+        stopMonologueSfx();
+        isMonologueActive = false;
+
+        if (pendingFinalBossVictoryLines) {
+            pendingFinalBossVictoryLines = false;
+            pendingFinalBossRecordScreen = true;
+
+            startMonologue(game.ctx.bossVictoryLines, true);
+            return;
+        }
+
+        if (pendingFinalBossDefeatLines) {
+            pendingFinalBossDefeatLines = false;
+            pendingFinalBossDeathReset = true;
+
+            startMonologue(game.ctx.bossDefeatLines, true);
+            return;
+        }
+
+        if (pendingFinalBossRecordScreen) {
+            pendingFinalBossRecordScreen = false;
+            currentMonologueRightAligned = false;
+
+            game.ctx.mapsCleared = 3;
+
+            startFadeOut(new EndingScreen(game));
+            return;
+        }
+
+        if (pendingFinalBossDeathReset) {
+            pendingFinalBossDeathReset = false;
+            currentMonologueRightAligned = false;
+
+            startFadeOut(getDeathDestinationScreen());
+            return;
+        }
+
+        if (pendingExit) {
+            pendingExit = false;
+
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+
+            currentMonologueRightAligned = false;
+            startFadeOut(getNextScreen());
+            return;
+        }
+
+        if (pendingBossDialogue) {
+            pendingBossDialogue = false;
+            pendingCombat = true;
+
+            startMonologue(game.ctx.bossPreCombatLines, true);
+            return;
+        }
+
+        if (pendingCombat) {
+            pendingCombat = false;
+            game.ctx.combatState = GameContext.CombatState.BATTLE_SCREEN;
+            game.ctx.playerWon = false;
+
+            currentMonologueRightAligned = false;
+            startFadeOut(new CombatScreen(game));
+        }
+    }
+
 
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
@@ -1484,9 +1725,10 @@ public class ExploringScreen extends BaseScreen {
         game.gameViewport.update(w, h, true);
         game.uiViewport.update(w, h, true);
     }
-    @Override public void hide()    {}
+    @Override public void hide()    {stopMonologueSfx();}
     @Override
     public void dispose() {
         // Do not dispose of global assets here
+        stopMonologueSfx();
     }
 }

@@ -89,7 +89,7 @@ public class CharSelectScreen extends BaseScreen {
                     case 1: game.ctx.activeCharacterStats = new CharacterHero("Aurelius", "Flute", 150, 40); break;
                     case 2: game.ctx.activeCharacterStats = new CharacterHero("Lyron",    "Harp",  250, 40); break;
                 }
-                game.setScreen(new TownOfEchoesScreen(game));
+                game.setScreen(new CharacterLoreScreen(game));
                 return; // Exit render loop to prevent further drawing
             }
         }
