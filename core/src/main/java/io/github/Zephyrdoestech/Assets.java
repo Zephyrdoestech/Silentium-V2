@@ -347,7 +347,7 @@ public class Assets implements Disposable {
 
     public Assets() {
         // Fonts
-        font      = new BitmapFont(); font.getData().setScale(1.5f);
+        loreFont      = new BitmapFont(); loreFont.getData().setScale(1.5f);
         titleFont = new BitmapFont(); titleFont.getData().setScale(2.2f);
         bigFont   = new BitmapFont(); bigFont.getData().setScale(3.0f);
 
@@ -355,12 +355,12 @@ public class Assets implements Disposable {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
             // Set the base size of the font you want
-        parameter.size = 24;
+        parameter.size =14;
             // You can also easily add borders, shadows, and colors here!
         parameter.borderWidth = 1;
 
-        loreFont = generator.generateFont(parameter);
-        loreFont.getData().setScale(1.5f);
+        font = generator.generateFont(parameter);
+        font.getData().setScale(1.0f);
 
         // Static textures
         titleScreenTex = safeLoadTexture("Background/Title_Screen/Title_Screen_Placeholder.png");

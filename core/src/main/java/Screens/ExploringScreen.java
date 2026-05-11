@@ -444,6 +444,17 @@ public class ExploringScreen extends BaseScreen {
         drawDarknessOverlay();
         game.batch.end();
 
+        // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
+//        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
+//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        game.shapeRenderer.setColor(Color.GREEN);
+//        for (Room r : game.ctx.rooms)
+//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+//        game.shapeRenderer.setColor(Color.YELLOW);
+//        for (Rectangle h : getActiveWalkableZones())
+//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+//        game.shapeRenderer.end();
+
         if (isMonologueActive) {
             drawMonologueOverlay(delta);
         } else {

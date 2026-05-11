@@ -12,6 +12,7 @@ public class LoreScreen extends BaseScreen {
 
     private Texture[] slides;
     private int currentSlide = 0;
+    private boolean fromStartGame;
 
     // Fade logic variables
     private enum FadeState { FADING_IN, VIEWING, FADING_OUT }
@@ -49,8 +50,14 @@ public class LoreScreen extends BaseScreen {
         "And yet, it stirred something within them—a call to uncover its meaning, to understand why the silence had broken, and why the beasts had awakened."
     };
 
+    public LoreScreen(Main game, boolean fromStartGame) {
+        super(game);
+        this.fromStartGame = fromStartGame;
+    }
+
     public LoreScreen(Main game) {
         super(game);
+        this.fromStartGame = false;
     }
 
     @Override
@@ -143,8 +150,6 @@ public class LoreScreen extends BaseScreen {
             drawLoreText(textX, textY, textWidth, Align.left, 1.0f);
         }
 
-
-
         game.batch.end();
     }
 
@@ -155,12 +160,15 @@ public class LoreScreen extends BaseScreen {
             game.assets.storyBGM.stop();
         }
 
-        if (game.assets.titleBGM != null) {
-            game.assets.titleBGM.setLooping(true);
-            game.assets.titleBGM.play();
+        if (fromStartGame) {
+            game.setScreen(new CharSelectScreen(game));
+        } else {
+            if (game.assets.titleBGM != null) {
+                game.assets.titleBGM.setLooping(true);
+                game.assets.titleBGM.play();
+            }
+            game.setScreen(new MainMenuScreen(game));
         }
-
-        game.setScreen(new CharSelectScreen(game));
     }
 
     // Text Rendering

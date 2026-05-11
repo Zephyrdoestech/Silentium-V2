@@ -186,7 +186,7 @@ public class MainMenuScreen extends BaseScreen {
             case 0: // START GAME (New Game)
                 game.assets.stopAllMusic();
                 game.ctx.createNewSaveSlot();
-                startFadeOut(new LoreScreen(game));
+                startFadeOut(new LoreScreen(game, true));
                 break;
 
             case 1: // LOAD GAME
@@ -198,7 +198,7 @@ public class MainMenuScreen extends BaseScreen {
                 break;
 
             case 3: // STORY
-                startFadeOut(new LoreScreen(game));
+                startFadeOut(new LoreScreen(game, false));
                 break;
 
             case 4: // CREDITS
