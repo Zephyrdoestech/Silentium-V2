@@ -55,6 +55,11 @@ public class LoreScreen extends BaseScreen {
         "And yet, it stirred something within them—a call to uncover its meaning, to understand why the silence had broken, and why the beasts had awakened."
     };
 
+    public LoreScreen(Main game, boolean fromStartGame) {
+        super(game);
+        this.fromStartGame = fromStartGame;
+    }
+
     public LoreScreen(Main game) {
         super(game);
         this.fromStartGame = false;
@@ -149,8 +154,6 @@ public class LoreScreen extends BaseScreen {
             game.assets.font.setColor(Color.WHITE);
             drawLoreText(textX, textY, textWidth, Align.left, 1.0f);
         }
-
-
 
         game.batch.end();
     }
