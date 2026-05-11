@@ -72,7 +72,7 @@ public class MainMenuScreen extends BaseScreen {
             game.assets.tutorialBtnTex,
             game.assets.storyBtnTex,
             game.assets.creditsBtnTex,
-            game.assets.exitBtnTex
+            game.assets.exitBtnTex,
         };
 
         // --- UPDATED LAYOUT MATH ---
@@ -82,7 +82,7 @@ public class MainMenuScreen extends BaseScreen {
         float totalBlockHeight = (buttons.length * BTN_HEIGHT) + ((buttons.length - 1) * padding);
 
         // Pulled the menu UP by changing the offset to -40f (was -130f)
-        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - 20f;
+        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - px(0.4f);
 
         // 3. Draw Buttons
         for (int i = 0; i < buttons.length; i++) {
@@ -95,6 +95,11 @@ public class MainMenuScreen extends BaseScreen {
             }
             game.batch.draw(buttons[i], centerX, drawY, BTN_WIDTH, BTN_HEIGHT);
         }
+
+        Texture button = game.assets.leaderboardBtn;
+        game.batch.draw(button,
+            Main.WORLD_WIDTH - px(0.8f) - button.getWidth() / 2f, px(0.8f),
+            button.getWidth() / 2f, button.getHeight() /2f);
 
         game.batch.end(); // Briefly stop the batch to draw our shapes!
 

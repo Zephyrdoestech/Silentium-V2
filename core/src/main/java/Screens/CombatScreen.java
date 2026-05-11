@@ -175,8 +175,7 @@ public class CombatScreen extends BaseScreen {
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
+
 
     // ── Constructor ───────────────────────────────────────────────────────────
 

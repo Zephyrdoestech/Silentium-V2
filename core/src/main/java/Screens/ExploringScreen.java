@@ -62,8 +62,7 @@ public class ExploringScreen extends BaseScreen {
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
+
     private float textWidth(String text) {
         game.glyphLayout.setText(game.assets.font, text);
         return game.glyphLayout.width;

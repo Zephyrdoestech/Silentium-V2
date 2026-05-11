@@ -163,6 +163,11 @@ public abstract class BaseScreen implements Screen {
         sr.rect(x, y - h, w * MathUtils.clamp(fraction, 0f, 1f), h);
     }
 
+    // ── Measurement helper ──────────────────────────────────────────────────────────
+
+    private static final float scale = 32f;
+    protected float px(float factor){ return scale * factor;}
+
     // ── Default no-op lifecycle ───────────────────────────────────────────────
 
     @Override public void pause()  {}

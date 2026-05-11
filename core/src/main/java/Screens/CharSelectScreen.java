@@ -45,10 +45,6 @@ public class CharSelectScreen extends BaseScreen {
     float cardDisplayX = (Main.WORLD_WIDTH - cardDisplayWidth) / 2f;
     float cardDisplayY = (Main.WORLD_HEIGHT) - px(2.4f) - cardHeight;
 
-    //Measurement Helper
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
-
     public CharSelectScreen(Main game) { super(game); }
 
     @Override
