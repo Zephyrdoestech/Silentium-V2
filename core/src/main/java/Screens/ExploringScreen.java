@@ -444,7 +444,7 @@ public class ExploringScreen extends BaseScreen {
         drawDarknessOverlay();
         game.batch.end();
 
-        // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
+//        // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
 //        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
 //        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 //        game.shapeRenderer.setColor(Color.GREEN);
@@ -840,7 +840,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.mapEnemies.clear();
                 game.ctx.exitRoom = null;
 
-                game.assets.traversalSFX.play(3.0f);
+                game.assets.traversalSFX.play(3.0f * Main.MainVolume);
                 startFadeOut(next);
             }
         }
@@ -867,7 +867,7 @@ public class ExploringScreen extends BaseScreen {
         if (monologueSfxPlaying) return;
 
         if (game.assets.monologueSFX != null) {
-            monologueSfxId = game.assets.monologueSFX.loop(3.0f);
+            monologueSfxId = game.assets.monologueSFX.loop(5.0f * Main.MainVolume);
             monologueSfxPlaying = true;
         }
     }
@@ -1399,7 +1399,7 @@ public class ExploringScreen extends BaseScreen {
         showVictoryPopup = true;
 
         if (leveledUp) {
-            game.assets.levelUpSFX.play(1.0f);
+            game.assets.levelUpSFX.play(1.0f * Main.MainVolume);
 
             switch (newLevel) {
                 case 2: currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;  break;
