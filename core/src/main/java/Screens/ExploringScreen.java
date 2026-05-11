@@ -445,15 +445,15 @@ public class ExploringScreen extends BaseScreen {
         game.batch.end();
 
         // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
-//        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
-//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        game.shapeRenderer.setColor(Color.GREEN);
-//        for (Room r : game.ctx.rooms)
-//            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
-//        game.shapeRenderer.setColor(Color.YELLOW);
-//        for (Rectangle h : getActiveWalkableZones())
-//            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
-//        game.shapeRenderer.end();
+        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
+        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        game.shapeRenderer.setColor(Color.GREEN);
+        for (Room r : game.ctx.rooms)
+            game.shapeRenderer.rect(r.getBounds().x, r.getBounds().y, r.getBounds().width, r.getBounds().height);
+        game.shapeRenderer.setColor(Color.YELLOW);
+        for (Rectangle h : getActiveWalkableZones())
+            game.shapeRenderer.rect(h.x, h.y, h.width, h.height);
+        game.shapeRenderer.end();
 
         if (isMonologueActive) {
             drawMonologueOverlay(delta);
@@ -542,6 +542,15 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    private float getEnemyCollisionSize(Enemy e) {
+        switch (e.getName()) {
+            case "Gobninil":                    return 60f;
+            case "Chimericks":                  return 70f;
+            case "Labagoliath the Void Shaker": return 80f;
+            case "Maestro Syozan":              return 100f;
+            default:                            return GameContext.CHAR_SIZE; // 64f
+        }
+    }
 
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
@@ -657,7 +666,10 @@ public class ExploringScreen extends BaseScreen {
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
 
-            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
+            float eSize = getEnemyCollisionSize(e);
+            Rectangle eRect = new Rectangle(e.getX(), e.getY(), eSize, eSize);
+
+//            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
             if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
