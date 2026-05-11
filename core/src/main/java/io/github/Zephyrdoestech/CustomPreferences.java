@@ -62,14 +62,18 @@ public class CustomPreferences {
     }
 
     public void flush() {
-        try {
-            if (!file.parent().exists()) {
-                file.parent().mkdirs();
+        final Properties snapshot = (Properties) properties.clone();
+
+        new Thread(() -> {
+            try {
+                if (!file.parent().exists()) {
+                    file.parent().mkdirs();
+                }
+                snapshot.storeToXML(file.write(false), null);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            properties.storeToXML(file.write(false), null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     public static CustomPreferences getPreferences(String name) {
