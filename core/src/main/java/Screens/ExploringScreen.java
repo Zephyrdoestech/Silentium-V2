@@ -1390,9 +1390,7 @@ public class ExploringScreen extends BaseScreen {
         }
 
         Inventory inv = player.getPlayerInventory();
-        for (int i = 0; i < dropCount; i++) {
-            if(!addRandomDrop(inv)) i--;
-        }
+        for (int i = 0; i < dropCount; i++) { addRandomDrop(inv); }
 
         game.ctx.enemiesDefeatedInCurrentMap++;
         showVictoryPopup = true;
@@ -1409,38 +1407,52 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-    private boolean addRandomDrop(Inventory inv) {
-        int itemType = RNG.nextInt(6);
+    private void addRandomDrop(Inventory inv) {
+        int lastDropType = -1;
+        switch(droppedItemNames.get(droppedItemNames.size() - 1)){
+            case "Crimson Chorus":      lastDropType = 0; break;
+            case "Major's Blessing":    lastDropType = 1; break;
+            case "Minor's Grace":       lastDropType = 2; break;
+            case "Resolved Dissonance": lastDropType = 3; break;
+            case "Silent Barrier":      lastDropType = 4; break;
+            case "Time Orb":            lastDropType = 5; break;
+        }
 
-        String itemName = "";
+        int itemType;
+
+        // Unique Item Drops
+        do { itemType = RNG.nextInt(6);
+        } while (itemType == lastDropType);
 
         switch (itemType) {
-            case 0:  itemName = "Crimson Chorus"; break;
-            case 1:  itemName = "Major's Blessing"; break;
-            case 2:  itemName = "Minor's Grace"; break;
-            case 3:  itemName = "Resolved Dissonance"; break;
-            case 4:  itemName = "Silent Barrier"; break;
-            case 5:  itemName = "Time Orb"; break;
+            case 0:
+                inv.gainCrimsonChorus(game.assets);
+                droppedItemNames.add("Crimson Chorus");
+                break;
+            case 1:
+                inv.gainMajorBlessing(game.assets);
+                droppedItemNames.add("Major's Blessing");
+                break;
+            case 2:
+                inv.gainMinorsGrace(game.assets);
+                droppedItemNames.add("Minor's Grace");
+                break;
+            case 3:
+                inv.gainResolvedDissonance(game.assets);
+                droppedItemNames.add("Resolved Dissonance");
+                break;
+            case 4:
+                inv.gainSilentBarrier(game.assets);
+                droppedItemNames.add("Silent Barrier");
+                break;
+            case 5:
+                inv.gainTimeOrb(game.assets);
+                droppedItemNames.add("Time Orb");
+                break;
         }
 
-        if (!droppedItemNames.isEmpty()) {
-            String latestDrop = droppedItemNames.get(droppedItemNames.size() - 1);
-            if (latestDrop.equals(itemName)) { return false; }
-        }
-
-        switch (itemType) {
-            case 0:  inv.gainCrimsonChorus(game.assets); break;
-            case 1:  inv.gainMajorBlessing(game.assets); break;
-            case 2:  inv.gainMinorsGrace(game.assets); break;
-            case 3:  inv.gainResolvedDissonance(game.assets); break;
-            case 4:  inv.gainSilentBarrier(game.assets); break;
-            case 5:  inv.gainTimeOrb(game.assets); break;
-        }
-
-        droppedItemNames.add(itemName);
-        droppedItemIcons.add(inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
-
-        return true;
+        lastDropType = itemType;
+        droppedItemIcons.add( inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
     }
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
