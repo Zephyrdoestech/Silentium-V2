@@ -15,13 +15,15 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
     protected void initMapData() {
         this.mapName = "Abyss of Dissonance";
         game.ctx.mapName = GameContext.MapName.ABYSS_OF_DISSONANCE;
-        game.ctx.MAP_SIZE = 1800f;
+        game.ctx.MAP_SIZE = 1600f;
 
         game.ctx.rooms = new ArrayList<>();
-        game.ctx.rooms.add(new Room(726f, 1439f, 227f, 250f));
-        game.ctx.rooms.add(new Room(726f, 788f, 227f, 250f));
         //final room
-        game.ctx.rooms.add(new Room(726f, 135f, 227f, 250f));
+        game.ctx.rooms.add(new Room(598f, 1200f, 351f, 335f));
+        //middle
+        game.ctx.rooms.add(new Room(626f, 654f, 295f, 175f));
+        //bottom room
+        game.ctx.rooms.add(new Room(626f, 113f, 295f, 175f));
 
         this.mapTexture = game.assets.abyssOfDissonanceTex;
         this.mapDecor = null;
@@ -36,7 +38,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
 
         for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
 
-        walkableZones.add(new Rectangle(839f,  200f, 0.1f, 1300f));
+        walkableZones.add(new Rectangle(760f,  200f, 27f, 1000f));
 
     }
 
@@ -58,8 +60,8 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         game.ctx.mapEnemies.add(labagoliath);
 
         Room finalBossRoom = game.ctx.rooms.get(0);
-        float fbX = finalBossRoom.getBounds().x + (finalBossRoom.getBounds().width  - 64f) / 2f;
-        float fbY = finalBossRoom.getBounds().y + (finalBossRoom.getBounds().height - 64f) / 2f;
+        float fbX = finalBossRoom.getBounds().x + (finalBossRoom.getBounds().width  - 64f) / 2.37f;
+        float fbY = finalBossRoom.getBounds().y + (finalBossRoom.getBounds().height - 64f) / 1.11f;
         Enemy maestroSyozan = Enemy.maestroSyozan(fbX, fbY);
         finalBossRoom.addEnemy(maestroSyozan);
         game.ctx.mapEnemies.add(maestroSyozan);
@@ -70,7 +72,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
         this.mapName = "Abyss of Dissonance";
         game.ctx.mapName = GameContext.MapName.ABYSS_OF_DISSONANCE;
 
-        game.ctx.MAP_SIZE = 1800f;
+        game.ctx.MAP_SIZE = 1600f;
         this.mapTexture = game.assets.abyssOfDissonanceTex;
         this.mapDecor = null;
         this.exitTexture = null;

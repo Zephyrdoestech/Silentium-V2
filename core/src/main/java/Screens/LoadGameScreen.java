@@ -39,7 +39,7 @@ public class LoadGameScreen extends BaseScreen {
         }
 
         // 1. Make the panel act like a wide header banner
-        panelWidth = 500f;
+        panelWidth = 620f;
         panelHeight = 90f;
 
         // 2. Set the save slot buttons
