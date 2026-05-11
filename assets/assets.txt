@@ -167,6 +167,9 @@ Lyron/Select/lyronSelect6.png
 Lyron/Select/lyronSelect7.png
 Lyron/Select/lyronSelect8.png
 Lyron/Select/lyronSelect9.png
+Saves/ZephyrGlobal.xml
+Saves/ZephyrSave_1.xml
+Saves/silentium_leaderboard.xml
 Sonara/Select/sonaraSelect1.png
 Sonara/Select/sonaraSelect10.png
 Sonara/Select/sonaraSelect11.png

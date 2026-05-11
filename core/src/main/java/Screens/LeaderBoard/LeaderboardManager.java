@@ -1,7 +1,7 @@
 package Screens.LeaderBoard;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
+import io.github.Zephyrdoestech.CustomPreferences;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * LeaderboardManager
  *
- * Handles all leaderboard persistence using LibGDX {@link Preferences}.
+ * Handles all leaderboard persistence using LibGDX {@link CustomPreferences}.
  *
  * Storage format (indexed entries in one preferences file):
  *   entry_0_name  = "Overlord"
@@ -61,13 +61,13 @@ public final class LeaderboardManager {
     }
 
     /**
-     * Loads all stored entries from {@link Preferences} and returns them
+     * Loads all stored entries from {@link CustomPreferences} and returns them
      * in sorted order (best scores first).
      *
      * @return a sorted list of {@link LeaderboardEntry}, or an empty list if none exist
      */
     public static List<LeaderboardEntry> loadEntries() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
+        CustomPreferences prefs = CustomPreferences.getPreferences(PREFS_NAME);
         int count = prefs.getInteger(KEY_COUNT, 0);
 
         List<LeaderboardEntry> entries = new ArrayList<>();
@@ -90,7 +90,7 @@ public final class LeaderboardManager {
      * @param entries the complete list of entries to store (will be sorted)
      */
     public static void saveEntries(List<LeaderboardEntry> entries) {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
+        CustomPreferences prefs = CustomPreferences.getPreferences(PREFS_NAME);
         prefs.clear();  // wipe old data to avoid orphaned keys
 
         Collections.sort(entries);  // ensure sorted before writing
@@ -112,7 +112,7 @@ public final class LeaderboardManager {
      * Use sparingly — typically only in a dev/debug menu.
      */
     public static void clearLeaderboard() {
-        Preferences prefs = Gdx.app.getPreferences(PREFS_NAME);
+        CustomPreferences prefs = CustomPreferences.getPreferences(PREFS_NAME);
         prefs.clear();
         prefs.flush();
         Gdx.app.log("LeaderboardManager", "Leaderboard cleared.");
@@ -126,7 +126,7 @@ public final class LeaderboardManager {
      * in the main menu.
      */
     public static boolean hasEntries() {
-        return Gdx.app.getPreferences(PREFS_NAME).getInteger(KEY_COUNT, 0) > 0;
+        return CustomPreferences.getPreferences(PREFS_NAME).getInteger(KEY_COUNT, 0) > 0;
     }
 
     /**

@@ -156,13 +156,13 @@ public class GameContext {
     }
 
     public void createNewSaveSlot() {
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
 
         // Find the first empty slot out of the 3 available
         int availableSlot = -1;
         for (int i = 1; i <= 3; i++) {
             String slotName = "ZephyrSave_" + i;
-            com.badlogic.gdx.Preferences slotPrefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+            CustomPreferences slotPrefs = CustomPreferences.getPreferences(slotName);
             if (!slotPrefs.contains("currentMap")) {
                 availableSlot = i;
                 break;
@@ -185,7 +185,7 @@ public class GameContext {
     }
 
     public List<String> getAllSaveSlots() {
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
         int saveCount = global.getInteger("saveCount", 0);
         List<String> saves = new ArrayList<>();
         for (int i = 1; i <= saveCount; i++) {
@@ -196,7 +196,7 @@ public class GameContext {
 
     // Get info for a specific save slot to display on the load screen
     public String getSaveInfo(String slotName) {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+        CustomPreferences prefs = CustomPreferences.getPreferences(slotName);
         if (!prefs.contains("currentMap")) {
             return "Empty Slot";
         }
@@ -208,7 +208,7 @@ public class GameContext {
 
     // --- SAVE LOGIC ---
     public void saveGame(String mapName, float playerX, float playerY) {
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(currentSaveSlot);
+        CustomPreferences prefs = CustomPreferences.getPreferences(currentSaveSlot);
 
         prefs.putString("currentMap", mapName);
 
@@ -242,7 +242,7 @@ public class GameContext {
         System.out.println("Game Auto-Saved at: " + mapName + " into " + currentSaveSlot);
 
         // Also register in ZephyrGlobal if not already
-        com.badlogic.gdx.Preferences global = com.badlogic.gdx.Gdx.app.getPreferences("ZephyrGlobal");
+        CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
         int saveCount = global.getInteger("saveCount", 0);
         boolean found = false;
         for (int i = 1; i <= saveCount; i++) {
@@ -263,7 +263,7 @@ public class GameContext {
 
     public void deleteCurrentSave() {
         if (currentSaveSlot != null) {
-            com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(currentSaveSlot);
+            CustomPreferences prefs = CustomPreferences.getPreferences(currentSaveSlot);
             prefs.clear();
             prefs.flush();
             System.out.println("Deleted save file: " + currentSaveSlot);
@@ -273,7 +273,7 @@ public class GameContext {
     // --- LOAD LOGIC ---
     public String loadGame(String slotName, Assets assets) {
         this.currentSaveSlot = slotName;
-        com.badlogic.gdx.Preferences prefs = com.badlogic.gdx.Gdx.app.getPreferences(slotName);
+        CustomPreferences prefs = CustomPreferences.getPreferences(slotName);
 
         if (!prefs.contains("currentMap")) {
             return null; // No save file exists!
