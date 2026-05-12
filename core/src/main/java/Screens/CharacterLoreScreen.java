@@ -62,6 +62,9 @@ public class CharacterLoreScreen extends BaseScreen {
 
         drawFadeOverlay();
 
+        if (!fadingOut && stateTime > 2f && (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))){
+            startFadeOut(new CharSelectScreen(game));
+        }
         if (!fadingOut && stateTime > 2f && (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY))) {
             startFadeOut(new TownOfEchoesScreen(game));
         }
