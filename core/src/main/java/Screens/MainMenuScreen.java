@@ -234,7 +234,7 @@ public class MainMenuScreen extends BaseScreen {
         }
 
         if (hoverLeaderboard && Gdx.input.justTouched()) {
-            startFadeOut(new Screens.LeaderBoard.LeaderboardScreen(game, 3));
+            startFadeOut(new Screens.LeaderBoard.LeaderboardScreen(game, 3, true));
         }
 
         if (hoverVolume && Gdx.input.justTouched()) {

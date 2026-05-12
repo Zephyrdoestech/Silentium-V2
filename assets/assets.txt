@@ -169,6 +169,8 @@ Lyron/Select/lyronSelect7.png
 Lyron/Select/lyronSelect8.png
 Lyron/Select/lyronSelect9.png
 Saves/ZephyrGlobal.xml
+Saves/ZephyrSave_1.xml
+Saves/silentium_leaderboard.xml
 Sonara/Select/sonaraSelect1.png
 Sonara/Select/sonaraSelect10.png
 Sonara/Select/sonaraSelect11.png
@@ -828,6 +830,10 @@ UI/Buttons/btn_inventory.png
 UI/Buttons/btn_leaderboard.png
 UI/Buttons/btn_menu.png
 UI/Buttons/btn_pause.png
+UI/Buttons/btn_sound_default.png
+UI/Buttons/btn_sound_high.png
+UI/Buttons/btn_sound_low.png
+UI/Buttons/btn_sound_off.png
 UI/Items/Battle/crimson_chorus_battle.png
 UI/Items/Battle/majors_blessing_battle.png
 UI/Items/Battle/minors_grace_battle.png
