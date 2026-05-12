@@ -867,10 +867,4 @@ UI/load_btn.png
 UI/start_btn.png
 UI/story_btn.png
 UI/tutorial_btn.png
-aurelius.png
-cave.png
 credits.webm
-lyron.png
-screen.png
-sonara.png
-town-of-echoes.png
