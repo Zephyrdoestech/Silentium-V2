@@ -45,7 +45,7 @@ public class Enemy {
     public Enemy(String name, int hp, float x, float y, Attack... attacks) {
         this.name     = name;
         this.maxHp    = hp;
-        this.currentHp = hp;
+        this.currentHp = maxHp;
         this.x        = x;
         this.y        = y;
         this.attacks  = attacks;

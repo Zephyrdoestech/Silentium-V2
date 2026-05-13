@@ -102,7 +102,9 @@ public abstract class BaseScreen implements Screen {
 
         // Ensure batch is ended before starting shape renderer, but safely check if it's active
         boolean batchWasDrawing = game.batch.isDrawing();
+        com.badlogic.gdx.math.Matrix4 originalMatrix = null;
         if (batchWasDrawing) {
+            originalMatrix = game.batch.getProjectionMatrix().cpy();
             game.batch.end();
         }
 
@@ -119,7 +121,7 @@ public abstract class BaseScreen implements Screen {
 
         // Resume batch if it was drawing
         if (batchWasDrawing) {
-            game.batch.setProjectionMatrix(game.gameCamera.combined);
+            game.batch.setProjectionMatrix(originalMatrix);
             game.batch.begin();
         }
     }

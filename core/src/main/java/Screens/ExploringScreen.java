@@ -132,6 +132,7 @@ public class ExploringScreen extends BaseScreen {
     protected void initMapData() { }
     protected void initWalkable() {
         walkableZones.clear();
+        corridorZones.clear();
         for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
     }
     protected void restoreInstanceFields() { }
@@ -240,19 +241,15 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-        if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
-            if (game.ctx.player == null) {
+        if (game.ctx.player == null) {
+            if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
+                game.ctx.player = new MapCharacter(game.ctx.savedPlayerX, game.ctx.savedPlayerY);
+                game.ctx.savedPlayerX = -1f;
+                game.ctx.savedPlayerY = -1f;
+            } else {
+                game.ctx.activeCharacterStats.resetStats();
                 initPlayerPosition();
             }
-
-            game.ctx.player.setX(game.ctx.savedPlayerX);
-            game.ctx.player.setY(game.ctx.savedPlayerY);
-
-            game.ctx.savedPlayerX = -1f;
-            game.ctx.savedPlayerY = -1f;
-        } else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
-            game.ctx.activeCharacterStats.resetStats();
-            initPlayerPosition();
         } else if (!returningFromCombatVictory) {
             boolean placed = false;
 
@@ -474,6 +471,15 @@ public class ExploringScreen extends BaseScreen {
         // ESC → Save Game and return to main menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !fadingOut) {
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+            game.ctx.savedPlayerX = -1f;
+            game.ctx.savedPlayerY = -1f;
+
             startFadeOut(new MainMenuScreen(game));
         }
     }
@@ -1050,6 +1056,15 @@ public class ExploringScreen extends BaseScreen {
                 if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
                     mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
                     game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
+                    game.ctx.player = null;
+                    game.ctx.enemiesDefeatedInCurrentMap = 0;
+                    game.ctx.rooms.clear();
+                    game.ctx.mapEnemies.clear();
+                    game.ctx.exitRoom = null;
+                    game.ctx.savedPlayerX = -1f;
+                    game.ctx.savedPlayerY = -1f;
+
                     startFadeOut(new MainMenuScreen(game));
                 }
             }
@@ -1616,6 +1631,12 @@ public class ExploringScreen extends BaseScreen {
             currentMonologueRightAligned = false;
 
             game.ctx.mapsCleared = 3;
+
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
 
             startFadeOut(new EndingScreen(game));
             return;

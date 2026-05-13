@@ -258,7 +258,6 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
-
 //      DEBUGGING TEST;
 //      enemy.setMaxHp(1);
 
