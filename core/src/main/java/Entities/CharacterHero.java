@@ -514,7 +514,7 @@ public class CharacterHero {
      * @param target the enemy that was hit
      * @param damage the damage that was dealt
      */
-    public void onDamageDealt(CharacterHero self, Enemy target, int damage) {
+    public void activatePassive(CharacterHero self, Enemy target, int damage) {
         if (name.equals("Lyron")) {
             int shieldAmount = (int)(damage * 0.15f);
             self.gainShield(shieldAmount);
@@ -528,7 +528,7 @@ public class CharacterHero {
      * @param source the enemy that attacked
      * @param damage the damage received
      */
-    public void onDamageReceived(Enemy source, int damage) {
+    public void activatePassive(Enemy source, int damage) {
         if (name.equals("Sonara")) {
             int thornDamage = (int)(damage * 0.15f);
             source.takeDamage(thornDamage);
@@ -541,7 +541,7 @@ public class CharacterHero {
      *
      * @param self the character whose turn just ended
      */
-    public void onTurnEnd(CharacterHero self) {
+    public void activatePassive(CharacterHero self) {
         if (name.equals("Aurelius") && self.getHp() > 0) {
             int healAmount = (int)(self.getMaxHp() * 0.05f);
             self.heal(healAmount);
