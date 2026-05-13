@@ -2094,7 +2094,7 @@ public class CombatScreen extends BaseScreen {
 
         enemy.takeDamage(finalDamage);
 
-        player.onDamageDealt(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
+        player.activatePassive(player, enemy, initialDamage); // Lyron passive handled inside CharacterHero
 
         revealedNoteCount    = 0;
         noteRevealTimer      = 0f;
@@ -2124,7 +2124,7 @@ public class CombatScreen extends BaseScreen {
         player.takeDamage(enemyDamage);
 
         // Sonara Passive
-        player.onDamageReceived(enemy, enemyDamage);
+        player.activatePassive(enemy, enemyDamage);
     }
 
     // =========================================================================
@@ -2132,7 +2132,7 @@ public class CombatScreen extends BaseScreen {
     // =========================================================================
 
     private void finishRound() {
-        player.onTurnEnd(player); // Aurelius passive heal handled inside CharacterHero
+        player.activatePassive(player); // Aurelius passive heal handled inside CharacterHero
         game.ctx.noteHandler.noteCount = 0;
         game.ctx.combatLog             = "";
         notesRolledThisTurn            = false;
