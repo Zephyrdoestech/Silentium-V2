@@ -542,6 +542,7 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    // hitbox
     private float getEnemyCollisionSize(Enemy e) {
         switch (e.getName()) {
             case "Gobninil":                    return 60f;
