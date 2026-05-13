@@ -78,7 +78,7 @@ public class SilentCavernsScreen extends ExploringScreen {
 
     @Override
     protected int getRequiredKills() {
-        return 0;
+        return 3;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SilentCavernsScreen extends ExploringScreen {
         // Start the town music when the screen is shown
         if (game.assets.silentCavernsBGM != null) {
             game.assets.silentCavernsBGM.setLooping(true);
-            game.assets.silentCavernsBGM.setVolume(0.5f);
+            game.assets.silentCavernsBGM.setVolume(0.5f * Main.MainVolume);
             game.assets.silentCavernsBGM.play();
         }
 

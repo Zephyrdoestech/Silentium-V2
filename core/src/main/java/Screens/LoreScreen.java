@@ -69,7 +69,7 @@ public class LoreScreen extends BaseScreen {
         }
         if (game.assets.storyBGM != null) {
             game.assets.storyBGM.setLooping(true);
-            game.assets.storyBGM.setVolume(0.7f);
+            game.assets.storyBGM.setVolume(0.7f * Main.MainVolume);
             game.assets.storyBGM.play(); // Start the story music
         }
 

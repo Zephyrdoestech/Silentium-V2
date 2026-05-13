@@ -40,6 +40,11 @@ public class Assets implements Disposable {
 
     public final Texture leaderboardBtn;
 
+    public final Texture soundOffBtn;
+    public final Texture soundLowBtn;
+    public final Texture soundDefaultBtn;
+    public final Texture soundHighBtn;
+
     public final Texture exitPromptBg;
     public final Texture exitPromptYesBtn;
     public final Texture exitPromptNoBtn;
@@ -436,6 +441,11 @@ public class Assets implements Disposable {
         menuBtnTex = safeLoadTexture("UI/Buttons/btn_menu.png");
 
         leaderboardBtn = safeLoadTexture("UI/Buttons/btn_leaderboard.png");
+
+        soundOffBtn = safeLoadTexture("UI/Buttons/btn_sound_off.png");
+        soundLowBtn = safeLoadTexture("UI/Buttons/btn_sound_low.png");
+        soundDefaultBtn = safeLoadTexture("UI/Buttons/btn_sound_default.png");
+        soundHighBtn = safeLoadTexture("UI/Buttons/btn_sound_high.png");
 
         exitPromptBg        = safeLoadTexture("UI/Panels/ExitMap/BG.png");
         exitPromptYesBtn    = safeLoadTexture("UI/Panels/ExitMap/yes_btn.png");;

@@ -86,7 +86,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
     protected int getEnemyCount() { return 6; }
 
     @Override
-    protected int getRequiredKills() { return 0; }
+    protected int getRequiredKills() { return 2; }
 
     @Override
     protected void initPlayerPosition() {
@@ -134,7 +134,7 @@ public class TownOfEchoesScreen extends ExploringScreen {
         // Start the town music when the screen is shown
         if (game.assets.townOfEchoesBGM != null) {
             game.assets.townOfEchoesBGM.setLooping(true);
-            game.assets.townOfEchoesBGM.setVolume(0.5f);
+            game.assets.townOfEchoesBGM.setVolume(0.5f * Main.MainVolume);
             game.assets.townOfEchoesBGM.play();
         }
 

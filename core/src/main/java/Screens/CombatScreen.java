@@ -258,7 +258,9 @@ public class CombatScreen extends BaseScreen {
         if (player.getMonstersDefeated() == 0) {
             enemy.setMaxHp((int)(enemy.getMaxHp() * 0.3f));
         }
-            enemy.setMaxHp(1);
+
+//      DEBUGGING TEST;
+//      enemy.setMaxHp(1);
 
         if (player.getLevel() <= 3) {
             tutorialScreen = game.assets.tutorials[player.getLevel() - 1];
@@ -581,7 +583,7 @@ public class CombatScreen extends BaseScreen {
 
         if (frame != null && sfx != null) {
             if(!splashSFX) {
-                sfx.play();
+                sfx.play(Main.MainVolume);
                 splashSFX = true;
             }
 
@@ -1226,7 +1228,7 @@ public class CombatScreen extends BaseScreen {
 
     /** Moves to the next state after a dialogue slide finishes. */
     private void advanceDialogueState() {
-        game.assets.stateTransition.play(1.0f);
+        game.assets.stateTransition.play(1.0f * Main.MainVolume);
         switch (game.ctx.combatState) {
             case ENEMY_INTRODUCTION:        game.ctx.combatState = GameContext.CombatState.TURN_MENU; break;
             case CHARACTER_POSTCOMBAT_LINE:
@@ -1256,25 +1258,25 @@ public class CombatScreen extends BaseScreen {
             if(!chordPlayed){
                 switch(chordUsedThisTurn){
                     case "CMAJOR":
-                        chordCmaj.play(3.0f);
+                        chordCmaj.play(3.0f * Main.MainVolume);
                         break;
                     case "DMINOR":
-                        chordDmin.play(3.0f);
+                        chordDmin.play(3.0f * Main.MainVolume);
                         break;
                     case "EMINOR":
-                        chordEmin.play(3.0f);
+                        chordEmin.play(3.0f * Main.MainVolume);
                         break;
                     case "FMAJOR":
-                        chordFmaj.play(3.0f);
+                        chordFmaj.play(3.0f * Main.MainVolume);
                         break;
                     case "GMAJOR":
-                        chordGmaj.play(3.0f);
+                        chordGmaj.play(3.0f * Main.MainVolume);
                         break;
                     case "AMINOR":
-                        chordAmin.play(3.0f);
+                        chordAmin.play(3.0f * Main.MainVolume);
                         break;
                     case "BDIM":
-                        chordBdim.play(3.0f);
+                        chordBdim.play(3.0f * Main.MainVolume);
                         break;
 
                 }
@@ -1350,7 +1352,7 @@ public class CombatScreen extends BaseScreen {
      * Rendering only calls this; all flow logic lives here.
      */
     private void advanceCombatState() {
-        game.assets.stateTransition.play(1.0f);
+        game.assets.stateTransition.play(1.0f * Main.MainVolume);
         switch (game.ctx.combatState) {
             case ITEM_USED:
                 game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
@@ -1427,10 +1429,10 @@ public class CombatScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             switch (turnMenuSelection) {
                 case 0:
-                    game.assets.stateTransition.play(0.2f);
+                    game.assets.stateTransition.play(0.2f * Main.MainVolume);
                     game.ctx.combatState = GameContext.CombatState.ATTACK;         break;
                 case 1:
-                    game.assets.stateTransition.play(0.2f);
+                    game.assets.stateTransition.play(0.2f * Main.MainVolume);
                     if(activeSkillUsed){
                         game.ctx.combatState = GameContext.CombatState.SKILL_USED;
                     }else{
@@ -1438,7 +1440,7 @@ public class CombatScreen extends BaseScreen {
                     }
                     confirmSelection = 0;                                           break;
                 case 2:
-                    game.assets.stateTransition.play(0.2f);
+                    game.assets.stateTransition.play(0.2f * Main.MainVolume);
                     game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
                     confirmSelection = 0;                                           break;
             }
@@ -1610,13 +1612,13 @@ public class CombatScreen extends BaseScreen {
                 noteRevealTimer = 0f;
                 char noteToPlay = java.lang.Character.toUpperCase(game.ctx.noteHandler.noteBuffer[revealedNoteCount]);
                 switch(noteToPlay){
-                    case 'A': noteA.play(3.0f); break;
-                    case 'B': noteB.play(3.0f); break;
-                    case 'C': noteC.play(3.0f); break;
-                    case 'D': noteD.play(3.0f); break;
-                    case 'E': noteE.play(3.0f); break;
-                    case 'F': noteF.play(3.0f); break;
-                    case 'G': noteG.play(3.0f); break;
+                    case 'A': noteA.play(3.0f * Main.MainVolume); break;
+                    case 'B': noteB.play(3.0f * Main.MainVolume); break;
+                    case 'C': noteC.play(3.0f * Main.MainVolume); break;
+                    case 'D': noteD.play(3.0f * Main.MainVolume); break;
+                    case 'E': noteE.play(3.0f * Main.MainVolume); break;
+                    case 'F': noteF.play(3.0f * Main.MainVolume); break;
+                    case 'G': noteG.play(3.0f * Main.MainVolume); break;
                 }
                 revealedNoteCount++;
             }
@@ -1666,13 +1668,13 @@ public class CombatScreen extends BaseScreen {
 
                 note = java.lang.Character.toUpperCase(note);
                 switch(note){
-                    case 'A': noteA.play(3.0f); break;
-                    case 'B': noteB.play(3.0f); break;
-                    case 'C': noteC.play(3.0f); break;
-                    case 'D': noteD.play(3.0f); break;
-                    case 'E': noteE.play(3.0f); break;
-                    case 'F': noteF.play(3.0f); break;
-                    case 'G': noteG.play(3.0f); break;
+                    case 'A': noteA.play(3.0f * Main.MainVolume); break;
+                    case 'B': noteB.play(3.0f * Main.MainVolume); break;
+                    case 'C': noteC.play(3.0f * Main.MainVolume); break;
+                    case 'D': noteD.play(3.0f * Main.MainVolume); break;
+                    case 'E': noteE.play(3.0f * Main.MainVolume); break;
+                    case 'F': noteF.play(3.0f * Main.MainVolume); break;
+                    case 'G': noteG.play(3.0f * Main.MainVolume); break;
                 }
             }
             break;
@@ -1697,7 +1699,7 @@ public class CombatScreen extends BaseScreen {
                 activeSkillUsedThisTurn = true;
                 activeSkillUsed = true;
 
-                game.assets.skillActivationSFX.play(3.0f);
+                game.assets.skillActivationSFX.play(3.0f * Main.MainVolume);
                 game.ctx.combatState = GameContext.CombatState.SKILL_CONFIRMED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.TURN_MENU;
@@ -1866,7 +1868,7 @@ public class CombatScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             if (confirmSelection == 0) {
                 handleItemUse();
-                game.assets.useItemSFX.play(3.0f);
+                game.assets.useItemSFX.play(3.0f * Main.MainVolume);
                 game.ctx.combatState = GameContext.CombatState.ITEM_USED;
             }else{
                 game.ctx.combatState = GameContext.CombatState.OPEN_INVENTORY;
@@ -2118,7 +2120,7 @@ public class CombatScreen extends BaseScreen {
             game.assets.enemyAttackv4
         };
         Sound sfx = enemyAttackSFX[rd.nextInt(enemyAttackSFX.length)];
-        if (sfx != null) sfx.play(1.0f);
+        if (sfx != null) sfx.play(1.0f * Main.MainVolume);
         player.takeDamage(enemyDamage);
 
         // Sonara Passive
@@ -2272,7 +2274,7 @@ public class CombatScreen extends BaseScreen {
         }
 
         if (combatBGM != null && !combatBGM.isPlaying()) {
-            combatBGM.setVolume(0.1f); // 0.0f to 1.0f
+            combatBGM.setVolume(0.1f * Main.MainVolume); // 0.0f to 1.0f
             combatBGM.play();
         }
 

@@ -21,6 +21,7 @@ public class Main extends Game {
     public Assets assets;
     public GameContext ctx;
     public GlyphLayout glyphLayout;
+    public static float MainVolume;
 
     public void create() {
         this.batch = new SpriteBatch();
@@ -36,7 +37,9 @@ public class Main extends Game {
         this.ctx = new GameContext();
         this.glyphLayout = new GlyphLayout();
         this.setScreen(new TitleScreen(this));
+        MainVolume = 1f;
     }
+    public static void setMainVolume(float volume){MainVolume = volume;}
 
     public void resize(int width, int height) {
         if (width != 0 && height != 0) {

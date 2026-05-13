@@ -28,6 +28,9 @@ public class MainMenuScreen extends BaseScreen {
     private final float BTN_WIDTH = 120f;
     private final float BTN_HEIGHT = 48f;
 
+    Texture soundButton = null;
+    float mainVolume = Main.MainVolume;
+
     public MainMenuScreen(Main game) { super(game); }
 
     @Override
@@ -42,9 +45,14 @@ public class MainMenuScreen extends BaseScreen {
         startFadeIn();
 
         if (game.assets.titleBGM != null && !game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.setVolume(0.6f);
+            game.assets.titleBGM.setVolume(0.6f * Main.MainVolume);
             game.assets.titleBGM.play();
         }
+
+        if(mainVolume == 0f){soundButton = game.assets.soundOffBtn;}
+        else if(mainVolume == 0.5f){soundButton = game.assets.soundLowBtn;}
+        else if(mainVolume == 1.0f){soundButton = game.assets.soundDefaultBtn;}
+        else if(mainVolume == 1.5f){soundButton = game.assets.soundHighBtn;}
     }
 
     @Override
@@ -122,6 +130,31 @@ public class MainMenuScreen extends BaseScreen {
             }
 
             game.batch.draw(button, leaderX, leaderY, leaderW, leaderH);
+        }
+
+        button = soundButton;
+        float volumeX = 0;
+        float volumeY = 0;
+        float volumeW = 0;
+        float volumeH = 0;
+        boolean hoverVolume = false;
+
+        if (button != null) {
+            volumeX = Main.WORLD_WIDTH - px(1.6f) - button.getWidth();
+            volumeY = px(0.8f);
+            volumeW = button.getWidth() / 2f;
+            volumeH = button.getHeight() / 2f;
+
+            hoverVolume = (mousePos.x >= volumeX && mousePos.x <= volumeX + volumeW &&
+                mousePos.y >= volumeY && mousePos.y <= volumeY + volumeH);
+
+            if (hoverVolume) {
+                game.batch.setColor(Color.WHITE);
+            } else {
+                game.batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            game.batch.draw(button, volumeX, volumeY, volumeW, volumeH);
         }
 
         game.batch.end(); // Briefly stop the batch to draw our shapes!
@@ -203,9 +236,25 @@ public class MainMenuScreen extends BaseScreen {
         if (hoverLeaderboard && Gdx.input.justTouched()) {
             startFadeOut(new Screens.LeaderBoard.LeaderboardScreen(game, 3));
         }
+
+        if (hoverVolume && Gdx.input.justTouched()) {
+            if(mainVolume == 0f){mainVolume = 0.5f; soundButton = game.assets.soundLowBtn;}
+            else if(mainVolume == 0.5f){mainVolume = 1.0f; soundButton = game.assets.soundDefaultBtn;}
+            else if(mainVolume == 1.0f){mainVolume = 1.5f; soundButton = game.assets.soundHighBtn;}
+            else if(mainVolume == 1.5f){mainVolume = 0f;  soundButton = game.assets.soundOffBtn;}
+
+            Main.setMainVolume(mainVolume);
+
+            if (game.assets.storyBGM != null) {
+                game.assets.storyBGM.setVolume(mainVolume);
+            }
+            if (game.assets.titleBGM != null) {
+                game.assets.titleBGM.setVolume(mainVolume);
+            }
+        }
     }
 
-    private void handleSelection() {
+    private void handleSelection(){
         switch (selection) {
             case 0: // START GAME (New Game)
                 game.assets.stopAllMusic();
