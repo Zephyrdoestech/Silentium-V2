@@ -542,6 +542,16 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    // hitbox
+    private float getEnemyCollisionSize(Enemy e) {
+        switch (e.getName()) {
+            case "Gobninil":                    return 60f;
+            case "Chimericks":                  return 70f;
+            case "Labagoliath the Void Shaker": return 80f;
+            case "Maestro Syozan":              return 100f;
+            default:                            return GameContext.CHAR_SIZE; // 64f
+        }
+    }
 
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
@@ -657,7 +667,10 @@ public class ExploringScreen extends BaseScreen {
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
 
-            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
+            float eSize = getEnemyCollisionSize(e);
+            Rectangle eRect = new Rectangle(e.getX(), e.getY(), eSize, eSize);
+
+//            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
             if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
