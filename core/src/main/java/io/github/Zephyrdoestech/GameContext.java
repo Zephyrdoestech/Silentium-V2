@@ -155,7 +155,39 @@ public class GameContext {
         lastThemeIndex = -1;
     }
 
+    public void resetContext() {
+        totalPlaytime = 0f;
+        mapsCleared = 0;
+        activeCharacterStats = null;
+        player = null;
+        playerState = PlayerState.IDLE;
+        facing = Facing.RIGHT;
+        stateTime = 0f;
+        savedPlayerX = -1f;
+        savedPlayerY = -1f;
+        mapEnemies.clear();
+        rooms.clear();
+        lives = maxLives;
+        enemiesDefeatedInCurrentMap = 0;
+        exitRoom = null;
+        currentMapScreen = null;
+        lastMapScreen = null;
+        currentEnemy = null;
+        combatState = CombatState.NONE;
+        mapName = MapName.TOWN_OF_ECHOES;
+        resultTimer = 0f;
+        combatLog = "";
+        playerDefeated = false;
+        playerWon = false;
+        leveledUpTo = 0;
+        isLabagoliathDefeated = false;
+        finalBossVictoryPending = false;
+        finalBossDefeatPending = false;
+    }
+
     public void createNewSaveSlot() {
+        resetContext();
+
         CustomPreferences global = CustomPreferences.getPreferences("ZephyrGlobal");
 
         // Find the first empty slot out of the 3 available

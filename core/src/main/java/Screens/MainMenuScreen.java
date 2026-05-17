@@ -28,6 +28,9 @@ public class MainMenuScreen extends BaseScreen {
     private final float BTN_WIDTH = 120f;
     private final float BTN_HEIGHT = 48f;
 
+    Texture soundButton = null;
+    float mainVolume = Main.MainVolume;
+
     public MainMenuScreen(Main game) { super(game); }
 
     @Override
@@ -42,9 +45,14 @@ public class MainMenuScreen extends BaseScreen {
         startFadeIn();
 
         if (game.assets.titleBGM != null && !game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.setVolume(0.6f);
+            game.assets.titleBGM.setVolume(0.6f * Main.MainVolume);
             game.assets.titleBGM.play();
         }
+
+        if(mainVolume == 0f){soundButton = game.assets.soundOffBtn;}
+        else if(mainVolume == 0.5f){soundButton = game.assets.soundLowBtn;}
+        else if(mainVolume == 1.0f){soundButton = game.assets.soundDefaultBtn;}
+        else if(mainVolume == 1.5f){soundButton = game.assets.soundHighBtn;}
     }
 
     @Override
@@ -72,7 +80,7 @@ public class MainMenuScreen extends BaseScreen {
             game.assets.tutorialBtnTex,
             game.assets.storyBtnTex,
             game.assets.creditsBtnTex,
-            game.assets.exitBtnTex
+            game.assets.exitBtnTex,
         };
 
         // --- UPDATED LAYOUT MATH ---
@@ -82,7 +90,7 @@ public class MainMenuScreen extends BaseScreen {
         float totalBlockHeight = (buttons.length * BTN_HEIGHT) + ((buttons.length - 1) * padding);
 
         // Pulled the menu UP by changing the offset to -40f (was -130f)
-        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - 20f;
+        float startY = (Main.WORLD_HEIGHT / 2f) + (totalBlockHeight / 2f) - BTN_HEIGHT - px(0.4f);
 
         // 3. Draw Buttons
         for (int i = 0; i < buttons.length; i++) {
@@ -94,6 +102,59 @@ public class MainMenuScreen extends BaseScreen {
                 game.batch.setColor(0.5f, 0.5f, 0.5f, 1f); // Dimmed for unselected
             }
             game.batch.draw(buttons[i], centerX, drawY, BTN_WIDTH, BTN_HEIGHT);
+        }
+
+        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+        game.gameViewport.unproject(mousePos);
+
+        Texture button = game.assets.leaderboardBtn;
+        float leaderX = 0;
+        float leaderY = 0;
+        float leaderW = 0;
+        float leaderH = 0;
+        boolean hoverLeaderboard = false;
+
+        if (button != null) {
+            leaderX = Main.WORLD_WIDTH - px(0.8f) - button.getWidth() / 2f;
+            leaderY = px(0.8f);
+            leaderW = button.getWidth() / 2f;
+            leaderH = button.getHeight() / 2f;
+
+            hoverLeaderboard = (mousePos.x >= leaderX && mousePos.x <= leaderX + leaderW &&
+                                        mousePos.y >= leaderY && mousePos.y <= leaderY + leaderH);
+
+            if (hoverLeaderboard) {
+                game.batch.setColor(Color.WHITE);
+            } else {
+                game.batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            game.batch.draw(button, leaderX, leaderY, leaderW, leaderH);
+        }
+
+        button = soundButton;
+        float volumeX = 0;
+        float volumeY = 0;
+        float volumeW = 0;
+        float volumeH = 0;
+        boolean hoverVolume = false;
+
+        if (button != null) {
+            volumeX = Main.WORLD_WIDTH - px(1.6f) - button.getWidth();
+            volumeY = px(0.8f);
+            volumeW = button.getWidth() / 2f;
+            volumeH = button.getHeight() / 2f;
+
+            hoverVolume = (mousePos.x >= volumeX && mousePos.x <= volumeX + volumeW &&
+                mousePos.y >= volumeY && mousePos.y <= volumeY + volumeH);
+
+            if (hoverVolume) {
+                game.batch.setColor(Color.WHITE);
+            } else {
+                game.batch.setColor(0.5f, 0.5f, 0.5f, 1f);
+            }
+
+            game.batch.draw(button, volumeX, volumeY, volumeW, volumeH);
         }
 
         game.batch.end(); // Briefly stop the batch to draw our shapes!
@@ -155,9 +216,6 @@ public class MainMenuScreen extends BaseScreen {
         }
 
         // 7. Handle Mouse Input
-        mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        game.gameViewport.unproject(mousePos);
-
         for (int i = 0; i < buttons.length; i++) {
             float btnY = startY - (i * gap);
 
@@ -174,9 +232,29 @@ public class MainMenuScreen extends BaseScreen {
                 }
             }
         }
+
+        if (hoverLeaderboard && Gdx.input.justTouched()) {
+            startFadeOut(new Screens.LeaderBoard.LeaderboardScreen(game, 3, true));
+        }
+
+        if (hoverVolume && Gdx.input.justTouched()) {
+            if(mainVolume == 0f){mainVolume = 0.5f; soundButton = game.assets.soundLowBtn;}
+            else if(mainVolume == 0.5f){mainVolume = 1.0f; soundButton = game.assets.soundDefaultBtn;}
+            else if(mainVolume == 1.0f){mainVolume = 1.5f; soundButton = game.assets.soundHighBtn;}
+            else if(mainVolume == 1.5f){mainVolume = 0f;  soundButton = game.assets.soundOffBtn;}
+
+            Main.setMainVolume(mainVolume);
+
+            if (game.assets.storyBGM != null) {
+                game.assets.storyBGM.setVolume(mainVolume);
+            }
+            if (game.assets.titleBGM != null) {
+                game.assets.titleBGM.setVolume(mainVolume);
+            }
+        }
     }
 
-    private void handleSelection() {
+    private void handleSelection(){
         switch (selection) {
             case 0: // START GAME (New Game)
                 game.assets.stopAllMusic();

@@ -99,7 +99,7 @@ public class AbyssOfDissonanceScreen extends ExploringScreen {
             // Start the town music when the screen is shown
             if (game.assets.abyssOfDissonanceBGM != null) {
                 game.assets.abyssOfDissonanceBGM.setLooping(true);
-                game.assets.abyssOfDissonanceBGM.setVolume(0.5f);
+                game.assets.abyssOfDissonanceBGM.setVolume(0.5f * Main.MainVolume);
                 game.assets.abyssOfDissonanceBGM.play();
             }
 

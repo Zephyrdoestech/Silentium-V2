@@ -23,12 +23,21 @@ public class LeaderboardScreen extends BaseScreen {
     /** Timer to prevent "Input Bleed" from the NameInputScreen */
     private float screenTimer = 0f;
 
+    private boolean fromMainMenu = false;
+
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public LeaderboardScreen(Main game, int totalMaps) {
         super(game);
         this.entries   = LeaderboardManager.loadEntries();
         this.totalMaps = totalMaps;
+    }
+
+    public LeaderboardScreen(Main game, int totalMaps, boolean fromMainMenu) {
+        super(game);
+        this.entries   = LeaderboardManager.loadEntries();
+        this.totalMaps = totalMaps;
+        this.fromMainMenu = fromMainMenu;
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -106,8 +115,9 @@ public class LeaderboardScreen extends BaseScreen {
 
         // ── Footer hint (Moved dynamically below the panel) ───────────────────
         game.assets.font.setColor(Color.GRAY);
-        game.glyphLayout.setText(game.assets.font, "Press ENTER to return to title screen");
-        game.assets.font.draw(game.batch, "Press ENTER to return to title screen", (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
+        String footerHint = fromMainMenu ? "Press ENTER to return to main menu" : "Press ENTER to return to title screen";
+        game.glyphLayout.setText(game.assets.font, footerHint);
+        game.assets.font.draw(game.batch, footerHint, (Main.WORLD_WIDTH - game.glyphLayout.width) / 2f, bgY - 5f);
         game.assets.font.setColor(Color.WHITE);
 
         drawFadeOverlay();
@@ -119,8 +129,12 @@ public class LeaderboardScreen extends BaseScreen {
         // ONLY allow exit if the screen has been open for half a second!
         if (screenTimer > 0.5f) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-                game.assets.stopAllMusic();
-                game.setScreen(new TitleScreen(game));
+                if (fromMainMenu) {
+                    game.setScreen(new MainMenuScreen(game));
+                } else {
+                    game.assets.stopAllMusic();
+                    game.setScreen(new TitleScreen(game));
+                }
             }
         }
     }
@@ -130,7 +144,9 @@ public class LeaderboardScreen extends BaseScreen {
     }
 
     @Override public void hide() {
-        game.assets.stopAllMusic();
+        if (!fromMainMenu) {
+            game.assets.stopAllMusic();
+        }
     }
 
     @Override public void dispose() {}

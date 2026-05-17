@@ -38,6 +38,13 @@ public class Assets implements Disposable {
     public final Texture pauseBtnTex;
     public final Texture menuBtnTex;
 
+    public final Texture leaderboardBtn;
+
+    public final Texture soundOffBtn;
+    public final Texture soundLowBtn;
+    public final Texture soundDefaultBtn;
+    public final Texture soundHighBtn;
+
     public final Texture exitPromptBg;
     public final Texture exitPromptYesBtn;
     public final Texture exitPromptNoBtn;
@@ -366,9 +373,9 @@ public class Assets implements Disposable {
         mainMenuBG = safeLoadTexture("Background/Texture/Cobblestone.png");
 
         // Load the Story Panels
-        storyPanel1 = new Texture(Gdx.files.internal("Background/Story/story_panel_1.png"));
-        storyPanel2 = new Texture(Gdx.files.internal("Background/Story/story_panel_2.png"));
-        storyPanel3 = new Texture(Gdx.files.internal("Background/Story/story_panel_3.png"));
+        storyPanel1 = safeLoadTexture("Background/Story/story_panel_1.png");
+        storyPanel2 = safeLoadTexture("Background/Story/story_panel_2.png");
+        storyPanel3 = safeLoadTexture("Background/Story/story_panel_3.png");
 
         // Map Textures
         Texture townFile = safeLoadTexture("Background/Map/Town_Of_Echoes.png");
@@ -410,32 +417,39 @@ public class Assets implements Disposable {
         lyronMonologueBox = loadAnim("Sprites/Characters/Lyron/MonologueBox",   "",  10, 0.12f);
         syozanMonologueBox = loadAnim("Sprites/Monster/Syozan/MonologueBox",   "",  10, 0.12f);
 
-        sonaraTex = new Texture("sonara.png");
-        lyronTex = new Texture("lyron.png");
-        aureliusTex = new Texture("aurelius.png");
+        sonaraTex = safeLoadTexture("sonara.png");
+        lyronTex = safeLoadTexture("lyron.png");
+        aureliusTex = safeLoadTexture("aurelius.png");
 
-        this.startBtnTex = new Texture("UI/start_btn.png");
-        this.loadBtnTex = new Texture("UI/load_btn.png");
-        this.tutorialBtnTex = new Texture("UI/tutorial_btn.png");
-        this.storyBtnTex = new Texture("UI/story_btn.png");
-        this.creditsBtnTex = new Texture("UI/credits_btn.png");
-        this.exitBtnTex = new Texture("UI/exit_btn.png");
+        this.startBtnTex = safeLoadTexture("UI/start_btn.png");
+        this.loadBtnTex = safeLoadTexture("UI/load_btn.png");
+        this.tutorialBtnTex = safeLoadTexture("UI/tutorial_btn.png");
+        this.storyBtnTex = safeLoadTexture("UI/story_btn.png");
+        this.creditsBtnTex = safeLoadTexture("UI/credits_btn.png");
+        this.exitBtnTex = safeLoadTexture("UI/exit_btn.png");
 
-        this.loadGamePanelTex = new Texture("UI/Panels/loadgame.png");
-        this.loadFileTex = new Texture("UI/Panels/load_file.png");
+        this.loadGamePanelTex = safeLoadTexture("UI/Panels/loadgame.png");
+        this.loadFileTex = safeLoadTexture("UI/Panels/load_file.png");
 
-        pauseContinueBtn = new Texture("UI/Pause/btn_continue.png");
-        pauseChordInfoBtn = new Texture("UI/Pause/btn_chordinfo.png");
-        pauseItemInfoBtn = new Texture("UI/Pause/btn_iteminfo.png");
-        pauseExitBtn = new Texture("UI/Pause/btn_exit.png");
+        pauseContinueBtn = safeLoadTexture("UI/Pause/btn_continue.png");
+        pauseChordInfoBtn = safeLoadTexture("UI/Pause/btn_chordinfo.png");
+        pauseItemInfoBtn = safeLoadTexture("UI/Pause/btn_iteminfo.png");
+        pauseExitBtn = safeLoadTexture("UI/Pause/btn_exit.png");
 
-        inventoryBtnTex = new Texture("UI/Buttons/btn_inventory.png");
-        pauseBtnTex = new Texture("UI/Buttons/btn_pause.png");
-        menuBtnTex = new Texture("UI/Buttons/btn_menu.png");
+        inventoryBtnTex = safeLoadTexture("UI/Buttons/btn_inventory.png");
+        pauseBtnTex = safeLoadTexture("UI/Buttons/btn_pause.png");
+        menuBtnTex = safeLoadTexture("UI/Buttons/btn_menu.png");
 
-        exitPromptBg        = new Texture("UI/Panels/ExitMap/BG.png");
-        exitPromptYesBtn    = new Texture("UI/Panels/ExitMap/yes_btn.png");;
-        exitPromptNoBtn     = new Texture("UI/Panels/ExitMap/no_btn.png");;
+        leaderboardBtn = safeLoadTexture("UI/Buttons/btn_leaderboard.png");
+
+        soundOffBtn = safeLoadTexture("UI/Buttons/btn_sound_off.png");
+        soundLowBtn = safeLoadTexture("UI/Buttons/btn_sound_low.png");
+        soundDefaultBtn = safeLoadTexture("UI/Buttons/btn_sound_default.png");
+        soundHighBtn = safeLoadTexture("UI/Buttons/btn_sound_high.png");
+
+        exitPromptBg        = safeLoadTexture("UI/Panels/ExitMap/BG.png");
+        exitPromptYesBtn    = safeLoadTexture("UI/Panels/ExitMap/yes_btn.png");;
+        exitPromptNoBtn     = safeLoadTexture("UI/Panels/ExitMap/no_btn.png");;
 
         leaderboardPanelBG = safeLoadTexture("UI/Panels/LeaderBoard.png");
         nameInputPanelBG = safeLoadTexture("UI/Panels/LeaderBoard_Input.png");
@@ -475,99 +489,99 @@ public class Assets implements Disposable {
 
         // ── Tutorial Screens ────────────────────────────────────────────────
 
-        noteTutorial = new Texture("Sprites/Combat/Tutorial/NoteTutorial.png");
-        metronomeTutorial = new Texture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
-        chordTutorial = new Texture("Sprites/Combat/Tutorial/ChordTutorial.png");
+        noteTutorial = safeLoadTexture("Sprites/Combat/Tutorial/NoteTutorial.png");
+        metronomeTutorial = safeLoadTexture("Sprites/Combat/Tutorial/MetronomeTutorial.png");
+        chordTutorial = safeLoadTexture("Sprites/Combat/Tutorial/ChordTutorial.png");
         tutorials = new Texture[] {noteTutorial, metronomeTutorial, chordTutorial};
 
-        chordInfoPage1 = new Texture("Sprites/Combat/Pause/ChordInfo/1.png");
-        chordInfoPage2 = new Texture("Sprites/Combat/Pause/ChordInfo/2.png");
-        itemInfoPage1 = new Texture("Sprites/Combat/Pause/ItemInfo/1.png");
-        itemInfoPage2 = new Texture("Sprites/Combat/Pause/ItemInfo/2.png");
+        chordInfoPage1 = safeLoadTexture("Sprites/Combat/Pause/ChordInfo/1.png");
+        chordInfoPage2 = safeLoadTexture("Sprites/Combat/Pause/ChordInfo/2.png");
+        itemInfoPage1 = safeLoadTexture("Sprites/Combat/Pause/ItemInfo/1.png");
+        itemInfoPage2 = safeLoadTexture("Sprites/Combat/Pause/ItemInfo/2.png");
         chordInfo = new Texture[] {chordInfoPage1, chordInfoPage2};
         itemInfo = new Texture[] {itemInfoPage1, itemInfoPage2};
 
-        backButton = new Texture("Sprites/Combat/Pause/leftButton.png");
-        nextButton = new Texture("Sprites/Combat/Pause/rightButton.png");
+        backButton = safeLoadTexture("Sprites/Combat/Pause/leftButton.png");
+        nextButton = safeLoadTexture("Sprites/Combat/Pause/rightButton.png");
 
         // ── Map Background ────────────────────────────────────────────────
 
-        townCombatBackground    = new Texture("Background/Combat/Town.png");
-        cavernsCombatBackground = new Texture("Background/Combat/Cavern.png");
-        abyssCombatBackground   = new Texture("Background/Combat/Abyss.png");
+        townCombatBackground    = safeLoadTexture("Background/Combat/Town.png");
+        cavernsCombatBackground = safeLoadTexture("Background/Combat/Cavern.png");
+        abyssCombatBackground   = safeLoadTexture("Background/Combat/Abyss.png");
 
         // ── Combat HUD ────────────────────────────────────────────────────────
 
-        playerHeaderSonara          = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Sonara.png");
-        playerHeaderAurelius        = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Aurelius.png");
-        playerHeaderLyron           = new Texture("Sprites/Combat/Interface/BattleHeader/Character/Lyron.png");
+        playerHeaderSonara          = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Character/Sonara.png");
+        playerHeaderAurelius        = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Character/Aurelius.png");
+        playerHeaderLyron           = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Character/Lyron.png");
 
-        enemyHeaderFleshFeeder      = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/FleshFeeder.png");
-        enemyHeaderDarryllion       = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Darryllion.png");
-        enemyHeaderGobninil         = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Gobninil.png");
-        enemyHeaderChimericks       = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Chimericks.png");
-        enemyHeaderLabagoliath      = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Labagoliath.png");
-        enemyHeaderSyozan           = new Texture("Sprites/Combat/Interface/BattleHeader/Monster/Syozan.png");
+        enemyHeaderFleshFeeder      = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/FleshFeeder.png");
+        enemyHeaderDarryllion       = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/Darryllion.png");
+        enemyHeaderGobninil         = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/Gobninil.png");
+        enemyHeaderChimericks       = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/Chimericks.png");
+        enemyHeaderLabagoliath      = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/Labagoliath.png");
+        enemyHeaderSyozan           = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Monster/Syozan.png");
 
-        mapHeaderTownOfEchoes       = new Texture("Sprites/Combat/Interface/BattleHeader/Map/TownOfEchoes.png");
-        mapHeaderSilentCaverns      = new Texture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
-        mapHeaderAbyssOfDissonance  = new Texture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
+        mapHeaderTownOfEchoes       = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Map/TownOfEchoes.png");
+        mapHeaderSilentCaverns      = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Map/SilentCaverns.png");
+        mapHeaderAbyssOfDissonance  = safeLoadTexture("Sprites/Combat/Interface/BattleHeader/Map/AbyssOfDissonance.png");
 
-        victoryPopupBg              = new Texture("UI/Panels/VictoryPopupBG.png");
+        victoryPopupBg              = safeLoadTexture("UI/Panels/VictoryPopupBG.png");
 
-        heart                = new Texture("Sprites/Combat/Interface/Heart.png");
-        heartEmpty                = new Texture("Sprites/Combat/Interface/HeartEmpty.png");
+        heart                = safeLoadTexture("Sprites/Combat/Interface/Heart.png");
+        heartEmpty                = safeLoadTexture("Sprites/Combat/Interface/HeartEmpty.png");
 
-        healthBar            = new Texture("Sprites/Combat/Interface/HealthBar.png");
-        shieldBar            = new Texture("Sprites/Combat/Interface/ShieldBar.png");
-        staticHudBackground  = new Texture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
-        timerBackground      = new Texture("Sprites/Combat/Interface/Timer/HUDBackground.png");
-        dynamicHudBackground = new Texture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
-        noteContainer        = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png");
-        noteContainerFilled  = new Texture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png");
-        turnMenuHud          = new Texture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png");
-        attackHud            = new Texture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
-        skillHud             = new Texture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
-        inventoryHud         = new Texture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
-        musicStaff           = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png");
-        musicNote            = new Texture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png");
+        healthBar            = safeLoadTexture("Sprites/Combat/Interface/HealthBar.png");
+        shieldBar            = safeLoadTexture("Sprites/Combat/Interface/ShieldBar.png");
+        staticHudBackground  = safeLoadTexture("Sprites/Combat/Interface/StaticHUD/HUDBackground.png");
+        timerBackground      = safeLoadTexture("Sprites/Combat/Interface/Timer/HUDBackground.png");
+        dynamicHudBackground = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/HUDBackground.png");
+        noteContainer        = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/NoteContainer.png");
+        noteContainerFilled  = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/NoteContainerFilled.png");
+        turnMenuHud          = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/TurnMenu.png");
+        attackHud            = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/Attack.png");
+        skillHud             = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/Skill.png");
+        inventoryHud         = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/Inventory.png");
+        musicStaff           = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/MusicStaff.png");
+        musicNote            = safeLoadTexture("Sprites/Combat/Interface/DynamicHUD/MusicNote.png");
 
-        cMajor = new Texture("Sprites/Combat/Interface/Chords/C_Major.png");
-        dMinor = new Texture("Sprites/Combat/Interface/Chords/D_Minor.png");
-        eMinor = new Texture("Sprites/Combat/Interface/Chords/E_Minor.png");
-        fMajor = new Texture("Sprites/Combat/Interface/Chords/F_Major.png");
-        gMajor = new Texture("Sprites/Combat/Interface/Chords/G_Major.png");
-        aMinor = new Texture("Sprites/Combat/Interface/Chords/A_Minor.png");
-        bDim = new Texture("Sprites/Combat/Interface/Chords/B_Dim.png");
+        cMajor = safeLoadTexture("Sprites/Combat/Interface/Chords/C_Major.png");
+        dMinor = safeLoadTexture("Sprites/Combat/Interface/Chords/D_Minor.png");
+        eMinor = safeLoadTexture("Sprites/Combat/Interface/Chords/E_Minor.png");
+        fMajor = safeLoadTexture("Sprites/Combat/Interface/Chords/F_Major.png");
+        gMajor = safeLoadTexture("Sprites/Combat/Interface/Chords/G_Major.png");
+        aMinor = safeLoadTexture("Sprites/Combat/Interface/Chords/A_Minor.png");
+        bDim = safeLoadTexture("Sprites/Combat/Interface/Chords/B_Dim.png");
 
-        cMajorUsed = new Texture("Sprites/Combat/Interface/Chords/C_Used.png");
-        dMinorUsed = new Texture("Sprites/Combat/Interface/Chords/D_Used.png");
-        eMinorUsed = new Texture("Sprites/Combat/Interface/Chords/E_Used.png");
-        fMajorUsed = new Texture("Sprites/Combat/Interface/Chords/F_Used.png");
-        gMajorUsed = new Texture("Sprites/Combat/Interface/Chords/G_Used.png");
-        aMinorUsed = new Texture("Sprites/Combat/Interface/Chords/A_Used.png");
-        bDimUsed = new Texture("Sprites/Combat/Interface/Chords/B_Used.png");
+        cMajorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/C_Used.png");
+        dMinorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/D_Used.png");
+        eMinorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/E_Used.png");
+        fMajorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/F_Used.png");
+        gMajorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/G_Used.png");
+        aMinorUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/A_Used.png");
+        bDimUsed = safeLoadTexture("Sprites/Combat/Interface/Chords/B_Used.png");
 
         // ── Item Textures ─────────────────────────────────────────────────────────
 
-        crimsonChorusBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
-        majorsBlessingBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
-        minorsGraceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/MinorsGrace.png");
-        resolvedDissonanceBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/ResolvedDissonance.png");
-        silentBarrierBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/SilentBarrier.png");
-        timeOrbBattleTex = new Texture("Sprites/Combat/Interface/Inventory/Items/TimeOrb.png");
+        crimsonChorusBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/CrimsonChorus.png");
+        majorsBlessingBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/MajorsBlessing.png");
+        minorsGraceBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/MinorsGrace.png");
+        resolvedDissonanceBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/ResolvedDissonance.png");
+        silentBarrierBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/SilentBarrier.png");
+        timeOrbBattleTex = safeLoadTexture("Sprites/Combat/Interface/Inventory/Items/TimeOrb.png");
 
-        inventoryPanelBackground = new Texture("UI/Panels/Inventory.png");
+        inventoryPanelBackground = safeLoadTexture("UI/Panels/Inventory.png");
 
-        inventoryBackground = new Texture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
-        crimsonChorusSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/CrimsonChorus.png");
-        majorsBlessingSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MajorsBlessing.png");
-        minorsGraceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png");
-        silentBarrierSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
-        resolvedDissonanceSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
-        timeOrbSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
-        emptySlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
-        selectedSlotItem = new Texture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
+        inventoryBackground = safeLoadTexture("Sprites/Combat/Interface/Inventory/InventoryBG.png");
+        crimsonChorusSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/CrimsonChorus.png");
+        majorsBlessingSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/MajorsBlessing.png");
+        minorsGraceSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/MinorsGrace.png");
+        silentBarrierSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/SilentBarrier.png");
+        resolvedDissonanceSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/ResolvedDissonance.png");
+        timeOrbSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/TimeOrb.png");
+        emptySlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/EmptySlot.png");
+        selectedSlotItem = safeLoadTexture("Sprites/Combat/Interface/Inventory/SlotItems/SelectedSlot.png");
 
         // ── Character Lore ─────────────────────────────────────────────────
 

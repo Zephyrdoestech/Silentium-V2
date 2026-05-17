@@ -16,6 +16,7 @@ public class TitleScreen extends BaseScreen {
 
     @Override
     public void show() {
+        Main.setMainVolume(1.0f);
         // Reset scales that might have been changed by other screens
         game.assets.font.getData().setScale(1.5f);
         game.assets.titleFont.getData().setScale(2.2f);
@@ -25,9 +26,10 @@ public class TitleScreen extends BaseScreen {
         game.gameCamera.update();
 
         if (!game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.setVolume(0.6f);
+            game.assets.titleBGM.setVolume(0.6f * Main.MainVolume);
             game.assets.titleBGM.play();
         }
+
     }
 
     @Override

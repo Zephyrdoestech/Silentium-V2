@@ -102,7 +102,9 @@ public abstract class BaseScreen implements Screen {
 
         // Ensure batch is ended before starting shape renderer, but safely check if it's active
         boolean batchWasDrawing = game.batch.isDrawing();
+        com.badlogic.gdx.math.Matrix4 originalMatrix = null;
         if (batchWasDrawing) {
+            originalMatrix = game.batch.getProjectionMatrix().cpy();
             game.batch.end();
         }
 
@@ -119,7 +121,7 @@ public abstract class BaseScreen implements Screen {
 
         // Resume batch if it was drawing
         if (batchWasDrawing) {
-            game.batch.setProjectionMatrix(game.gameCamera.combined);
+            game.batch.setProjectionMatrix(originalMatrix);
             game.batch.begin();
         }
     }
@@ -162,6 +164,18 @@ public abstract class BaseScreen implements Screen {
         sr.setColor(fill);
         sr.rect(x, y - h, w * MathUtils.clamp(fraction, 0f, 1f), h);
     }
+
+    // ── Measurement helper ──────────────────────────────────────────────────────────
+
+    protected static final float scale = 32f;
+    protected float px(float factor){ return scale * factor;}
+
+    // ── Screen Layout ─────────────────────────────────────────────────────────
+
+    protected final float screenLeft   = 0;
+    protected final float screenRight  = Main.WORLD_WIDTH;
+    protected final float screenTop    = Main.WORLD_HEIGHT;
+    protected final float screenBottom = 0;
 
     // ── Default no-op lifecycle ───────────────────────────────────────────────
 

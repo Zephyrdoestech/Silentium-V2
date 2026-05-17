@@ -45,7 +45,7 @@ public class Enemy {
     public Enemy(String name, int hp, float x, float y, Attack... attacks) {
         this.name     = name;
         this.maxHp    = hp;
-        this.currentHp = hp;
+        this.currentHp = maxHp;
         this.x        = x;
         this.y        = y;
         this.attacks  = attacks;
@@ -134,7 +134,7 @@ public class Enemy {
     }
 
     public static Enemy maestroSyozan(float x, float y) {
-        return new Enemy("Maestro Syozan", 1600, x, y,
+        return new Enemy("Maestro Syozan",  1500, x, y,
             new Attack("Abyssal Echo Dirge",              20,  75),
             new Attack("Dirge of the Shattered Moon",     30, 100),
             new Attack("Ebon Symphony of Consuming Night",40, 125)

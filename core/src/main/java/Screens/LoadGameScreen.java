@@ -34,7 +34,7 @@ public class LoadGameScreen extends BaseScreen {
         startFadeIn();
 
         if (game.assets.titleBGM != null && !game.assets.titleBGM.isPlaying()) {
-            game.assets.titleBGM.setVolume(0.6f);
+            game.assets.titleBGM.setVolume(0.6f * Main.MainVolume);
             game.assets.titleBGM.play();
         }
 

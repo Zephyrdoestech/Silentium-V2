@@ -41,40 +41,6 @@ public class Inventory {
 
     public void removeItem(int index) { items.remove(index); }
 
-    public Item transferItem(int index) { Item temp = items.get(index); items.remove(index); return temp; }
-
-    public void resetInventory() { items.clear(); }
-
-    // ── Display ───────────────────────────────────────────────────────────────
-
-    public void showInventory() {
-        System.out.println("=== INVENTORY (" + items.size() + "/" + MAX_CAPACITY + ") ===");
-        if (items.isEmpty()) {
-            System.out.println("  (empty)");
-        } else {
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
-                System.out.printf("  [%d] %-22s — %s%n",
-                    i + 1, item.getName(), item.getDescription());
-            }
-        }
-    }
-
-    // ── Use ───────────────────────────────────────────────────────────────────
-
-//    public void useItem(CharacterHero player, int index) {
-//        int i = index - 1; // convert to 0-based
-//        if (i < 0 || i >= items.size()) {
-//            System.out.println("[Inventory] Invalid item index: " + index);
-//            return;
-//        }
-//        Item item = items.get(i);
-//        System.out.println("[Inventory] Using: " + item.getName());
-//        item.applyEffect(player);
-//        items.remove(i);
-//        System.out.println("[Inventory] " + item.getName() + " has been consumed.");
-//    }
-
     // ── Loot mechanics (placeholder) ──────────────────────────────────────────
 
     public void randomDrop() {

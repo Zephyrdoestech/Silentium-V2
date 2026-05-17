@@ -52,18 +52,10 @@ public class ExploringScreen extends BaseScreen {
     private Rectangle noButtonRect = new Rectangle();
     private Rectangle okButtonRect = new Rectangle();
 
-    // ── Screen Layout ─────────────────────────────────────────────────────────
-
-    private final float screenLeft   = 0;
-    private final float screenRight  = Main.WORLD_WIDTH;
-    private final float screenTop    = Main.WORLD_HEIGHT;
-    private final float screenBottom = 0;
-
     // ── Scale / Helpers ────────────────────────────────────────────────────
 
     private static Random rd = new Random();
-    private static final float GAP = 32f;
-    private float px(float factor) { return GAP * factor; }
+
     private float textWidth(String text) {
         game.glyphLayout.setText(game.assets.font, text);
         return game.glyphLayout.width;
@@ -140,6 +132,7 @@ public class ExploringScreen extends BaseScreen {
     protected void initMapData() { }
     protected void initWalkable() {
         walkableZones.clear();
+        corridorZones.clear();
         for (Room r : game.ctx.rooms) walkableZones.add(r.getBounds());
     }
     protected void restoreInstanceFields() { }
@@ -248,19 +241,15 @@ public class ExploringScreen extends BaseScreen {
             initWalkable();
         }
 
-        if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
-            if (game.ctx.player == null) {
+        if (game.ctx.player == null) {
+            if (game.ctx.savedPlayerX != -1f && game.ctx.savedPlayerY != -1f) {
+                game.ctx.player = new MapCharacter(game.ctx.savedPlayerX, game.ctx.savedPlayerY);
+                game.ctx.savedPlayerX = -1f;
+                game.ctx.savedPlayerY = -1f;
+            } else {
+                game.ctx.activeCharacterStats.resetStats();
                 initPlayerPosition();
             }
-
-            game.ctx.player.setX(game.ctx.savedPlayerX);
-            game.ctx.player.setY(game.ctx.savedPlayerY);
-
-            game.ctx.savedPlayerX = -1f;
-            game.ctx.savedPlayerY = -1f;
-        } else if (game.ctx.player == null || (game.ctx.player.getX() == 0 && game.ctx.player.getY() == 0)) {
-            game.ctx.activeCharacterStats.resetStats();
-            initPlayerPosition();
         } else if (!returningFromCombatVictory) {
             boolean placed = false;
 
@@ -452,7 +441,7 @@ public class ExploringScreen extends BaseScreen {
         drawDarknessOverlay();
         game.batch.end();
 
-        // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
+//        // 2. DRAW SHAPES (Debug Outlines) FOR TESTING PLS DONT REMOVE <3
 //        game.shapeRenderer.setProjectionMatrix(game.gameCamera.combined);
 //        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
 //        game.shapeRenderer.setColor(Color.GREEN);
@@ -482,6 +471,15 @@ public class ExploringScreen extends BaseScreen {
         // ESC → Save Game and return to main menu
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !fadingOut) {
             game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+            game.ctx.savedPlayerX = -1f;
+            game.ctx.savedPlayerY = -1f;
+
             startFadeOut(new MainMenuScreen(game));
         }
     }
@@ -550,6 +548,16 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
+    // hitbox
+    private float getEnemyCollisionSize(Enemy e) {
+        switch (e.getName()) {
+            case "Gobninil":                    return 60f;
+            case "Chimericks":                  return 70f;
+            case "Labagoliath the Void Shaker": return 80f;
+            case "Maestro Syozan":              return 100f;
+            default:                            return GameContext.CHAR_SIZE; // 64f
+        }
+    }
 
     // ── Movement ──────────────────────────────────────────────────────────────
     private void handleMovement(float delta) {
@@ -665,7 +673,10 @@ public class ExploringScreen extends BaseScreen {
         for (Enemy e : game.ctx.mapEnemies) {
             if (e.isDefeated()) continue;
 
-            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
+            float eSize = getEnemyCollisionSize(e);
+            Rectangle eRect = new Rectangle(e.getX(), e.getY(), eSize, eSize);
+
+//            Rectangle eRect = new Rectangle(e.getX(), e.getY(), C, C);
             if (pRect.overlaps(eRect)) {
                 game.ctx.player.setX(prevX);
                 game.ctx.player.setY(prevY);
@@ -848,7 +859,7 @@ public class ExploringScreen extends BaseScreen {
                 game.ctx.mapEnemies.clear();
                 game.ctx.exitRoom = null;
 
-                game.assets.traversalSFX.play(3.0f);
+                game.assets.traversalSFX.play(3.0f * Main.MainVolume);
                 startFadeOut(next);
             }
         }
@@ -875,7 +886,7 @@ public class ExploringScreen extends BaseScreen {
         if (monologueSfxPlaying) return;
 
         if (game.assets.monologueSFX != null) {
-            monologueSfxId = game.assets.monologueSFX.loop(3.0f);
+            monologueSfxId = game.assets.monologueSFX.loop(5.0f * Main.MainVolume);
             monologueSfxPlaying = true;
         }
     }
@@ -1045,6 +1056,15 @@ public class ExploringScreen extends BaseScreen {
                 if (mousePos.x >= checkX && mousePos.x <= checkX + btnWidth &&
                     mousePos.y >= checkY && mousePos.y <= checkY + btnHeight) {
                     game.ctx.saveGame(this.mapName, game.ctx.player.getX(), game.ctx.player.getY());
+
+                    game.ctx.player = null;
+                    game.ctx.enemiesDefeatedInCurrentMap = 0;
+                    game.ctx.rooms.clear();
+                    game.ctx.mapEnemies.clear();
+                    game.ctx.exitRoom = null;
+                    game.ctx.savedPlayerX = -1f;
+                    game.ctx.savedPlayerY = -1f;
+
                     startFadeOut(new MainMenuScreen(game));
                 }
             }
@@ -1401,15 +1421,13 @@ public class ExploringScreen extends BaseScreen {
         }
 
         Inventory inv = player.getPlayerInventory();
-        for (int i = 0; i < dropCount; i++) {
-            if(!addRandomDrop(inv)) i--;
-        }
+        for (int i = 0; i < dropCount; i++) { addRandomDrop(inv); }
 
         game.ctx.enemiesDefeatedInCurrentMap++;
         showVictoryPopup = true;
 
         if (leveledUp) {
-            game.assets.levelUpSFX.play(1.0f);
+            game.assets.levelUpSFX.play(1.0f * Main.MainVolume);
 
             switch (newLevel) {
                 case 2: currentMonologue = game.ctx.activeCharacterStats.getMonologues().firstLevelUp;  break;
@@ -1420,38 +1438,55 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-    private boolean addRandomDrop(Inventory inv) {
-        int itemType = RNG.nextInt(6);
-
-        String itemName = "";
-
-        switch (itemType) {
-            case 0:  itemName = "Crimson Chorus"; break;
-            case 1:  itemName = "Major's Blessing"; break;
-            case 2:  itemName = "Minor's Grace"; break;
-            case 3:  itemName = "Resolved Dissonance"; break;
-            case 4:  itemName = "Silent Barrier"; break;
-            case 5:  itemName = "Time Orb"; break;
-        }
+    private void addRandomDrop(Inventory inv) {
+        int lastDropType = -1;
 
         if (!droppedItemNames.isEmpty()) {
-            String latestDrop = droppedItemNames.get(droppedItemNames.size() - 1);
-            if (latestDrop.equals(itemName)) { return false; }
+            switch(droppedItemNames.get(droppedItemNames.size() - 1)){
+                case "Crimson Chorus":      lastDropType = 0; break;
+                case "Major's Blessing":    lastDropType = 1; break;
+                case "Minor's Grace":       lastDropType = 2; break;
+                case "Resolved Dissonance": lastDropType = 3; break;
+                case "Silent Barrier":      lastDropType = 4; break;
+                case "Time Orb":            lastDropType = 5; break;
+            }
         }
+
+        int itemType;
+
+        // Unique Item Drops
+        do { itemType = RNG.nextInt(6);
+        } while (itemType == lastDropType);
 
         switch (itemType) {
-            case 0:  inv.gainCrimsonChorus(game.assets); break;
-            case 1:  inv.gainMajorBlessing(game.assets); break;
-            case 2:  inv.gainMinorsGrace(game.assets); break;
-            case 3:  inv.gainResolvedDissonance(game.assets); break;
-            case 4:  inv.gainSilentBarrier(game.assets); break;
-            case 5:  inv.gainTimeOrb(game.assets); break;
+            case 0:
+                inv.gainCrimsonChorus(game.assets);
+                droppedItemNames.add("Crimson Chorus");
+                break;
+            case 1:
+                inv.gainMajorBlessing(game.assets);
+                droppedItemNames.add("Major's Blessing");
+                break;
+            case 2:
+                inv.gainMinorsGrace(game.assets);
+                droppedItemNames.add("Minor's Grace");
+                break;
+            case 3:
+                inv.gainResolvedDissonance(game.assets);
+                droppedItemNames.add("Resolved Dissonance");
+                break;
+            case 4:
+                inv.gainSilentBarrier(game.assets);
+                droppedItemNames.add("Silent Barrier");
+                break;
+            case 5:
+                inv.gainTimeOrb(game.assets);
+                droppedItemNames.add("Time Orb");
+                break;
         }
 
-        droppedItemNames.add(itemName);
-        droppedItemIcons.add(inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
-
-        return true;
+        lastDropType = itemType;
+        droppedItemIcons.add( inv.getItem(inv.getInventorySize() - 1).getSlotIcon());
     }
 
     // ── Inventory Overlay ─────────────────────────────────────────────────────
@@ -1597,6 +1632,12 @@ public class ExploringScreen extends BaseScreen {
 
             game.ctx.mapsCleared = 3;
 
+            game.ctx.player = null;
+            game.ctx.enemiesDefeatedInCurrentMap = 0;
+            game.ctx.rooms.clear();
+            game.ctx.mapEnemies.clear();
+            game.ctx.exitRoom = null;
+
             startFadeOut(new EndingScreen(game));
             return;
         }
@@ -1641,7 +1682,6 @@ public class ExploringScreen extends BaseScreen {
         }
     }
 
-
     private void drawMonologueOverlay(float delta) {
         TextureRegion animFrame = null;
 
@@ -1653,7 +1693,7 @@ public class ExploringScreen extends BaseScreen {
             }
         }
 
-        if (animFrame == null) {
+        if (animFrame == null && !currentMonologueRightAligned) {
             switch(game.ctx.selectedCharacter){
                 case SONARA:
                     animFrame = game.assets.sonaraMonologueBox.getKeyFrame(game.ctx.stateTime, true);
@@ -1688,12 +1728,9 @@ public class ExploringScreen extends BaseScreen {
         int alignment = com.badlogic.gdx.utils.Align.left;
 
         if (currentMonologueRightAligned) {
-            // Syozan box has the enemy card on the right.
-            // So the text starts near the left, and reserves the same card-space on the right
-            // that player dialogue reserves on the left.
             float syozanTextLeft = boxX + px(2.0f);
             float enemyCardRightPadding = px(4.8f);
-            float syozanTextRightPadding = px(3.0f);
+            float syozanTextRightPadding = px(2.0f);
 
             textX = syozanTextLeft;
             wrapWidth = boxWidth - syozanTextLeft - enemyCardRightPadding - syozanTextRightPadding;
@@ -1714,7 +1751,7 @@ public class ExploringScreen extends BaseScreen {
         game.assets.font.setColor(Color.GRAY);
         game.assets.font.getData().setScale(0.8f);
         game.assets.font.draw(game.batch, "Press ENTER to skip.",
-            Main.WORLD_WIDTH - px(5.0f),
+            (!currentMonologueRightAligned ? Main.WORLD_WIDTH - px(5.0f) : px(1.2f)),
             px(1.6f));
 
         game.assets.font.getData().setScale(1.0f);
